@@ -192,7 +192,7 @@ All variable are static, except for `TIME`  and `DATE`.  These two variables cha
 
 There are 28 built-in functions for use in your **Shabti** script.
 
-* [IRC Functions](https://github.com/danhetrick/shabti#irc-functions)
+* [IRC Functions](#irc-functions)
 	* [`server`](#server)
 	* [`set`](#set)
 	* [`login`](#login)
@@ -205,8 +205,24 @@ There are 28 built-in functions for use in your **Shabti** script.
 	* [`message`](#message)
 	* [`notice`](#notice)
 	* [`action`](#action)
-* [Text Functions](https://github.com/danhetrick/shabti#text-functions)
-* [File I/O Functions](https://github.com/danhetrick/shabti#file-io-functions)
+* [Text Functions](#text-functions)
+	* [`print`](#print)
+	* [`sprint`](#sprint)
+	* [`color`](#color)
+	* [`bold`](#bold)
+	* [`italic`](#italic)
+	* [`underline`](#underline)
+* [File I/O Functions](#file-io-functions)
+	* [`read`](#read)
+	* [`write`](#write)
+	* [`swrite`](#swrite)
+	* [`append`](#append)
+	* [`sappend`](#sappend)
+	* [`fileexists`](#fileexists)
+	* [`direxists`](#direxists)
+	* [`mkdir`](#mkdir)
+	* [`rmdir`](#rmdir)
+	* [`delete`](#delete)
 
 ---
 
