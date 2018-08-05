@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!--
+
+███████╗██╗  ██╗ █████╗ ██████╗ ████████╗██╗
+██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██║
+███████╗███████║███████║██████╔╝   ██║   ██║
+╚════██║██╔══██║██╔══██║██╔══██╗   ██║   ██║
+███████║██║  ██║██║  ██║██████╔╝   ██║   ██║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝    ╚═╝   ╚═╝
+
+default.xml
+
+This is the default configuration file for the Shabti IRC bot.
+
+-->
+<configuration>
+
+	<!-- The IRC server to connect to. -->
+	<server>localhost</server>
+	<!-- The port on the IRC server to connect to. -->
+	<port>6667</port>
+
+	<!--
+		The nick the IRC bot will use. Please note that there is
+		 no "alternate nick" that the bot will use if the chosen nick
+		 is already in use. To change the bot's nick, place code in
+		 the "nick_taken_event()" to change it.
+	-->
+	<nick>shabti</nick>
+	<!-- The username the bot will use. -->
+	<username>shabti</username>
+	<!-- The IRCname the bot will use. -->
+	<ircname>Shabti IRC bot</ircname>
+
+	<!--
+		For each channel the bot should join, add a "channel" child
+		element with the channel name as its contents. With the default
+		settings, the bot will join three channels: "#foo", "#bar", and "#shabti".
+	-->
+	<channel>#foo</channel>
+	<channel>#bar</channel>
+	<channel>#shabti</channel>
+
+	<!--
+		The bot's "source code". This file should contain JavaScript, with a
+		number of functions that will be executed when IRC events are
+		received.
+	-->
+	<script>default.js</script>
+
+</configuration>
