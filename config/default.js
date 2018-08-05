@@ -99,9 +99,6 @@ function time_event(weekday,month,day,year,hour,minute,second,zone) {
 // message = the contents of the message
 function public_message_event(nick,username,channel,message) {
 	print(channel+" <"+nick+"> "+message);
-	server("MODE #foo +o wraithnix");
-	//part("#foo","test");
-	//set("#foo","+o","wraithnix");
 }
 
 // action_event()

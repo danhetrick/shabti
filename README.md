@@ -202,7 +202,7 @@ There are 28 built-in functions for use in your **Shabti** script.
 	* [`part`](#part)
 	* [`topic`](#topic)
 	* [`quit`](#quit)
-	* [`message`](#message)
+	* [`msg`](#msg)
 	* [`notice`](#notice)
 	* [`action`](#action)
 * [Text Functions](#text-functions)
@@ -273,11 +273,10 @@ There are 28 built-in functions for use in your **Shabti** script.
 * *Returns*: nothing
 * Quits the IRC server.
 
-##### `message`
+##### `msg`
 * *Arguments*: 2 (target user or channel, message)
 * *Returns*: nothing
 * Sends a message to the target user or channel.
-* Optinal function name: `msg`
 
 ##### `notice`
 * *Arguments*: 2 (target user or channel, message)
@@ -292,13 +291,6 @@ There are 28 built-in functions for use in your **Shabti** script.
 ---
 
 #### Text Functions
-
-* `print`
-* `sprint`
-* `color`
-* `bold`
-* `italic`
-* `underline`
 
 ##### `print`
 * *Arguments*: 1+ (text to print)
@@ -333,17 +325,6 @@ There are 28 built-in functions for use in your **Shabti** script.
 ---
 
 #### File I/O Functions
-
-* `read`
-* `write`
-* `swrite`
-* `append`
-* `sappend`
-* `fileexists`
-* `direxists`
-* `mkdir`
-* `rmdir`
-* `delete`
 
 ##### `read`
 * *Arguments*: 1 (file to read)

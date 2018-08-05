@@ -919,18 +919,6 @@ sub new_javascript_functions {
             }
         }
     );
-    # message
-    $j->new_function(
-        message => sub {
-            if ( scalar @_ == 2 ) {
-                print $sock "PRIVMSG $_[0] :$_[1]\r\n";
-            }
-            else {
-                die new JE::Object::Error::SyntaxError $j,
-                  "Wrong number of arguments to 'message'\n";
-            }
-        }
-    );
 
     # notice
     $j->new_function(
