@@ -470,3 +470,34 @@ Called when the bot receives a notification that is not handled by any other eve
 
 ---
 
+# Example Scripts
+
+## OpBot
+
+This is a simple bot that performs one function: granting channel operator status to any user that has the appropriate password.  The bot must have channel operator status in the desired channel.  To get ops from the bot, send a private message to it with `op CHANNEL PASSWORD`; so, if the password is "changeme", and the desired channel is "#foo", send `op #foo changeme`.
+
+```javascript
+var OPBOT_PASSWORD = "changeme";
+
+function private_message_event(nick,username,message) {
+
+	if(message.toLowerCase()=="help"){
+		msg(nick,"OpBot v1.0");
+		msg(nick,"op CHANNEL PASSWORD  -  Gives channel op status with the correct password");
+		return;
+	}
+
+	var tokens = message.split(" ");
+	if(tokens.length >= 3){
+		var cmd = tokens[0];
+		var chan = tokens[1];
+		var pass = tokens[2];
+		if(cmd.toLowerCase()=="op"){
+			if(pass==OPBOT_PASSWORD){
+				set(chan,"+o",nick);
+				return;
+			}
+		}
+	}
+}
+```
