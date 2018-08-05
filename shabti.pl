@@ -1151,6 +1151,30 @@ sub new_javascript_functions {
         }
     );
 
+    # exit
+    $j->new_function(
+        exit => sub {
+            if ( scalar @_ == 0 ) {
+                exit;
+            }
+            elsif ( scalar @_ == 1 ) {
+                print "$_[0]\n";
+                exit;
+            }
+            elsif ( scalar @_ == 2 ) {
+                if($_[1]=="0"||$_[1]==1){}else{
+                    error_and_exit(JAVASCRIPT_ERROR,"Third argument to exit() must be 0 or 1");
+                }
+                print "$_[0]\n";
+                exit $_[1];
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'exit'\n";
+            }
+        }
+    );
+
     return $j;
 
 }

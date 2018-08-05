@@ -190,7 +190,7 @@ All variable are static, except for `TIME`  and `DATE`.  These two variables cha
 
 ### Built-In Functions
 
-There are 28 built-in functions for use in your **Shabti** script.
+There are 29 built-in functions for use in your **Shabti** script.
 
 * [IRC Functions](#irc-functions)
 	* [`server`](#server)
@@ -223,6 +223,8 @@ There are 28 built-in functions for use in your **Shabti** script.
 	* [`mkdir`](#mkdir)
 	* [`rmdir`](#rmdir)
 	* [`delete`](#delete)
+* [Miscellaneous Functions](#miscellaneous-functions)
+	* [`exit`](#exit)
 
 ---
 
@@ -378,22 +380,31 @@ There are 28 built-in functions for use in your **Shabti** script.
 
 ---
 
+#### Miscellaneous Functions
+
+##### `exit`
+* *Arguments*: 0, 1 (message), or 2 (message, exit code)
+* *Returns*: nothing
+* Exits out of **Shabti**. Optionally, can display a message on exit, or an exit code (which *must* be 0 or 1).
+
+---
+
 ### Events
 
 Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function.
 
-* `startup`
-* `connect_event`
-* `nick_taken_event`
-* `ping_event`
-* `time_event`
-* `public_message_event`
-* `private_message_event`
-* `action_event`
-* `mode_event`
-* `join_event`
-* `part_event`
-* `other_event`
+* [`startup`](#startup)
+* [`connect_event`](#connect_eventhost)
+* [`nick_taken_event`](#nick_taken_event)
+* [`ping_event`](#ping_event)
+* [`time_event`](#time_eventweekdaymonthdayyearhourminutesecondzone)
+* [`public_message_event`](#public_message_eventnickusernamechannelmessage)
+* [`private_message_event`](#private_message_eventnickusernamemessage)
+* [`action_event`](#action_eventnickusernamechannelaction)
+* [`mode_event`](#mode_eventnickusernametargetmode)
+* [`join_event`](#join_eventnickusernamechannel)
+* [`part_event`](#part_eventnickusernamechannelmessage)
+* [`other_event`](#other_eventrawtypehostnickcontent)
 
 ---
 
