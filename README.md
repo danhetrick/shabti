@@ -1,7 +1,5 @@
 ![Shabti IRC Bot](https://github.com/danhetrick/shabti/blob/master/shabti_logo.png?raw=true)
 
-# Shabti IRC Bot
-
 # Summary
 
 **Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.
@@ -194,22 +192,25 @@ All variable are static, except for `TIME`  and `DATE`.  These two variables cha
 
 There are 28 built-in functions for use in your **Shabti** script.
 
+* [IRC Functions](https://github.com/danhetrick/shabti#irc-functions)
+	* `server`
+	* `set`
+	* `login`
+	* `nick`
+	* `rnick`
+	* `join`
+	* `part`
+	* `topic`
+	* `quit`
+	* `message`
+	* `notice`
+	* `action`
+* [Text Functions](https://github.com/danhetrick/shabti#text-functions)
+* [File I/O Functions](https://github.com/danhetrick/shabti#file-io-functions)
+
 ---
 
 #### IRC Functions
-
-* `server`
-* `set`
-* `login`
-* `nick`
-* `rnick`
-* `join`
-* `part`
-* `topic`
-* `quit`
-* `message`
-* `notice`
-* `action`
 
 ##### `server`
 * *Arguments*: 1 (text to send)
