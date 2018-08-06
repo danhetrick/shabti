@@ -109,8 +109,8 @@ The order in which scripts are loaded is important.  This is because functions c
 
 ```javascript
 // mybot.js
-function connect_event(server) {
-	print("*** Connected to "+server);
+function CONNECT_EVENT(EV_SERVER) {
+	print("*** Connected to "+EV_SERVER);
 }
 ```
 
@@ -118,11 +118,11 @@ and the other named `otherbot.js`:
 
 ```javascript
 // otherbot.js
-function connect_event(server) {
-	print("WE ARE HERE:"+server);
+function CONNECT_EVENT(EV_SERVER) {
+	print("WE ARE HERE:"+EV_SERVER);
 }
 
-function ping_event() {
+function PING_EVENT() {
 	print("I hate ping pong.");
 }
 ```
