@@ -407,17 +407,17 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.
 
 * [`startup`](#startup)
-* [`connect_event`](#connect_eventhost)
+* [`connect_event`](#connect_eventev_host)
 * [`nick_taken_event`](#nick_taken_event)
 * [`ping_event`](#ping_event)
-* [`time_event`](#time_eventweekdaymonthdayyearhourminutesecondzone)
-* [`public_message_event`](#public_message_eventnickusernamechannelmessage)
-* [`private_message_event`](#private_message_eventnickusernamemessage)
-* [`action_event`](#action_eventnickusernamechannelaction)
-* [`mode_event`](#mode_eventnickusernametargetmode)
-* [`join_event`](#join_eventnickusernamechannel)
-* [`part_event`](#part_eventnickusernamechannelmessage)
-* [`other_event`](#other_eventrawtypehostnickcontent)
+* [`time_event`](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
+* [`public_message_event`](#public_message_eventev_nickev_usernameev_channelev_message)
+* [`private_message_event`](#private_message_eventev_nickev_usernameev_message)
+* [`action_event`](#action_eventev_nickev_usernameev_channelev_action)
+* [`mode_event`](#mode_eventev_nickev_usernameev_targetev_mode)
+* [`join_event`](#join_eventev_nickev_usernameev_channel)
+* [`part_event`](#part_eventev_nickev_usernameev_channelev_message)
+* [`other_event`](#other_eventev_rawev_typeev_hostev_nickev_message)
 
 ---
 
