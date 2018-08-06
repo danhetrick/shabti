@@ -404,79 +404,79 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 
 ### Events
 
-Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.
+Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.  All event function names are in uppercase.
 
-* [`startup`](#startup)
-* [`connect_event`](#connect_eventev_host)
-* [`nick_taken_event`](#nick_taken_event)
-* [`ping_event`](#ping_event)
-* [`time_event`](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
-* [`public_message_event`](#public_message_eventev_nickev_usernameev_channelev_message)
-* [`private_message_event`](#private_message_eventev_nickev_usernameev_message)
-* [`action_event`](#action_eventev_nickev_usernameev_channelev_action)
-* [`mode_event`](#mode_eventev_nickev_usernameev_targetev_mode)
-* [`join_event`](#join_eventev_nickev_usernameev_channel)
-* [`part_event`](#part_eventev_nickev_usernameev_channelev_message)
-* [`other_event`](#other_eventev_rawev_typeev_hostev_nickev_message)
+* [`STARTUP`](#startup)
+* [`CONNECT_EVENT`](#connect_eventev_host)
+* [`NICK_TAKEN_EVENT`](#nick_taken_event)
+* [`PING_EVENT`](#ping_event)
+* [`TIME_EVENT`](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
+* [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message)
+* [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message)
+* [`ACTION_EVENT`](#action_eventev_nickev_usernameev_channelev_action)
+* [`MODE_EVENT`](#mode_eventev_nickev_usernameev_targetev_mode)
+* [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel)
+* [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message)
+* [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message)
 
 ---
 
-#### `startup()`
+#### `STARTUP()`
 * *Arguments*: none
 
 This event is called when the script is first loaded.
 
-#### `connect_event(EV_HOST)`
+#### `CONNECT_EVENT(EV_HOST)`
 * *Arguments*: `EV_HOST` (the name of the server connected to)
 
 Called when the bot connects to the IRC server.
 
-#### `nick_taken_event()`
+#### `NICK_TAKEN_EVENT()`
 * *Arguments*: none
 
 Called when the bot is notified by the server that their requested nick is taken. By default, this is *not* handled automatically, and must be handled by the script.  The script that comes with a default **Shabti** installation calls the built-in function `rnick` to handle this problem.
 
-#### `ping_event()`
+#### `PING_EVENT()`
 * *Arguments*: none
 
 Called when the bot receives a "PING?" request from the server. The necessary response ("PONG!") is handled automatically.
 
-#### `time_event(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
+#### `TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
 * *Arguments*: `EV_WEEKDAY` (day of the week), `EV_MONTH` (month of the year), `EV_DAY` (numeric day of the month), `EV_YEAR` (numeric year), `EV_HOUR` (hour of the day), `EV_MINUTE` (minute of the hour), `EV_SECOND` (second of the minute), `EV_ZONE` (time zone)
 
 Called when the bot receives a `RPL_TIME` message from the server. **Shabti** can ask the server to send a `RPL_TIME` message by using the built-in function `raw` with the argument "TIME" (`raw("TIME");`).
 
-#### `public_message_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+#### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a public message.
 
-#### `private_message_event(EV_NICK,EV_USERNAME,EV_MESSAGE)`
+#### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a private message.
 
-#### `action_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
+#### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the action), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the action is sent to), `EV_ACTION` (the action sent)
 
 Called when the bot receives a CTCP action message.
 
-#### `mode_event(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
+#### `MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
 * *Arguments*: `EV_NICK` (the nick of the user setting the mode), `EV_USERNAME` (the username of the setter), `EV_TARGET` (the mode's target), `EV_MODE` (the mode set)
 
 Called when the bot receives a mode notification. If the server is the one setting the mode, the `EV_USERNAME` argument will be an empty string.
 
-#### `join_event(EV_NICK,EV_USERNAME,EV_CHANNEL)`
+#### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
 * *Arguments*: `EV_NICK` (the nick joining the channel), `EV_USERNAME` (the username of the joiner), `EV_CHANNEL` (the channel joined)
 
 Called when the bot receives a channel join notification.
 
-#### `part_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+#### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick parting the channel). `EV_USERNAME` (the username of parter), `EV_CHANNEL` (the channel parted), `EV_MESSAGE` (optional parting message)
 
 Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `EV_MESSAGE` argument, which is set to a blank string otherwise.
 
-#### `other_event(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
+#### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
 * *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
 
 Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.

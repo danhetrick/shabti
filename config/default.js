@@ -42,41 +42,41 @@ LIGHT_GREY = Color light grey, for use with the color() function
 
 */
 
-// startup()
+// STARTUP()
 // Executed when the bot is first loaded, before everything else
 // is loaded or executed.
-function startup() {
+function STARTUP() {
 	print("=========================");
 	print("| shabti default script |");
 	print("=========================");
 	print("");
 }
 
-// connect_event()
+// CONNECT_EVENT()
 // Executed when the bot first connects to the IRC server.
 // EV_HOST = name of the server connected to
-function connect_event(EV_HOST) {
+function CONNECT_EVENT(EV_HOST) {
 	print("*** Connected to "+EV_HOST);
 }
 
-// nick_taken_event()
+// NICK_TAKEN_EVENT()
 // Executed if the bot's chosen nick is in use. The code below
 // will change the bot's nick to "shabti" followed by a couple of
 // randomly selected numbers.
-function nick_taken_event() {
+function NICK_TAKEN_EVENT() {
 	print("*** Nick taken. Changing to new nick");
 	rnick(SV_NICK);
 }
 
-// ping_event()
+// PING_EVENT()
 // Executed every time the client receives a "PING?" from the server.
 // Responding to the server with "PONG" is not necessary, and is
 // handled automatically by the bot.
-function ping_event() {
+function PING_EVENT() {
 	print("*** PING? PONG!");
 }
 
-// time_event()
+// TIME_EVENT()
 // Executed every time the bot receives time information from the server.
 // EV_WEEKDAY = day of the week
 // EV_MONTH = name of month
@@ -86,46 +86,46 @@ function ping_event() {
 // EV_MINUTE = minute of the hour
 // EV_SECOND = second of the minute
 // EV_ZONE = time zone
-function time_event(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE) {
+function TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE) {
 	// print("Server Time: "+EV_WEEKDAY+ " "+EV_MONTH+" "+EV_DAY+", "+EV_YEAR+" - "+EV_HOUR+":"+EV_MINUTE+":"+EV_ECOND+" ("+EV_ZONE+")");
 }
 
-// public_message_event()
+// PUBLIC_MESSAGE_EVENT()
 // Executed whenever the bot receives a public message.
 // EV_NICK = the user who sent the message
 // EV_USERNAME = the sender's username
 // EV_CHANNEL = the channel the message was sent to
 // EV_MESSAGE = the contents of the message
-function public_message_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
+function PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
 	print(EV_CHANNEL+" <"+EV_NICK+"> "+EV_MESSAGE);
 }
 
-// action_event()
+// ACTION_EVENT()
 // Executed whenever the bot receives an action message.
 // EV_NICK = the user who sent the message
 // EV_USERNAME = the sender's username
 // EV_CHANNEL = the channel the message was sent to
 // EV_ACTION = the contents of the action message
-function action_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION) {
+function ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION) {
 	print(EV_CHANNEL+" *"+EV_NICK+" "+EV_ACTION+"*");
 }
 
-// private_message_event()
+// PRIVATE_MESSAGE_EVENT()
 // Executed whenever the bot receives a private message.
 // EV_NICK = the user who sent the message
 // EV_USERNAME = the sender's username
 // EV_MESSAGE = the contents of the message
-function private_message_event(EV_NICK,EV_USERNAME,EV_MESSAGE) {
+function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 	print("PRIVATE >"+EV_NICK+"< "+EV_MESSAGE);
 }
 
-// mode_event()
+// MODE_EVENT()
 // Executed every time the bot receives mode information from the server.
 // EV_NICK = the user who set the mode; if server set the mode, the server's name
 // EV_USERNAME = the username of the user; if server set the mode, this will be an empty string
 // EV_TARGET = the target of the mode settings
 // EV_MODE = the mode set
-function mode_event(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE) {
+function MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE) {
 	if(EV_USERNAME==""){
 		print("*** "+EV_NICK+" sets mode "+EV_MODE+" on "+EV_TARGET);
 	} else {
@@ -133,30 +133,30 @@ function mode_event(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE) {
 	}
 }
 
-// part_event()
+// PART_EVENT()
 // Executed every time a user leaves a channel the bot is present in.
 // EV_NICK = the user who left
 // EV_USERNAME = the username of the user who left
 // EV_CHANNEL = the channel left
 // EV_MESSAGE = the part message, if there is one; blank if not
-function part_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
-	if(message==""){
+function PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
+	if(EV_MESSAGE==""){
 		print("*** "+EV_NICK+" ("+EV_USERNAME+") left "+EV_CHANNEL);
 	} else {
 		print("*** "+EV_NICK+" ("+EV_USERNAME+") left "+EV_CHANNEL+": "+EV_MESSAGE);
 	}
 }
 
-// join_event()
+// JOIN_EVENT()
 // Executed every time a user joins a channel the bot is present in.
 // EV_NICK = the user who joined
 // EV_USERNAME = the username of the user who joined
 // EV_CHANNEL = the channel joined
-function join_event(EV_NICK,EV_USERNAME,EV_CHANNEL) {
+function JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL) {
 	print("*** "+EV_NICK+" ("+EV_USERNAME+") joined "+EV_CHANNEL);
 }
 
-// other_event()
+// IRC_EVENT()
 // Executed every time *any other event* not covered by other functions is
 // received by the bot.
 // EV_RAW = the "raw" message sent by the server
@@ -164,7 +164,7 @@ function join_event(EV_NICK,EV_USERNAME,EV_CHANNEL) {
 // EV_HOST = the name of the server sending the message
 // EV_NICK = the nick of the bot
 // EV_MESSAGE = the content of the message
-function other_event(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE) {
+function IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE) {
 	//print("*** "+EV_RAW);
 }
 
