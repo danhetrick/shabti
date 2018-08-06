@@ -492,7 +492,7 @@ This is a simple bot that performs one function: granting channel operator statu
 ```javascript
 var OPBOT_PASSWORD = "changeme";
 
-function private_message_event(EV_NICK,EV_USERNAME,EV_MESSAGE) {
+function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 
 	if(EV_MESSAGE.toLowerCase()=="help"){
 		msg(EV_NICK,"OpBot v1.0");
