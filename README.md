@@ -129,29 +129,33 @@ function ping_event() {
 
 `mybot.js` prints a message when the bot connects to a server, as does `otherbot.js`.  If `mybot.js` is loaded before `otherbot.js`, `otherbot.js`'s `connect_event()` function overloads `mybot.js`'s `connect_event()`;  that is, when the bot connects to a server, the `connect_event()` function in `otherbot.js` is executed, not the one in `mybot.js`.
 
+A **Shabti** script doesn't need to contain all of the events provided, only the ones necessary for whatever you're trying to do with your script.  If a specific event is not present, it will simply never be called.
+
 ### Built-In Variables.
 
-* `SERVER`
+Built-in variables are always in uppercase; with the exception of the miscellaneous variables for use with the `color` function, they all start with `SV_`.
+
+* `SV_SERVER`
 	* The name/host of the IRC server connected to.
-* `PORT`
+* `SV_PORT`
 	* The port that the bot connected to.
-* `NICK`
+* `SV_NICK`
 	* The bot's nick.
-* `USER`
+* `SV_USER`
 	* The username the bot is using.
-* `IRCNAME`
+* `SV_IRCNAME`
 	* The bot's IRCname.
-* `TIME`
+* `SV_TIME`
 	* Server time.
-* `DATE`
+* `SV_DATE`
 	* Server date..
-* `BOT`
+* `SV_BOT`
 	* The name of the bot's software.
-* `VERSION`
+* `SV_VERSION`
 	* The version of the bot's software.
-* `LOCAL_DIRECTORY`
+* `SV_LOCAL_DIRECTORY`
 	* The directory where **Shabti** is installed.
-* `CONFIG_DIRECTORY`
+* `SV_CONFIG_DIRECTORY`
 	* The configuration directory **Shabti** is using.
 * `WHITE`
 	* White color (for use with the `color` built-in function)
@@ -186,7 +190,7 @@ function ping_event() {
 * `LIGHT_GREY`
 	* Light grey color (for use with the `color` built-in function)
 
-All variable are static, except for `TIME`  and `DATE`.  These two variables change to whatever the current server time or date is; it is not necessarily accurate, as the bot resets `TIME` and `DATE` only when the bot receives a `RPL_TIME` message.  `NICK` will only change if the bot changes its nick.
+All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variables change to whatever the current server time or date is; it is not necessarily accurate, as the bot resets `SV_TIME` and `SV_DATE` only when the bot receives a `RPL_TIME` message.  `SV_NICK` will only change if the bot changes its nick.
 
 ### Built-In Functions
 
@@ -294,6 +298,15 @@ There are 29 built-in functions for use in your **Shabti** script.
 
 #### Text Functions
 
+`color`, `bold`, `italic`, and `underline` work much like the equivalent HTML tags.  For example, to display the words "Hello world!" in blue text with a grey background, in italics, bolded, and underlined:
+
+```javascript
+var example = bold(italic(underline(color(BLUE,GREY,"Hello world!"))));
+msg("#foo",example);
+```
+
+These colors and text enhancements will *only* be seen in IRC clients; they will not display properly in the console or written to file.  **Shabti** does not have any functionality to display colors or other text enhancements to the console or text files.
+
 ##### `print`
 * *Arguments*: 1+ (text to print)
 * *Returns*: nothing
@@ -391,7 +404,7 @@ There are 29 built-in functions for use in your **Shabti** script.
 
 ### Events
 
-Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function.
+Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.
 
 * [`startup`](#startup)
 * [`connect_event`](#connect_eventhost)
@@ -413,8 +426,8 @@ Events are functions that are automatically executed when **Shabti** receives ce
 
 This event is called when the script is first loaded.
 
-#### `connect_event(host)`
-* *Arguments*: `host` (the name of the server connected to)
+#### `connect_event(EV_HOST)`
+* *Arguments*: `EV_HOST` (the name of the server connected to)
 
 Called when the bot connects to the IRC server.
 
@@ -428,45 +441,45 @@ Called when the bot is notified by the server that their requested nick is taken
 
 Called when the bot receives a "PING?" request from the server. The necessary response ("PONG!") is handled automatically.
 
-#### `time_event(weekday,month,day,year,hour,minute,second,zone)`
-* *Arguments*: `weekday` (day of the week), `month` (month of the year), `day` (numeric day of the month), `year` (numeric year), `hour` (hour of the day), `minute` (minute of the hour), `second` (second of the minute), `zone` (time zone)
+#### `time_event(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
+* *Arguments*: `EV_WEEKDAY` (day of the week), `EV_MONTH` (month of the year), `EV_DAY` (numeric day of the month), `EV_YEAR` (numeric year), `EV_HOUR` (hour of the day), `EV_MINUTE` (minute of the hour), `EV_SECOND` (second of the minute), `EV_ZONE` (time zone)
 
 Called when the bot receives a `RPL_TIME` message from the server. **Shabti** can ask the server to send a `RPL_TIME` message by using the built-in function `raw` with the argument "TIME" (`raw("TIME");`).
 
-#### `public_message_event(nick,username,channel,message)`
-* *Arguments*: `nick` (the nick of the user sending the message), `username` (the username of the sender), `channel` (the channel the message is sent to), and `message` (the message sent)
+#### `public_message_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+* *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a public message.
 
-#### `private_message_event(nick,username,message)`
-* *Arguments*: `nick` (the nick of the user sending the message), `username` (the username of the sender), `message` (the message sent)
+#### `private_message_event(EV_NICK,EV_USERNAME,EV_MESSAGE)`
+* *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a private message.
 
-#### `action_event(nick,username,channel,action)`
-* *Arguments*: `nick` (the nick of the user sending the action), `username` (the username of the sender), `action` (the action sent)
+#### `action_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
+* *Arguments*: `EV_NICK` (the nick of the user sending the action), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the action is sent to), `EV_ACTION` (the action sent)
 
 Called when the bot receives a CTCP action message.
 
-#### `mode_event(nick,username,target,mode)`
-* *Arguments*: `nick` (the nick of the user setting the mode), `username` (the username of the setter), `target` (the mode's target), `mode` (the mode set)
+#### `mode_event(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
+* *Arguments*: `EV_NICK` (the nick of the user setting the mode), `EV_USERNAME` (the username of the setter), `EV_TARGET` (the mode's target), `EV_MODE` (the mode set)
 
-Called when the bot receives a mode notification. If the server is the one setting the mode, the `username` argument will be an empty string.
+Called when the bot receives a mode notification. If the server is the one setting the mode, the `EV_USERNAME` argument will be an empty string.
 
-#### `join_event(nick,username,channel)`
-* *Arguments*: `nick` (the nick joining the channel), `username` (the username of the joiner), `channel` (the channel joined)
+#### `join_event(EV_NICK,EV_USERNAME,EV_CHANNEL)`
+* *Arguments*: `EV_NICK` (the nick joining the channel), `EV_USERNAME` (the username of the joiner), `EV_CHANNEL` (the channel joined)
 
 Called when the bot receives a channel join notification.
 
-#### `part_event(nick,username,channel,message)`
-* *Arguments*: `nick` (the nick parting the channel). `username` (the username of parter), `channel` (the channel parted), `message` (optional parting message)
+#### `part_event(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+* *Arguments*: `EV_NICK` (the nick parting the channel). `EV_USERNAME` (the username of parter), `EV_CHANNEL` (the channel parted), `EV_MESSAGE` (optional parting message)
 
-Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `message` argument, which is set to a blank string otherwise.
+Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `EV_MESSAGE` argument, which is set to a blank string otherwise.
 
-#### `other_event(raw,type,host,nick,content)`
-* *Arguments*: `raw` (the unchanged text of the server message sent), `type` (the numeric message type, from RFCs), `host` (the name of the sending server), `nick` (the nick of the client the message is sent to), `content` (the message content)
+#### `other_event(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
+* *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
 
-Called when the bot receives a notification that is not handled by any other event.  `raw` contains the "raw", unchanged notification.
+Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.
 
 ---
 
@@ -479,22 +492,22 @@ This is a simple bot that performs one function: granting channel operator statu
 ```javascript
 var OPBOT_PASSWORD = "changeme";
 
-function private_message_event(nick,username,message) {
+function private_message_event(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 
-	if(message.toLowerCase()=="help"){
-		msg(nick,"OpBot v1.0");
-		msg(nick,"op CHANNEL PASSWORD  -  Gives channel op status with the correct password");
+	if(EV_MESSAGE.toLowerCase()=="help"){
+		msg(EV_NICK,"OpBot v1.0");
+		msg(EV_NICK,"op CHANNEL PASSWORD  -  Gives channel op status with the correct password");
 		return;
 	}
 
-	var tokens = message.split(" ");
+	var tokens = EV_MESSAGE.split(" ");
 	if(tokens.length >= 3){
 		var cmd = tokens[0];
 		var chan = tokens[1];
 		var pass = tokens[2];
 		if(cmd.toLowerCase()=="op"){
 			if(pass==OPBOT_PASSWORD){
-				set(chan,"+o",nick);
+				set(chan,"+o",EV_NICK);
 				return;
 			}
 		}

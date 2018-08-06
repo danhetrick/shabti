@@ -34,7 +34,7 @@ This is the default configuration file for the Shabti IRC bot.
 
 	<!--
 		For each channel the bot should join, add a "channel" child
-		element with the channel name as its contents. With the default
+		element with the channel name as its content. With the default
 		settings, the bot will join three channels: "#foo", "#bar", and "#shabti".
 	-->
 	<channel>#foo</channel>
@@ -44,7 +44,10 @@ This is the default configuration file for the Shabti IRC bot.
 	<!--
 		The bot's "source code". This file should contain JavaScript, with a
 		number of functions that will be executed when IRC events are
-		received.
+		received. Multiple script files can be loaded here; for each file to
+		load, add a "script" child element with the file name as its content.
+		Each loaded script will overload (replace) any function or event
+		declared in previously loaded scripts.
 	-->
 	<script>default.js</script>
 

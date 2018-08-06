@@ -128,17 +128,17 @@ my $ITALIC_TEXT						= chr(hex("1D"));
 my $UNDERLINE_TEXT					= chr(hex("1F"));
 
 my $API = <<"EOA";
-var SERVER = \"$SERVER\";
-var PORT = \"$PORT\";
-var NICK = \"$NICK\";
-var USER = \"$USERNAME\";
-var IRCNAME = \"$IRCNAME\";
-var TIME = \"unknown\";
-var DATE = \"unknown\";
-var BOT = \"$DEFAULT_NICK\";
-var VERSION = \"$VERSION\";
-var LOCAL_DIRECTORY = \"$RealBin\";
-var CONFIG_DIRECTORY = \"$CONFIG_DIRECTORY\";
+var SV_SERVER = \"$SERVER\";
+var SV_PORT = \"$PORT\";
+var SV_NICK = \"$NICK\";
+var SV_USER = \"$USERNAME\";
+var SV_IRCNAME = \"$IRCNAME\";
+var SV_TIME = \"unknown\";
+var SV_DATE = \"unknown\";
+var SV_BOT = \"$DEFAULT_NICK\";
+var SV_VERSION = \"$VERSION\";
+var SV_LOCAL_DIRECTORY = \"$RealBin\";
+var SV_CONFIG_DIRECTORY = \"$CONFIG_DIRECTORY\";
 var WHITE = \"00\";
 var BLACK = \"01\";
 var BLUE = \"02\";
@@ -157,7 +157,7 @@ var GREY = \"14\";
 var LIGHT_GREY = \"15\";
 EOA
 
-my $clear_variables = 'nick=""; username=""; channel=""; action=""; message=""; target=""; mode=""; raw=""; type=""; content=""; host="";'."\n";
+my $clear_variables = 'EV_NICK=""; EV_USERNAME=""; EV_CHANNEL=""; EV_ACTION=""; EV_MESSAGE=""; EV_TARGET=""; EV_MODE=""; EV_RAW=""; EV_TYPE=""; EV_CONTENT=""; EV_HOST="";'."\n";
 
 # ~~~~~~~~~~~~~~~
 # | SCALARS END |
@@ -259,11 +259,11 @@ if ( $js->eval($API) ) { }
 }
 
 # Inject built-in variables
-$js->eval("SERVER=\"$SERVER\";");
-$js->eval("PORT=\"$PORT\";");
-$js->eval("NICK=\"$NICK\";");
-$js->eval("USER=\"$USERNAME\";");
-$js->eval("IRCNAME=\"$IRCNAME\";");
+$js->eval("SV_SERVER=\"$SERVER\";");
+$js->eval("SV_PORT=\"$PORT\";");
+$js->eval("SV_NICK=\"$NICK\";");
+$js->eval("SV_USER=\"$USERNAME\";");
+$js->eval("SV_IRCNAME=\"$IRCNAME\";");
 
 # See if any scripts are configured; if not, make sure
 # the default script is added
@@ -424,8 +424,8 @@ sub irc_time {
     }
 
     # Inject built-in variables
-    $js->eval("TIME=\"$hour:$minute:$second\";");
-    $js->eval("DATE=\"$month $day,$year\";");
+    $js->eval("SV_TIME=\"$hour:$minute:$second\";");
+    $js->eval("SV_DATE=\"$month $day,$year\";");
 
 }
 
@@ -788,7 +788,7 @@ sub new_javascript_functions {
         nick => sub {
             if ( scalar @_ == 1 ) {
                 print $sock "NICK $_[0]\r\n";
-                $j->eval("NICK=\"$_[0]\";");
+                $j->eval("SV_NICK=\"$_[0]\";");
                 $NICK = $_[0];
             }
             else {
@@ -804,7 +804,7 @@ sub new_javascript_functions {
             if ( scalar @_ == 1 ) {
                 my $new = "$_[0]$$";
                 $NICK = "$new";
-                $j->eval("NICK=\"$new\";");
+                $j->eval("SV_NICK=\"$new\";");
                 print $sock "NICK $new\r\n";
             }
             else {
