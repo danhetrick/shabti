@@ -20,6 +20,8 @@
 
 # Table of Contents
 
+<details>
+	
 * [Usage](#usage)
 * [Configuration](#configuration)
 	* [Command-line Configuration](#command-line-configuration)
@@ -48,6 +50,7 @@
 		* [OpBot](#opbot)
 		* [RainbowBot](#rainbowbot)
 
+</details>
 # Usage
 
 	perl shabti.pl [OPTIONS]
