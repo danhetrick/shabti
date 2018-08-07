@@ -21,7 +21,7 @@
 # Table of Contents
 
 <details>
-	
+
 * [Usage](#usage)
 * [Configuration](#configuration)
 	* [Command-line Configuration](#command-line-configuration)
@@ -51,6 +51,7 @@
 		* [RainbowBot](#rainbowbot)
 
 </details>
+
 # Usage
 
 	perl shabti.pl [OPTIONS]
