@@ -2,7 +2,7 @@
 
 # Summary
 
-**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.
+**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.033.
 
 # Name
 
@@ -197,7 +197,7 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 There are 29 built-in functions for use in your **Shabti** script.
 
 * [IRC Functions](#irc-functions)
-	* [`server`](#server)
+	* [`raw`](#raw)
 	* [`set`](#set)
 	* [`login`](#login)
 	* [`nick`](#nick)
@@ -206,7 +206,7 @@ There are 29 built-in functions for use in your **Shabti** script.
 	* [`part`](#part)
 	* [`topic`](#topic)
 	* [`quit`](#quit)
-	* [`msg`](#msg)
+	* [`message`](#message)
 	* [`notice`](#notice)
 	* [`action`](#action)
 * [Text Functions](#text-functions)
@@ -234,10 +234,10 @@ There are 29 built-in functions for use in your **Shabti** script.
 
 #### IRC Functions
 
-##### `server`
+##### `raw`
 * *Arguments*: 1 (text to send)
 * *Returns*: nothing
-* Sends "raw" text to the IRC server; that is, the bot will send the server this text without any modification.  This can be used to send IRC commands that don't have **Shabti** built-in functions to perform.  For example, to send a private message to Bob, you could use `server("PRIVMSG Bob :Hello world!")`.
+* Sends "raw" text to the IRC server; that is, the bot will send the server this text without any modification.  This can be used to send IRC commands that don't have **Shabti** built-in functions to perform.  For example, to send a private message to Bob, you could use `raw("PRIVMSG Bob :Hello world!")`.
 
 ##### `set`
 * *Arguments*: 2+ (target,flags,arguments)
@@ -279,10 +279,10 @@ There are 29 built-in functions for use in your **Shabti** script.
 * *Returns*: nothing
 * Quits the IRC server.
 
-##### `msg`
+##### `message`
 * *Arguments*: 2 (target user or channel, message)
 * *Returns*: nothing
-* Sends a message to the target user or channel.
+* Sends a message to the target user or channel. An identical version of this command named `msg` can alternately used.
 
 ##### `notice`
 * *Arguments*: 2 (target user or channel, message)
@@ -406,7 +406,8 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 
 Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.  All event function names are in uppercase.
 
-* [`STARTUP`](#startup)
+If you want to execute code as soon as the script is loaded, simply place your code at the top of the file, or outside of event declarations. Any code not in a function or event declaration is executed as soon as the script is loaded.
+
 * [`CONNECT_EVENT`](#connect_eventev_host)
 * [`NICK_TAKEN_EVENT`](#nick_taken_event)
 * [`PING_EVENT`](#ping_event)
@@ -420,11 +421,6 @@ Events are functions that are automatically executed when **Shabti** receives ce
 * [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message)
 
 ---
-
-#### `STARTUP()`
-* *Arguments*: none
-
-This event is called when the script is first loaded.
 
 #### `CONNECT_EVENT(EV_HOST)`
 * *Arguments*: `EV_HOST` (the name of the server connected to)

@@ -45,8 +45,7 @@ use constant CHANNEL_USERS          => 1;
 use constant JAVASCRIPT_ERROR       => 1;
 use constant NETWORK_ERROR          => 2;
 use constant FILE_ERROR             => 3;
-use constant API_ERROR              => 4;
-use constant CONFIG_ERROR			=> 5;
+use constant CONFIG_ERROR			=> 4;
 
 # ~~~~~~~~~~~~~~~~~
 # | CONSTANTS END |
@@ -68,7 +67,8 @@ my @SCRIPTS							= ();
 # ~~~~~~~~~~~~~~~~~
 
 my $APPLICATION                     = 'Shabti';
-my $VERSION                         = '0.023';
+my $APPLICATION_FILE_NAME           = 'shabti.pl';
+my $VERSION                         = '0.033';
 my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 # ----------------
@@ -77,7 +77,7 @@ my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 my $LOGO_WIDTH                      = 44;
 my $BANNER                          = "\n".('-' x $LOGO_WIDTH)."\n";
-$BANNER .= logo().(' ' x ($LOGO_WIDTH - length("$DESCRIPTION - Version $VERSION")))."$DESCRIPTION - Version $VERSION\n";
+$BANNER .= SHABTI_logo().(' ' x ($LOGO_WIDTH - length("$DESCRIPTION - Version $VERSION")))."$DESCRIPTION - Version $VERSION\n";
 $BANNER .= ('-' x $LOGO_WIDTH)."\n\n";
 
 # --------------
@@ -96,7 +96,6 @@ my $NOJSPRINT						= undef;
 my $QUIET							= undef;
 my $NOCONFIG						= undef;
 
-my $STARTUP_EVENT                   = "STARTUP";
 my $JOIN_EVENT                      = "JOIN_EVENT";
 my $CONNECT_EVENT                   = "CONNECT_EVENT";
 my $PING_EVENT                      = "PING_EVENT";
@@ -127,7 +126,7 @@ my $BOLD_TEXT						= chr(2);
 my $ITALIC_TEXT						= chr(hex("1D"));
 my $UNDERLINE_TEXT					= chr(hex("1F"));
 
-my $API = <<"EOA";
+my $BUILT_IN_VARIABLES = <<"EOA";
 var SV_SERVER = \"$SERVER\";
 var SV_PORT = \"$PORT\";
 var SV_NICK = \"$NICK\";
@@ -156,8 +155,6 @@ var PINK = \"13\";
 var GREY = \"14\";
 var LIGHT_GREY = \"15\";
 EOA
-
-my $clear_variables = 'EV_NICK=""; EV_USERNAME=""; EV_CHANNEL=""; EV_ACTION=""; EV_MESSAGE=""; EV_TARGET=""; EV_MODE=""; EV_RAW=""; EV_TYPE=""; EV_CONTENT=""; EV_HOST="";'."\n";
 
 # ~~~~~~~~~~~~~~~
 # | SCALARS END |
@@ -189,7 +186,7 @@ GetOptions(
 );
 
 if($USAGE){
-	usage();
+	SHABTI_usage();
 	exit 0;
 }
 
@@ -218,13 +215,13 @@ if($NOCONFIG){
 		# Don't load configuration files
 	}else {
 		# Find configuration file
-		$CONFIG = find_file_in_home_or_settings_directory($CONFIG);
+		$CONFIG = SHABTI_find_file($CONFIG);
 		if($CONFIG){}else{
-			error_and_exit(CONFIG_ERROR,"Configuration file not found");
+			SHABTI_error(CONFIG_ERROR,"Configuration file not found");
 		}
 
 		# Load configuration file
-		load_configuration_file($CONFIG);
+		SHABTI_load_configuration_file($CONFIG);
 }
 
 # Create IRC message parser object
@@ -235,7 +232,7 @@ my $sock = new IO::Socket::INET(
     PeerAddr => $SERVER,
     PeerPort => $PORT,
     Proto    => 'tcp'
-) or error_and_exit(NETWORK_ERROR,"Can't connect to IRC server");
+) or SHABTI_error(NETWORK_ERROR,"Can't connect to IRC server");
 
 # Print the banner
 if($NOBANNER){} else {
@@ -248,13 +245,13 @@ print $sock "USER $USERNAME 8 * :$IRCNAME\r\n";
 
 # Create JavaScript object and add new functions
 my $js = new JE;
-$js = new_javascript_functions($js);
+$js = SHABTI_add_built_in_functions($js);
 
 # Create API and load it into the JavaScript object
-if ( $js->eval($API) ) { }
+if ( $js->eval($BUILT_IN_VARIABLES) ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(API_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
 }
 
@@ -274,8 +271,8 @@ if(scalar @SCRIPTS>=1){}else{
 # Load in scripts
 foreach my $s (@SCRIPTS){
 	# Load in our bot code
-	my $script_name = find_file_in_home_or_settings_directory($s);
-	open( FH, '<', $script_name ) or error_and_exit(FILE_ERROR,$!);
+	my $script_name = SHABTI_find_file($s);
+	open( FH, '<', $script_name ) or SHABTI_error(FILE_ERROR,$!);
 	my $SCRIPT = "";
 	while (<FH>) {
 	    $SCRIPT .= $_;
@@ -286,19 +283,10 @@ foreach my $s (@SCRIPTS){
 	if ( $js->eval($SCRIPT) ) { }
 	else {
 	    if ( $@ ne '' ) {
-	        error_and_exit(JAVASCRIPT_ERROR,$@);
+	        SHABTI_error(JAVASCRIPT_ERROR,$@);
 	    }
 	}
 }
-
-# Execute on_init() JS function
-if ( $js->eval("if (typeof $STARTUP_EVENT === \"function\") { $STARTUP_EVENT(); }\n") ) { }
-else {
-    if ( $@ ne '' ) {
-        error_and_exit(JAVASCRIPT_ERROR,$@);
-    }
-}
-
 
 # Handle TCP client functionality
 while ( my $input = <$sock> ) {
@@ -324,10 +312,10 @@ while ( my $input = <$sock> ) {
         my $nick = shift @args;
         my $msg = join(' ',@args);
 
-		if ( $js->eval($clear_variables."if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n") ) { }
+		if ( $js->eval("if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n") ) { }
 		else {
 		    if ( $@ ne '' ) {
-		        error_and_exit(JAVASCRIPT_ERROR,$@);
+		        SHABTI_error(JAVASCRIPT_ERROR,$@);
 		    }
 		}
         # Done
@@ -368,10 +356,10 @@ sub irc_mode {
 		$code = "if (typeof $MODE_EVENT === \"function\") { $MODE_EVENT(\"$nick\",\"\",\"$target\",\"$mode\"); }\n";
 	}
 
-    if ( $js->eval($clear_variables.$code) ) { }
+    if ( $js->eval($code) ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -386,10 +374,10 @@ sub irc_part {
 
     my($nick,$username) = split('!',$who);
 
-    if ( $js->eval($clear_variables."if (typeof $PART_EVENT === \"function\") { $PART_EVENT(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n") ) { }
+    if ( $js->eval("if (typeof $PART_EVENT === \"function\") { $PART_EVENT(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -419,7 +407,7 @@ sub irc_time {
     if ( $js->eval("if (typeof $TIME_EVENT === \"function\") { $TIME_EVENT(\"$weekday\",\"$month\",\"$day\",\"$year\",\"$hour\",\"$minute\",\"$second\",\"$zone\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -436,10 +424,10 @@ sub irc_join {
 
     my($nick,$username) = split('!',$who);
 
-    if ( $js->eval($clear_variables."if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n") ) { }
+    if ( $js->eval("if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -455,10 +443,10 @@ sub irc_join {
 # Triggerec when the bot connects to an IRC server.
 sub irc_001 {
 
-    if ( $js->eval($clear_variables."if (typeof $CONNECT_EVENT === \"function\") { $CONNECT_EVENT(\"$_[0]\"); }\n") ) { }
+    if ( $js->eval("if (typeof $CONNECT_EVENT === \"function\") { $CONNECT_EVENT(\"$_[0]\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -481,7 +469,7 @@ sub irc_ping {
     if ( $js->eval("if (typeof $PING_EVENT === \"function\") { $PING_EVENT(); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -505,20 +493,20 @@ sub irc_public {
         $act=chr(1);
         $what=~s/$act//;
 
-        if ( $js->eval($clear_variables."if (typeof $ACTION_EVENT === \"function\") { $ACTION_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
+        if ( $js->eval("if (typeof $ACTION_EVENT === \"function\") { $ACTION_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
         else {
             if ( $@ ne '' ) {
-                error_and_exit(JAVASCRIPT_ERROR,$@);
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
             }
         }
 
         return 1;
     }
 
-    if ( $js->eval($clear_variables."if (typeof $PUBLIC_MESSAGE_EVENT === \"function\") { $PUBLIC_MESSAGE_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
+    if ( $js->eval("if (typeof $PUBLIC_MESSAGE_EVENT === \"function\") { $PUBLIC_MESSAGE_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -532,10 +520,10 @@ sub irc_private {
     #print "$who -> $where -> $what\n";
     my($nick,$username) = split('!',$who);
 
-    if ( $js->eval($clear_variables."if (typeof $PRIVATE_MESSAGE_EVENT === \"function\") { $PRIVATE_MESSAGE_EVENT(\"$nick\",\"$username\",\"$what\"); }\n") ) { }
+    if ( $js->eval("if (typeof $PRIVATE_MESSAGE_EVENT === \"function\") { $PRIVATE_MESSAGE_EVENT(\"$nick\",\"$username\",\"$what\"); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 
@@ -550,7 +538,7 @@ sub irc_nick_taken {
     if ( $js->eval("if (typeof $NICK_TAKEN_EVENT === \"function\") { $NICK_TAKEN_EVENT(); }\n") ) { }
     else {
         if ( $@ ne '' ) {
-            error_and_exit(JAVASCRIPT_ERROR,$@);
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
     }
 }
@@ -563,21 +551,21 @@ sub irc_nick_taken {
 # | MISCELLANEOUS SUBROUTINES BEGIN |
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# usage()
-# load_configuration_file()
-# logo()
-# error_and_exit()
-# find_file_in_home_or_settings_directory()
-# new_javascript_functions()
+# SHABTI_usage()
+# SHABTI_load_configuration_file()
+# SHABTI_logo()
+# SHABTI_error()
+# SHABTI_find_file()
+# SHABTI_add_built_in_functions()
 
-# usage()
+# SHABTI_usage()
 # Arguments: none
 # Returns: nothing
 # Description: Displays usage text.
-sub usage {
+sub SHABTI_usage {
 	print "$APPLICATION $VERSION - $DESCRIPTION\n\n";
 
-	print "\tperl shabti.pl [OPTIONS]\n\n";
+	print "\tperl $APPLICATION_FILE_NAME [OPTIONS]\n\n";
 
 	print "Options:\n\n";
 	print "--(h)elp			Displays this text\n";
@@ -595,11 +583,11 @@ sub usage {
 	print "--no(C)onfig			Don't load settings from 'default.xml'\n";
 }
 
-# load_configuration_file()
+# SHABTI_load_configuration_file()
 # Arguments: filename
 # Returns: nothing
 # Description: Loads settings from an XML configuration file into memory.
-sub load_configuration_file {
+sub SHABTI_load_configuration_file {
 	my $filename = shift;
 
 	# Load and parse XML
@@ -607,26 +595,26 @@ sub load_configuration_file {
 	my $tree = $tpp->parsefile( $filename );
 
 	# If the parsed tree is empty, there's nothing to parse; exit
-	if($tree eq '') { error_and_exit(CONFIG_ERROR,"Configuration file is empty"); }
+	if($tree eq '') { SHABTI_error(CONFIG_ERROR,"Configuration file is empty"); }
 
 	# Check for un-allowed multiple elements
 	if(ref($tree->{configuration}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration' element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration' element");
 	}
 	if(ref($tree->{configuration}->{server}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'server' child element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'server' child element");
 	}
 	if(ref($tree->{configuration}->{port}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'port' child element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'port' child element");
 	}
 	if(ref($tree->{configuration}->{nick}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'nick' child element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'nick' child element");
 	}
 	if(ref($tree->{configuration}->{username}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'username' child element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'username' child element");
 	}
 	if(ref($tree->{configuration}->{ircname}) eq 'ARRAY'){
-		error_and_exit(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'ircname' child element");
+		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'ircname' child element");
 	}
 
 	# Load in single element settings
@@ -635,6 +623,10 @@ sub load_configuration_file {
 	if($tree->{configuration}->{nick}){ $NICK = $tree->{configuration}->{nick}; }
 	if($tree->{configuration}->{username}){ $USERNAME = $tree->{configuration}->{username}; }
 	if($tree->{configuration}->{ircname}){ $IRCNAME = $tree->{configuration}->{ircname}; }
+
+    if ($PORT =~ /^\d+?$/) {}else{
+        SHABTI_error(CONFIG_ERROR,"'configuration'->'port' value \"$PORT\" is not a number");
+    }
 
 	# Load in channels
 	if(ref($tree->{configuration}->{channel}) eq 'ARRAY'){
@@ -655,11 +647,11 @@ sub load_configuration_file {
 	}
 }
 
-# logo()
+# SHABTI_logo()
 # Arguments: none
 # Returns: scalar
 # Description: Returns the ASCII logo for the bot.
-sub logo {
+sub SHABTI_logo {
     return <<'EOL';
 ███████╗██╗  ██╗ █████╗ ██████╗ ████████╗██╗
 ██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██║
@@ -670,39 +662,35 @@ sub logo {
 EOL
 }
 
-# error_and_exit()
+# SHABTI_error()
 # Arguments: 2 (constant,text)
 # Returns: nothing
 # Description: Displays an error message and exits.
-sub error_and_exit {
+sub SHABTI_error {
     my $type = shift;
     my $error = shift;
 
     if($type==JAVASCRIPT_ERROR){
-        print "JavaScript ERROR: $error\n";
+        print "Javascript $error";
     }
 
     if($type==NETWORK_ERROR){
-        print "Network ERROR: $error\n";
+        print "Network error: $error\n";
     }
 
     if($type==FILE_ERROR){
-        print "File ERROR: $error\n";
-    }
-
-    if($type==API_ERROR){
-        print "API ERROR: $error\n";
+        print "File I/O error: $error\n";
     }
 
     if($type==CONFIG_ERROR){
-        print "Configuration ERROR: $error\n";
+        print "Configuration error: $error\n";
     }
 
     exit 1;
 }
 
 
-# find_file_in_home_or_settings_directory()
+# SHABTI_find_file()
 # Arguments: 1 (filename)
 # Returns: Scalar (filename)
 # Description: Looks for a given configuration file in the several directories.
@@ -710,7 +698,7 @@ sub error_and_exit {
 #              mind; in theory, this should work on any platform that can run
 #              Perl (so, OSX, *NIX, Linux, Windows, etc). Not "expensive" to
 #              run, as it doesn't do directory searches.
-sub find_file_in_home_or_settings_directory {
+sub SHABTI_find_file {
     my $filename = shift;
 
     # If the filename is found, return it
@@ -731,23 +719,23 @@ sub find_file_in_home_or_settings_directory {
     return undef;
 }
 
-# new_javascript_functions()
+# SHABTI_add_built_in_functions()
 # Arguments: 1 (JE object)
 # Returns: JE Object
 # Description: Adds new JavaScript commands to the JE object.
-sub new_javascript_functions {
+sub SHABTI_add_built_in_functions {
     my $j = shift;
 
-    # server
+    # raw
     # Sends a raw command to the IRC server
     $j->new_function(
-        server => sub {
+        raw => sub {
             if ( scalar @_ == 1 ) {
                 print $sock "$_[0]\r\n";
             }
             else {
                 die new JE::Object::Error::SyntaxError $j,
-                  "Wrong number of arguments to 'server'\n";
+                  "Wrong number of arguments to 'raw'\n";
             }
         }
     );
@@ -907,6 +895,18 @@ sub new_javascript_functions {
         }
     );
 
+    # message
+    $j->new_function(
+        message => sub {
+            if ( scalar @_ == 2 ) {
+                print $sock "PRIVMSG $_[0] :$_[1]\r\n";
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'message'\n";
+            }
+        }
+    );
     # msg
     $j->new_function(
         msg => sub {
@@ -950,7 +950,7 @@ sub new_javascript_functions {
     $j->new_function(
         write => sub {
             if ( scalar @_ == 2 ) {
-                open(FILE,">$_[0]") or error_and_exit(FILE_ERROR,"Error writing to '$_[0]'");
+                open(FILE,">$_[0]") or SHABTI_error(FILE_ERROR,"Error writing to '$_[0]'");
                 print FILE "$_[1]\n";
                 close FILE;
             }
@@ -965,7 +965,7 @@ sub new_javascript_functions {
     $j->new_function(
         append => sub {
             if ( scalar @_ == 2 ) {
-                open(FILE,">>$_[0]") or error_and_exit(FILE_ERROR,"Error appending to '$_[0]'");
+                open(FILE,">>$_[0]") or SHABTI_error(FILE_ERROR,"Error appending to '$_[0]'");
                 print FILE "$_[1]\n";
                 close FILE;
             }
@@ -980,7 +980,7 @@ sub new_javascript_functions {
     $j->new_function(
         read => sub {
             if ( scalar @_ == 1 ) {
-                open(FILE,"<$_[0]") or error_and_exit(FILE_ERROR,"Error reading from '$_[0]'");
+                open(FILE,"<$_[0]") or SHABTI_error(FILE_ERROR,"Error reading from '$_[0]'");
                 my $c = join('',<FILE>);
                 close FILE;
                 return $c;
@@ -1030,7 +1030,7 @@ sub new_javascript_functions {
     $j->new_function(
         swrite => sub {
             if ( scalar @_ == 2 ) {
-                open(FILE,">$_[0]") or error_and_exit(FILE_ERROR,"Error writing to '$_[0]'");
+                open(FILE,">$_[0]") or SHABTI_error(FILE_ERROR,"Error writing to '$_[0]'");
                 print FILE $_[1];
                 close FILE;
             }
@@ -1045,7 +1045,7 @@ sub new_javascript_functions {
     $j->new_function(
         sappend => sub {
             if ( scalar @_ == 2 ) {
-                open(FILE,">>$_[0]") or error_and_exit(FILE_ERROR,"Error appending to '$_[0]'");
+                open(FILE,">>$_[0]") or SHABTI_error(FILE_ERROR,"Error appending to '$_[0]'");
                 print FILE $_[1];
                 close FILE;
             }
@@ -1060,7 +1060,7 @@ sub new_javascript_functions {
     $j->new_function(
         mkdir => sub {
             if ( scalar @_ == 1 ) {
-                mkdir($_[0]) or error_and_exit(FILE_ERROR,"Error creating directory '$_[0]'");
+                mkdir($_[0]) or SHABTI_error(FILE_ERROR,"Error creating directory '$_[0]'");
             }
             else {
                 die new JE::Object::Error::SyntaxError $j,
@@ -1073,7 +1073,7 @@ sub new_javascript_functions {
     $j->new_function(
         rmdir => sub {
             if ( scalar @_ == 1 ) {
-                rmdir($_[0]) or error_and_exit(FILE_ERROR,"Error deleting directory '$_[0]'");
+                rmdir($_[0]) or SHABTI_error(FILE_ERROR,"Error deleting directory '$_[0]'");
             }
             else {
                 die new JE::Object::Error::SyntaxError $j,
@@ -1086,7 +1086,7 @@ sub new_javascript_functions {
     $j->new_function(
         delete => sub {
             if ( scalar @_ == 1 ) {
-                unlink($_[0]) or error_and_exit(FILE_ERROR,"Error deleting file '$_[0]'");
+                unlink($_[0]) or SHABTI_error(FILE_ERROR,"Error deleting file '$_[0]'");
             }
             else {
                 die new JE::Object::Error::SyntaxError $j,
@@ -1163,7 +1163,7 @@ sub new_javascript_functions {
             }
             elsif ( scalar @_ == 2 ) {
                 if($_[1]=="0"||$_[1]==1){}else{
-                    error_and_exit(JAVASCRIPT_ERROR,"Third argument to exit() must be 0 or 1");
+                    SHABTI_error(JAVASCRIPT_ERROR,"Third argument to exit() must be 0 or 1");
                 }
                 print "$_[0]\n";
                 exit $_[1];

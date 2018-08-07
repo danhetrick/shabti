@@ -42,16 +42,6 @@ LIGHT_GREY = Color light grey, for use with the color() function
 
 */
 
-// STARTUP()
-// Executed when the bot is first loaded, before everything else
-// is loaded or executed.
-function STARTUP() {
-	print("=========================");
-	print("| shabti default script |");
-	print("=========================");
-	print("");
-}
-
 // CONNECT_EVENT()
 // Executed when the bot first connects to the IRC server.
 // EV_HOST = name of the server connected to
