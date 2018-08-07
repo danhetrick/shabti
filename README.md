@@ -20,7 +20,9 @@
 
 # Table of Contents
 
-<Usage>
+<details>
+
+<summary>Usage and Configuration</summary>
 
 * [Usage](#usage)
 * [Configuration](#configuration)
@@ -28,7 +30,11 @@
 	* [Configuration Files](#configuration-files)
 		* [Configuration File Elements](#configuration-file-elements)
 
-</Usage>
+</details>
+
+<details>
+
+<summary>Javascript</summary>
 
 * [Shabti Javascript](#shabti-javascript)
 	* [Built-In Variables](#built-in-variables)
@@ -49,6 +55,9 @@
 		* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
 		* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
 		* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
+
+</details>
+
 * [Example Scripts](#example-scripts)
 	* [OpBot](#opbot)
 	* [RainbowBot](#rainbowbot)
