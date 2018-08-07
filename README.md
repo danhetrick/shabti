@@ -41,7 +41,7 @@
 
 	<details>
 
-	<summary>Built-In Functions</summary>
+	<summary>[Built-In Functions](#built-in-functions)</summary>
 
 	* [Built-In Functions](#built-in-functions)
 		* [IRC Functions](#irc-functions)
