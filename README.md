@@ -38,11 +38,6 @@
 
 * [Shabti Javascript](#shabti-javascript)
 * [Built-In Variables](#built-in-variables)
-
-	<details>
-
-	<summary>Built-In Functions</summary>
-
 * [Built-In Functions](#built-in-functions)
 	* [IRC Functions](#irc-functions)
 	* [Text Functions](#text-functions)
