@@ -38,11 +38,23 @@
 
 * [Shabti Javascript](#shabti-javascript)
 	* [Built-In Variables](#built-in-variables)
-	* [Build-In Functions](#built-in-functions)
+
+	<details>
+
+	<summary>Built-In Functions</summary>
+
+	* [Built-In Functions](#built-in-functions)
 		* [IRC Functions](#irc-functions)
 		* [Text Functions](#text-functions)
 		* [File I/O Functions](#file-io-functions)
 		* [Miscellaneous Functions](#miscellaneous-functions)
+
+	</details>
+
+	<details>
+
+	<summary>Events</summary>
+
 	* [Events](#events)
 		* [CONNECT_EVENT](#connect_eventev_host)
 		* [NICK_TAKEN_EVENT](#nick_taken_event)
@@ -55,6 +67,8 @@
 		* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
 		* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
 		* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
+
+	</details>
 
 </details>
 
