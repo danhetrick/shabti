@@ -37,7 +37,7 @@
 <summary>Javascript</summary>
 
 * [Shabti Javascript](#shabti-javascript)
-	* [Built-In Variables](#built-in-variables)
+* [Built-In Variables](#built-in-variables)
 
 	<details>
 
