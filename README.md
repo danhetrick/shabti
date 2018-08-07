@@ -43,11 +43,11 @@
 
 	<summary>Built-In Functions</summary>
 
-	* [Built-In Functions](#built-in-functions)
-		* [IRC Functions](#irc-functions)
-		* [Text Functions](#text-functions)
-		* [File I/O Functions](#file-io-functions)
-		* [Miscellaneous Functions](#miscellaneous-functions)
+* [Built-In Functions](#built-in-functions)
+	* [IRC Functions](#irc-functions)
+	* [Text Functions](#text-functions)
+	* [File I/O Functions](#file-io-functions)
+	* [Miscellaneous Functions](#miscellaneous-functions)
 
 	</details>
 
