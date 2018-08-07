@@ -486,10 +486,15 @@ Called when the bot receives a notification that is not handled by any other eve
 This is a simple bot that performs one function: granting channel operator status to any user that has the appropriate password.  The bot must have channel operator status in the desired channel.  To get ops from the bot, send a private message to it with `op CHANNEL PASSWORD`; so, if the password is "changeme", and the desired channel is "#foo", send `op #foo changeme`.
 
 ```javascript
+/*
+	opbot.js
+*/
+
 var OPBOT_PASSWORD = "changeme";
 
 function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 
+	// Usage information
 	if(EV_MESSAGE.toLowerCase()=="help"){
 		msg(EV_NICK,"OpBot v1.0");
 		msg(EV_NICK,"op CHANNEL PASSWORD  -  Gives channel op status with the correct password");
@@ -508,5 +513,61 @@ function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 			}
 		}
 	}
+}
+```
+
+## RainbowBot
+
+Here's a fun bot that you can use to send a channel a rainbow message! Send a private message to the bot with a channel name followed by the message you want to send, and it'll make your message rainbow colored and send it to that channel!
+
+```javascript
+/*
+	rainbowbot.js
+*/
+
+function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
+
+	// Usage information
+	if(EV_MESSAGE.toLowerCase()=="help"){
+		msg(EV_NICK,"RainbowBot v1.0");
+		msg(EV_NICK,"Message me with a channel and a phrase, and I'll send a rainbow message!");
+		return;
+	}
+
+	// Tokenize input
+	var tokens = EV_MESSAGE.split(" ");
+
+	// Make sure that the message has *at least* two words
+	if(tokens.length >= 2){
+
+		// Shift the first token, which should be the channel
+		var channel = tokens.shift();
+
+		// Concatonate the token array, so it's one string again
+		var tosend = tokens.join(" ");
+
+		// Tokenize the string again so it's an array of characters
+		tokens = tosend.split("");
+
+		// Make the message a rainbow!
+		var rainbow = "";
+		for(var i=0, len=tokens.length; i < len; i++){
+
+			// Select random foreground and background colors
+			var foreground = Math.floor((Math.random() * 15) + 1);
+			var background = Math.floor((Math.random() * 15) + 1);
+
+			// Make sure that the forebround and background colors are different
+			while (foreground==background) {
+			    foreground = Math.floor((Math.random() * 15) + 1);
+				background = Math.floor((Math.random() * 15) + 1);
+			}
+			rainbow = rainbow+color(foreground,background,tokens[i]);
+		}
+
+		// Send our rainbow message!
+		message(channel,bold(rainbow));
+	}
+
 }
 ```
