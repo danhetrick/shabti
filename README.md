@@ -43,34 +43,18 @@
 	* [Text Functions](#text-functions)
 	* [File I/O Functions](#file-io-functions)
 	* [Miscellaneous Functions](#miscellaneous-functions)
-
-	</details>
-
-	<details>
-
-	<summary>Events</summary>
-
-	* [Events](#events)
-		* [CONNECT_EVENT](#connect_eventev_host)
-		* [NICK_TAKEN_EVENT](#nick_taken_event)
-		* [PING_EVENT](#ping_event)
-		* [TIME_EVENT](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
-		* [PUBLIC_MESSAGE_EVENT](#public_message_eventev_nickev_usernameev_channelev_message)
-		* [PRIVATE_MESSAGE_EVENT](#private_message_eventev_nickev_usernameev_message)
-		* [ACTION_EVENT](#action_eventev_nickev_usernameev_channelev_action)
-		* [MODE_EVENT](#mode_eventev_nickev_usernameev_targetev_mode)
-		* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
-		* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
-		* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
-
-	</details>
-
-</details>
-
-<details>
-
-<summary>Example Scripts</summary>
-
+* [Events](#events)
+	* [CONNECT_EVENT](#connect_eventev_host)
+	* [NICK_TAKEN_EVENT](#nick_taken_event)
+	* [PING_EVENT](#ping_event)
+	* [TIME_EVENT](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
+	* [PUBLIC_MESSAGE_EVENT](#public_message_eventev_nickev_usernameev_channelev_message)
+	* [PRIVATE_MESSAGE_EVENT](#private_message_eventev_nickev_usernameev_message)
+	* [ACTION_EVENT](#action_eventev_nickev_usernameev_channelev_action)
+	* [MODE_EVENT](#mode_eventev_nickev_usernameev_targetev_mode)
+	* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
+	* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
+	* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
 * [Example Scripts](#example-scripts)
 	* [OpBot](#opbot)
 	* [RainbowBot](#rainbowbot)
