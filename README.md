@@ -41,7 +41,7 @@
 
 	<details>
 
-	<summary>[Built-In Functions](#built-in-functions)</summary>
+	<summary>Built-In Functions</summary>
 
 	* [Built-In Functions](#built-in-functions)
 		* [IRC Functions](#irc-functions)
@@ -72,9 +72,15 @@
 
 </details>
 
+<details>
+
+<summary>Example Scripts</summary>
+
 * [Example Scripts](#example-scripts)
 	* [OpBot](#opbot)
 	* [RainbowBot](#rainbowbot)
+
+</details>
 
 # Usage
 
