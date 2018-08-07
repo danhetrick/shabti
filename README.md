@@ -27,25 +27,25 @@
 	* [Command-line Configuration](#command-line-configuration)
 	* [Configuration Files](#configuration-files)
 		* [Configuration File Elements](#configuration-file-elements)
-	* [Shabti Javascript](#shabti-javascript)
-		* [Built-In Variables](#built-in-variables)
-		* [Build-In Functions](#built-in-functions)
-			* [IRC Functions](#irc-functions)
-			* [Text Functions](#text-functions)
-			* [File I/O Functions](#file-io-functions)
-			* [Miscellaneous Functions](#miscellaneous-functions)
-		* [Events](#events)
-			* [CONNECT_EVENT](#connect_eventev_host)
-			* [NICK_TAKEN_EVENT](#nick_taken_event)
-			* [PING_EVENT](#ping_event)
-			* [TIME_EVENT](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
-			* [PUBLIC_MESSAGE_EVENT](#public_message_eventev_nickev_usernameev_channelev_message)
-			* [PRIVATE_MESSAGE_EVENT](#private_message_eventev_nickev_usernameev_message)
-			* [ACTION_EVENT](#action_eventev_nickev_usernameev_channelev_action)
-			* [MODE_EVENT](#mode_eventev_nickev_usernameev_targetev_mode)
-			* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
-			* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
-			* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
+* [Shabti Javascript](#shabti-javascript)
+	* [Built-In Variables](#built-in-variables)
+	* [Build-In Functions](#built-in-functions)
+		* [IRC Functions](#irc-functions)
+		* [Text Functions](#text-functions)
+		* [File I/O Functions](#file-io-functions)
+		* [Miscellaneous Functions](#miscellaneous-functions)
+	* [Events](#events)
+		* [CONNECT_EVENT](#connect_eventev_host)
+		* [NICK_TAKEN_EVENT](#nick_taken_event)
+		* [PING_EVENT](#ping_event)
+		* [TIME_EVENT](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
+		* [PUBLIC_MESSAGE_EVENT](#public_message_eventev_nickev_usernameev_channelev_message)
+		* [PRIVATE_MESSAGE_EVENT](#private_message_eventev_nickev_usernameev_message)
+		* [ACTION_EVENT](#action_eventev_nickev_usernameev_channelev_action)
+		* [MODE_EVENT](#mode_eventev_nickev_usernameev_targetev_mode)
+		* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
+		* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
+		* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
 	* [Example Scripts](#example-scripts)
 		* [OpBot](#opbot)
 		* [RainbowBot](#rainbowbot)
@@ -133,7 +133,7 @@ Any filename passed to **Shabti** is looked for first in the same directory `sha
 		* Sets a Javascript file the bot will load.
 		* The `script` child element can appear multiple times; set multiple `script` elements to have the bot load more than one file.
 
-## Shabti Javascript
+# Shabti Javascript
 
 **Shabti** uses Javascript to determine how the bot will behave, using three methods: built-in **variables**, built-in **functions**, and **events**.  **Built-in variables** and **built-in functions** work just like normal Javascript.
 
@@ -165,7 +165,7 @@ function PING_EVENT() {
 
 A **Shabti** script doesn't need to contain all of the events provided, only the ones necessary for whatever you're trying to do with your script.  If a specific event is not present, it will simply never be called.
 
-### Built-In Variables.
+## Built-In Variables.
 
 Built-in variables are always in uppercase; with the exception of the miscellaneous variables for use with the `color` function, they all start with `SV_`.
 
@@ -226,7 +226,7 @@ Built-in variables are always in uppercase; with the exception of the miscellane
 
 All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variables change to whatever the current server time or date is; it is not necessarily accurate, as the bot resets `SV_TIME` and `SV_DATE` only when the bot receives a `RPL_TIME` message.  `SV_NICK` will only change if the bot changes its nick.
 
-### Built-In Functions
+## Built-In Functions
 
 There are 29 built-in functions for use in your **Shabti** script.
 
@@ -266,71 +266,71 @@ There are 29 built-in functions for use in your **Shabti** script.
 
 ---
 
-#### IRC Functions
+### IRC Functions
 
-##### `raw`
+#### `raw`
 * *Arguments*: 1 (text to send)
 * *Returns*: nothing
 * Sends "raw" text to the IRC server; that is, the bot will send the server this text without any modification.  This can be used to send IRC commands that don't have **Shabti** built-in functions to perform.  For example, to send a private message to Bob, you could use `raw("PRIVMSG Bob :Hello world!")`.
 
-##### `set`
+#### `set`
 * *Arguments*: 2+ (target,flags,arguments)
 * *Returns*: nothing
 * Sets a mode on the server.  For example, to give channel operator status to Bob in channel "#foo", you could use `set("#foo", "+o", "Bob")`.
 
-##### `login`
+#### `login`
 * *Arguments*: 2 (username, password)
 * *Returns*: nothing
 * Logs into an IRCop account.
 
-##### `nick`
+#### `nick`
 * *Arguments*: 1 (new nick)
 * *Returns*: nothing
 * Changes the bot's nick.
 
-##### `rnick`
+#### `rnick`
 * *Arguments*: 1 (new nick)
 * *Returns*: nothing
 * Changes the bot's nick, adding two randomly selected numbers to the end of the nick.
 
-##### `join`
+#### `join`
 * *Arguments*: 1+ (channel to join, password)
 * *Returns*: nothing
 * Joins a channel.
 
-##### `part`
+#### `part`
 * *Arguments*: 1+ (channel to part, parting message)
 * *Returns*: nothing
 * Parts a channel.
 
-##### `topic`
+#### `topic`
 * *Arguments*: 2 (channel, new topic)
 * *Returns*: nothing
 * Sets a channel's topic.
 
-##### `quit`
+#### `quit`
 * *Arguments*: 0+ (optional quit message)
 * *Returns*: nothing
 * Quits the IRC server.
 
-##### `message`
+#### `message`
 * *Arguments*: 2 (target user or channel, message)
 * *Returns*: nothing
 * Sends a message to the target user or channel. An identical version of this command named `msg` can alternately used.
 
-##### `notice`
+#### `notice`
 * *Arguments*: 2 (target user or channel, message)
 * *Returns*: nothing
 * Sends a notice to the target user or channel.
 
-##### `action`
+#### `action`
 * *Arguments*: 2 (channel, message)
 * *Returns*: nothing
 * Sends an action message to a channel.
 
 ---
 
-#### Text Functions
+### Text Functions
 
 `color`, `bold`, `italic`, and `underline` work much like the equivalent HTML tags.  For example, to display the words "Hello world!" in blue text with a grey background, in italics, bolded, and underlined:
 
@@ -341,102 +341,102 @@ msg("#foo",example);
 
 These colors and text enhancements will *only* be seen in IRC clients; they will not display properly in the console or written to file.  **Shabti** does not have any functionality to display colors or other text enhancements to the console or text files.
 
-##### `print`
+#### `print`
 * *Arguments*: 1+ (text to print)
 * *Returns*: nothing
 * Prints text to the console, followed by a carriage return.
 
-##### `sprint`
+#### `sprint`
 * *Arguments*: 1+ (text to print)
 * *Returns*: nothing
 * Prints text to the console; a trailing carriage return is *not* printed.
 
-##### `color`
+#### `color`
 * *Arguments*: 3 (foreground color, background color, text)
 * *Returns*: string
 * Formats text using IRC color codes, and returns it.
 
-##### `bold`
+#### `bold`
 * *Arguments*: 1 (text)
 * *Returns*: string
 * Formats text using IRC bold code, and returns it.
 
-##### `italic`
+#### `italic`
 * *Arguments*: 1 (text)
 * *Returns*: string
 * Formats text using IRC italic code, and returns it.
 
-##### `underline`
+#### `underline`
 * *Arguments*: 1 (text)
 * *Returns*: string
 * Formats text using IRC underline code, and returns it.
 
 ---
 
-#### File I/O Functions
+### File I/O Functions
 
-##### `read`
+#### `read`
 * *Arguments*: 1 (file to read)
 * *Returns*: file contents as string
 * Reads data from a file and returns it.
 
-##### `write`
+#### `write`
 * *Arguments*: 2 (file to write to, contents to write)
 * *Returns*: nothing
 * Writes data to a file, followed by a carriage return.
 
-##### `swrite`
+#### `swrite`
 * *Arguments*: 2 (file to write to, contents to write)
 * *Returns*: nothing
 * Writes data to a file; a trailing carriage return is *not* written.
 
-##### `append`
+#### `append`
 * *Arguments*: 2 (file to append to, contents to append)
 * *Returns*: nothing
 * Appends data to a file, followed by a carriage return.
 
-##### `sappend`
+#### `sappend`
 * *Arguments*: 2 (file to append to, contents to append)
 * *Returns*: nothing
 * Appends data to a file; a trailing carriage return is *not* written.
 
-##### `fileexists`
+#### `fileexists`
 * *Arguments*: 1 (filename)
 * *Returns*: 1 if file exists, 0 if not
 * Tests if a file exists or not.
 
-##### `direxists`
+#### `direxists`
 * *Arguments*: 1 (directory name)
 * *Returns*: 1 if directory exists, 0 if not
 * Tests if a directory exists or not.
 
-##### `mkdir`
+#### `mkdir`
 * *Arguments*: 1 (directory name)
 * *Returns*: nothing
 * Creates a directory.
 
-##### `rmdir`
+#### `rmdir`
 * *Arguments*: 1 (directory name)
 * *Returns*: nothing
 * Deletes a directory
 
-##### `delete`
+#### `delete`
 * *Arguments*: 1 (filename)
 * *Returns*: nothing
 * Deletes a file.
 
 ---
 
-#### Miscellaneous Functions
+### Miscellaneous Functions
 
-##### `exit`
+#### `exit`
 * *Arguments*: 0, 1 (message), or 2 (message, exit code)
 * *Returns*: nothing
 * Exits out of **Shabti**. Optionally, can display a message on exit, or an exit code (which *must* be 0 or 1).
 
 ---
 
-### Events
+## Events
 
 Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.  All event function names are in uppercase.
 
@@ -456,57 +456,57 @@ If you want to execute code as soon as the script is loaded, simply place your c
 
 ---
 
-#### `CONNECT_EVENT(EV_HOST)`
+### `CONNECT_EVENT(EV_HOST)`
 * *Arguments*: `EV_HOST` (the name of the server connected to)
 
 Called when the bot connects to the IRC server.
 
-#### `NICK_TAKEN_EVENT()`
+### `NICK_TAKEN_EVENT()`
 * *Arguments*: none
 
 Called when the bot is notified by the server that their requested nick is taken. By default, this is *not* handled automatically, and must be handled by the script.  The script that comes with a default **Shabti** installation calls the built-in function `rnick` to handle this problem.
 
-#### `PING_EVENT()`
+### `PING_EVENT()`
 * *Arguments*: none
 
 Called when the bot receives a "PING?" request from the server. The necessary response ("PONG!") is handled automatically.
 
-#### `TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
+### `TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
 * *Arguments*: `EV_WEEKDAY` (day of the week), `EV_MONTH` (month of the year), `EV_DAY` (numeric day of the month), `EV_YEAR` (numeric year), `EV_HOUR` (hour of the day), `EV_MINUTE` (minute of the hour), `EV_SECOND` (second of the minute), `EV_ZONE` (time zone)
 
 Called when the bot receives a `RPL_TIME` message from the server. **Shabti** can ask the server to send a `RPL_TIME` message by using the built-in function `raw` with the argument "TIME" (`raw("TIME");`).
 
-#### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a public message.
 
-#### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
+### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
 
 Called when the bot receives a private message.
 
-#### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
+### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the action), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the action is sent to), `EV_ACTION` (the action sent)
 
 Called when the bot receives a CTCP action message.
 
-#### `MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
+### `MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
 * *Arguments*: `EV_NICK` (the nick of the user setting the mode), `EV_USERNAME` (the username of the setter), `EV_TARGET` (the mode's target), `EV_MODE` (the mode set)
 
 Called when the bot receives a mode notification. If the server is the one setting the mode, the `EV_USERNAME` argument will be an empty string.
 
-#### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
+### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
 * *Arguments*: `EV_NICK` (the nick joining the channel), `EV_USERNAME` (the username of the joiner), `EV_CHANNEL` (the channel joined)
 
 Called when the bot receives a channel join notification.
 
-#### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick parting the channel). `EV_USERNAME` (the username of parter), `EV_CHANNEL` (the channel parted), `EV_MESSAGE` (optional parting message)
 
 Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `EV_MESSAGE` argument, which is set to a blank string otherwise.
 
-#### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
+### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
 * *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
 
 Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.
