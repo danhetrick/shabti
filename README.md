@@ -20,13 +20,16 @@
 
 # Table of Contents
 
-<Table of Contents>
+<Usage>
 
 * [Usage](#usage)
 * [Configuration](#configuration)
 	* [Command-line Configuration](#command-line-configuration)
 	* [Configuration Files](#configuration-files)
 		* [Configuration File Elements](#configuration-file-elements)
+
+</Usage>
+
 * [Shabti Javascript](#shabti-javascript)
 	* [Built-In Variables](#built-in-variables)
 	* [Build-In Functions](#built-in-functions)
@@ -49,8 +52,6 @@
 * [Example Scripts](#example-scripts)
 	* [OpBot](#opbot)
 	* [RainbowBot](#rainbowbot)
-
-</Table of Contents>
 
 # Usage
 
