@@ -20,7 +20,7 @@
 
 # Table of Contents
 
-<details>
+<Table of Contents>
 
 * [Usage](#usage)
 * [Configuration](#configuration)
@@ -46,11 +46,11 @@
 		* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
 		* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
 		* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
-	* [Example Scripts](#example-scripts)
-		* [OpBot](#opbot)
-		* [RainbowBot](#rainbowbot)
+* [Example Scripts](#example-scripts)
+	* [OpBot](#opbot)
+	* [RainbowBot](#rainbowbot)
 
-</details>
+</Table of Contents>
 
 # Usage
 
