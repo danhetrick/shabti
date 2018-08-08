@@ -27,13 +27,57 @@
 
 	* [raw](#raw)
 	* [set](#set)
+	* [login](#login)
+	* [nick](#nick)
+	* [rnick](#nick)
+	* [join](#join)
+	* [part](#part)
+	* [topic](#topic)
+	* [quit](#quit)
+	* [message](#message)
+	* [notice](#notice)
+	* [action](#action)
 
 	</details>
 
-	* [IRC Functions](#irc-functions)
-	* [Text Functions](#text-functions)
-	* [File I/O Functions](#file-io-functions)
-	* [Miscellaneous Functions](#miscellaneous-functions)
+	<details>
+
+	<summary>Text Functions</summary>
+
+	* [print](#print)
+	* [sprint](#sprint)
+	* [color](#color)
+	* [bold](#bold)
+	* [italic](#italic)
+	* [underline](#underline)
+
+	</details>
+
+	<details>
+
+	<summary>File I/O Functions</summary>
+
+	* [read](#read)
+	* [write](#write)
+	* [swrite](#swrite)
+	* [append](#append)
+	* [sappend](#sappend)
+	* [fileexists](#fileexists)
+	* [direxists](#direxists)
+	* [mkdir](#mkdir)
+	* [rmdir](#rmdir)
+	* [delete](#delete)
+
+	</details>
+
+	<details>
+
+	<summary>Miscellaneous Functions</summary>
+
+	* [exit](#exit)
+
+	</details>
+
 * [Events](#events)
 	* [CONNECT_EVENT](#connect_eventev_host)
 	* [NICK_TAKEN_EVENT](#nick_taken_event)
