@@ -98,16 +98,16 @@
 
 	</details>
 
-* [Default Script File](#default-script-file)
-
-</details>
-
 <details>
 
 <summary>Example Scripts</summary>
 
 * [OpBot](#opbot)
 * [RainbowBot](#rainbowbot)
+
+</details>
+
+* [Default Script File](#default-script-file)
 
 </details>
 
