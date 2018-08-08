@@ -25,18 +25,18 @@
 
 	<summary>IRC Functions</summary>
 
-	* [raw](#raw)
-	* [set](#set)
-	* [login](#login)
-	* [nick](#nick)
-	* [rnick](#nick)
-	* [join](#join)
-	* [part](#part)
-	* [topic](#topic)
-	* [quit](#quit)
-	* [message](#message)
-	* [notice](#notice)
-	* [action](#action)
+	* [`raw`](#raw)
+	* [`set`](#set)
+	* [`login`](#login)
+	* [`nick`](#nick)
+	* [`rnick`](#nick)
+	* [`join`](#join)
+	* [`part`](#part)
+	* [`topic`](#topic)
+	* [`quit`](#quit)
+	* [`message`](#message)
+	* [`notice`](#notice)
+	* [`action`](#action)
 
 	</details>
 
