@@ -9,8 +9,7 @@
 	* [Command-line Configuration](#command-line-configuration)
 	* [Configuration Files](#configuration-files)
 		* [Configuration File Elements](#configuration-file-elements)
-* [Default Configuration File](https://github.com/danhetrick/shabti/blob/master/config/default.xml)
-* [Default Script File](https://github.com/danhetrick/shabti/blob/master/config/default.js)
+* [Default Configuration File](#default-configuration-file)
 
 </details>
 
@@ -37,6 +36,7 @@
 	* [JOIN_EVENT](#join_eventev_nickev_usernameev_channel)
 	* [PART_EVENT](#part_eventev_nickev_usernameev_channelev_message)
 	* [IRC_EVENT](#irc_eventev_rawev_typeev_hostev_nickev_message)
+* [Default Script File](#default-script-file)
 
 </details>
 
