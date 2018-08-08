@@ -21,14 +21,14 @@
 * [Built-In Variables](#built-in-variables)
 * [Built-In Functions](#built-in-functions)
 
-<details>
+	<details>
 
-<summary>IRC Functions</summary>
+	<summary>IRC Functions</summary>
 
-* [raw](#raw)
-* [set](#set)
+	* [raw](#raw)
+	* [set](#set)
 
-</details>
+	</details>
 
 	* [IRC Functions](#irc-functions)
 	* [Text Functions](#text-functions)
