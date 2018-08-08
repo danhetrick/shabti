@@ -96,17 +96,17 @@ my $NOJSPRINT						= undef;
 my $QUIET							= undef;
 my $NOCONFIG						= undef;
 
-my $JOIN_EVENT                      = "JOIN_EVENT";
-my $CONNECT_EVENT                   = "CONNECT_EVENT";
-my $PING_EVENT                      = "PING_EVENT";
-my $PUBLIC_MESSAGE_EVENT            = "PUBLIC_MESSAGE_EVENT";
-my $PRIVATE_MESSAGE_EVENT           = "PRIVATE_MESSAGE_EVENT";
-my $NICK_TAKEN_EVENT                = "NICK_TAKEN_EVENT";
-my $TIME_EVENT                      = "TIME_EVENT";
+my $JOIN_EVENT                      = 'JOIN_EVENT';
+my $CONNECT_EVENT                   = 'CONNECT_EVENT';
+my $PING_EVENT                      = 'PING_EVENT';
+my $PUBLIC_MESSAGE_EVENT            = 'PUBLIC_MESSAGE_EVENT';
+my $PRIVATE_MESSAGE_EVENT           = 'PRIVATE_MESSAGE_EVENT';
+my $NICK_TAKEN_EVENT                = 'NICK_TAKEN_EVENT';
+my $TIME_EVENT                      = 'TIME_EVENT';
 my $PART_EVENT                      = 'PART_EVENT';
 my $IRC_EVENT						= 'IRC_EVENT';
-my $MODE_EVENT						= "MODE_EVENT";
-my $ACTION_EVENT                    = "ACTION_EVENT";
+my $MODE_EVENT						= 'MODE_EVENT';
+my $ACTION_EVENT                    = 'ACTION_EVENT';
 
 my $DEFAULT_NICK                    = "shabti";
 my $DEFAULT_USERNAME                = "shabti";

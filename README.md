@@ -20,6 +20,16 @@
 * [Shabti Javascript](#shabti-javascript)
 * [Built-In Variables](#built-in-variables)
 * [Built-In Functions](#built-in-functions)
+
+<details>
+
+<summary>IRC Functions</summary>
+
+* [raw](#raw)
+* [set](#set)
+
+</details>
+
 	* [IRC Functions](#irc-functions)
 	* [Text Functions](#text-functions)
 	* [File I/O Functions](#file-io-functions)
