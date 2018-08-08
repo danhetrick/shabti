@@ -98,6 +98,8 @@
 
 	</details>
 
+* [Default Script File](#default-script-file)
+
 <details>
 
 <summary>Example Scripts</summary>
@@ -106,8 +108,6 @@
 * [RainbowBot](#rainbowbot)
 
 </details>
-
-* [Default Script File](#default-script-file)
 
 </details>
 
