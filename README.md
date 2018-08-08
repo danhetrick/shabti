@@ -100,14 +100,14 @@
 
 * [Default Script File](#default-script-file)
 
-<details>
+	<details>
 
-<summary>Example Scripts</summary>
+	<summary>Example Scripts</summary>
 
-* [OpBot](#opbot)
-* [RainbowBot](#rainbowbot)
+	* [OpBot](#opbot)
+	* [RainbowBot](#rainbowbot)
 
-</details>
+	</details>
 
 </details>
 
