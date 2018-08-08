@@ -1,25 +1,5 @@
 ![Shabti IRC Bot](https://github.com/danhetrick/shabti/blob/master/shabti_logo.png?raw=true)
 
-# Summary
-
-**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.033.
-
-# Name
-
-"The ushabti (also called shabti or shawabti, with a number of variant spellings, Ancient Egyptian plural: ushabtiu) was a funerary figurine used in Ancient Egypt. Ushabtis were placed in tombs among the grave goods and were intended to act as servants or minions for the deceased, should they be called upon to do manual labor in the afterlife....Called “answerers,” they carried inscriptions asserting their readiness to answer the gods' summons to work." - [Wikipedia](https://en.wikipedia.org/wiki/Ushabti)
-
-# Installation
-
-* README.md
-* shabti.pl
-	* lib
-		* *modules necessary for Shabti to run properly*
-	* config
-		* default.js
-		* default.xml
-
-# Table of Contents
-
 <details>
 
 <summary>Usage and Configuration</summary>
@@ -34,7 +14,7 @@
 
 <details>
 
-<summary>Javascript</summary>
+<summary>Scripting Documentation</summary>
 
 * [Shabti Javascript](#shabti-javascript)
 * [Built-In Variables](#built-in-variables)
@@ -60,6 +40,24 @@
 	* [RainbowBot](#rainbowbot)
 
 </details>
+
+# Summary
+
+**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.033.
+
+# Name
+
+"The ushabti (also called shabti or shawabti, with a number of variant spellings, Ancient Egyptian plural: ushabtiu) was a funerary figurine used in Ancient Egypt. Ushabtis were placed in tombs among the grave goods and were intended to act as servants or minions for the deceased, should they be called upon to do manual labor in the afterlife....Called “answerers,” they carried inscriptions asserting their readiness to answer the gods' summons to work." - [Wikipedia](https://en.wikipedia.org/wiki/Ushabti)
+
+# Installation
+
+* README.md
+* shabti.pl
+	* lib
+		* *modules necessary for Shabti to run properly*
+	* config
+		* default.js
+		* default.xml
 
 # Usage
 
