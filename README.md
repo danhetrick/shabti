@@ -246,24 +246,24 @@ A **Shabti** script doesn't need to contain all of the events provided, only the
 
 Built-in variables are always in uppercase; with the exception of the miscellaneous variables for use with the `color` function, they all start with `SV_`.
 
-| Variable              | Description                                   |   | `color` Variables    | Description  |
-|-----------------------|-----------------------------------------------|---|----------------------|--------------|
-| `SV_SERVER`           | The IRC server connected to.                  |   | `WHITE`                | White        |
-| `SV_PORT`             | The IRC server port.                          |   | `BLACK`                | Black        |
-| `SV_NICK`             | The bot's nick.                               |   | `BLUE`                 | Blue         |
-| `SV_USER`             | The bot's username.                           |   | `GREEN`                | Green        |
-| `SV_IRCNAME`          | The bot's IRCname.                            |   | `RED`                  | Red          |
-| `SV_TIME`             | Server time.                                  |   | `BROWN`                | Brown        |
-| `SV_DATE`             | Server date.                                  |   | `PURPLE`               | Purple       |
-| `SV_BOT`              | Bot's software ("shabti")                     |   | `ORANGE`               | Orange       |
-| `SV_VERSION`          | Bot's version (0.033)                         |   | `YELLOW`               | Yellow       |
-| `SV_LOCAL_DIRECTORY`  | The directory where the bot is installed.     |   | `LIGHT_GREEN`          | Light green  |
-| `SV_CONFIG_DIRECTOR`  | The configuration directory the bot is using. |   | `TEAL`                 | Teal         |
-|                       |                                               |   | `CYAN`                 | Cyan         |
-|                       |                                               |   | `LIGHT_BLUE`           | Light blue   |
-|                       |                                               |   | `PINK`                 | Pink         |
-|                       |                                               |   | `GREY`                 | Grey         |
-|                       |                                               |   | `LIGHT_GREY`           | Light grey   |
+| Variable              | Description                                   |---| `color` Variables      | Description  |
+|-----------------------|-----------------------------------------------|---|------------------------|--------------|
+| `SV_SERVER`           | The IRC server connected to.                  |---| `WHITE`                | White        |
+| `SV_PORT`             | The IRC server port.                          |---| `BLACK`                | Black        |
+| `SV_NICK`             | The bot's nick.                               |---| `BLUE`                 | Blue         |
+| `SV_USER`             | The bot's username.                           |---| `GREEN`                | Green        |
+| `SV_IRCNAME`          | The bot's IRCname.                            |---| `RED`                  | Red          |
+| `SV_TIME`             | Server time.                                  |---| `BROWN`                | Brown        |
+| `SV_DATE`             | Server date.                                  |---| `PURPLE`               | Purple       |
+| `SV_BOT`              | Bot's software ("shabti")                     |---| `ORANGE`               | Orange       |
+| `SV_VERSION`          | Bot's version (0.033)                         |---| `YELLOW`               | Yellow       |
+| `SV_LOCAL_DIRECTORY`  | The directory where the bot is installed.     |---| `LIGHT_GREEN`          | Light green  |
+| `SV_CONFIG_DIRECTOR`  | The configuration directory the bot is using. |---| `TEAL`                 | Teal         |
+|                       |                                               |---| `CYAN`                 | Cyan         |
+|                       |                                               |---| `LIGHT_BLUE`           | Light blue   |
+|                       |                                               |---| `PINK`                 | Pink         |
+|                       |                                               |---| `GREY`                 | Grey         |
+|                       |                                               |---| `LIGHT_GREY`           | Light grey   |
 
 * `SV_SERVER`
 	* The name/host of the IRC server connected to.
