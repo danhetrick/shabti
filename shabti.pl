@@ -129,6 +129,8 @@ my $BOLD_TEXT						= chr(2);
 my $ITALIC_TEXT						= chr(hex("1D"));
 my $UNDERLINE_TEXT					= chr(hex("1F"));
 
+my $MAX_EXTRA_EVENT_FUNCTIONS       = 10;
+
 my $BUILT_IN_VARIABLES = <<"EOA";
 var SV_SERVER = \"$SERVER\";
 var SV_PORT = \"$PORT\";
@@ -186,7 +188,8 @@ GetOptions(
     "P|noprint"			=> \$NOJSPRINT,
     "q|quiet"			=> \$QUIET,
     "C|noconfig"		=> \$NOCONFIG,
-    "v|version"         => \$DISPLAY_VERSION
+    "v|version"         => \$DISPLAY_VERSION,
+    "x|extra"           => \$MAX_EXTRA_EVENT_FUNCTIONS
 );
 
 if($USAGE){
@@ -519,6 +522,22 @@ sub irc_public {
         }
     }
 
+    # Extra PUBLIC_MESSAGE_EVENT functions
+    my $i = 1;
+
+    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+        my $cmd = "if (typeof $PUBLIC_MESSAGE_EVENT"."_".$i."=== \"function\") { $PUBLIC_MESSAGE_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n";
+
+        if ( $js->eval($cmd) ) { }
+        else {
+            if ( $@ ne '' ) {
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
+            }
+        }
+
+        $i++;
+    }
+
     return 1;
 }
 
@@ -534,6 +553,21 @@ sub irc_private {
         if ( $@ ne '' ) {
             SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
+    }
+
+    my $i = 1;
+
+    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+        my $cmd = "if (typeof $PRIVATE_MESSAGE_EVENT"."_".$i."=== \"function\") { $PRIVATE_MESSAGE_EVENT"."_".$i."(\"$nick\",\"$username\",\"$what\"); }\n";
+
+        if ( $js->eval($cmd) ) { }
+        else {
+            if ( $@ ne '' ) {
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
+            }
+        }
+
+        $i++;
     }
 
     return 1;
@@ -592,6 +626,7 @@ sub SHABTI_usage {
 	print "--(q)uiet			Prevent all console printing\n";
 	print "--no(C)onfig			Don't load settings from 'default.xml'\n";
     print "--(v)ersion         Display version\n";
+    print "--e(x)tra            How many extra chat event functions to call (default: 10)\n";
 }
 
 # SHABTI_load_configuration_file()

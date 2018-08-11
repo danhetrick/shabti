@@ -127,6 +127,10 @@
 		* [`WarnOnRequire`](#warnonrequire)
 		* [`ExitOnRequire`](#exitonrequire)
 
+	* [`plaintext.js`](#plaintextjs)
+		* [`WarnOnFancy`](#warnonfancy)
+		* [`ExitOnFancy`](#exitonfancy)
+
 	</details>
 
 * [Default Script File](#default-script-file)
@@ -180,7 +184,8 @@
 	--no(P)rint			Prevent JavaScript from printing to the console
 	--(q)uiet			Prevent all console printing
 	--no(C)onfig			Don't load settings from 'default.xml'
-	--(v)ersion			Display version		
+	--(v)ersion			Display version
+	--e(x)tra            How many extra chat event functions (default: 10)		
 
 # Configuration
 
@@ -595,11 +600,13 @@ Called when the bot receives a `RPL_TIME` message from the server. **Shabti** ca
 
 ### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
+* *Note:* **Shabti** will call "extra" public chat event functions.  Their names follow the format `PUBLIC_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_50` whenever it receives a public message.
 
 Called when the bot receives a public message.
 
 ### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
+* *Note:* **Shabti** will call "extra" private chat event functions.  Their names follow the format `PRIVATE_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_50` whenever it receives a private message.
 
 Called when the bot receives a private message.
 
@@ -867,6 +874,20 @@ By defaulst, `WarnOnRequire` is set to `false`.  If set to `true`, and a script 
 ### `ExitOnRequire`
 
 By default, `ExitOnRequire` is set to `false`. If set to `true`, **Shabti** will exit when a script tries to execute `require`.
+
+---
+
+## `plaintext.js`
+
+This module disables the `color`, `bold`, `italic`, and `underline` functions.
+
+### `WarnOnColor`
+
+By defaulst, `WarnOnColor` is set to `false`.  If set to `true`, and a script attempts to use the `color`, `bold`, `italic`, and `underline` functions, a warning stating that the function requested has been disabled is printed to the console.
+
+### `ExitOnColor`
+
+By default, `ExitOnColor` is set to `false`. If set to `true`, **Shabti** will exit when a script tries to execute `color`, `bold`, `italic`, or `underline`.
 
 ---
 

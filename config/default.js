@@ -47,6 +47,7 @@ LIGHT_GREY = Color light grey, for use with the color() function
 // EV_HOST = name of the server connected to
 function CONNECT_EVENT(EV_HOST) {
 	print("*** Connected to "+EV_HOST);
+	raw("JOIN #beep");
 }
 
 // NICK_TAKEN_EVENT()
