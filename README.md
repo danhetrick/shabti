@@ -680,12 +680,12 @@ Now, to get the bot to use your command!  We want the bot to look for command in
 ```javascript
 function PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
 	CommandHandler(Commands,EV_MESSAGE,EV_NICK,EV_CHANNEL);
-}                     ^          ^        ^            ^
-                      |          |        |            |---The channel the
-                      |          |     The user            the chat occured in
- CommandList object---|          |     chatting
-                                 |
-                            Chat message   
+}                      ^          ^        ^            ^
+                       |          |        |            |---The channel the
+                       |          |     The user            the chat occured in
+  CommandList object---|          |     chatting
+                                  |
+                             Chat message   
 ```
 
 This function scans incoming chat for any commands your bot is programmed to respond to, and executes them (or displays help or usage text).
