@@ -351,7 +351,7 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 
 ## Built-In Functions
 
-There are 29 built-in functions for use in your **Shabti** script.
+There are 32 built-in functions for use in your **Shabti** scripts.
 
 * [IRC Functions](#irc-functions)
 	* [`raw`](#raw)
