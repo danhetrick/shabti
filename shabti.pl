@@ -708,6 +708,9 @@ sub SHABTI_load_configuration_file {
 	if(ref($tree->{configuration}->{ircname}) eq 'ARRAY'){
 		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'ircname' child element");
 	}
+    if(ref($tree->{configuration}->{extra}) eq 'ARRAY'){
+        SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'extra' child element");
+    }
 
 	# Load in single element settings
 	if($tree->{configuration}->{server}){ $SERVER = $tree->{configuration}->{server}; }
@@ -715,6 +718,7 @@ sub SHABTI_load_configuration_file {
 	if($tree->{configuration}->{nick}){ $NICK = $tree->{configuration}->{nick}; }
 	if($tree->{configuration}->{username}){ $USERNAME = $tree->{configuration}->{username}; }
 	if($tree->{configuration}->{ircname}){ $IRCNAME = $tree->{configuration}->{ircname}; }
+    if($tree->{configuration}->{extra}){ $MAX_EXTRA_EVENT_FUNCTIONS = $tree->{configuration}->{extra}; }
 
     if ($PORT =~ /^\d+?$/) {}else{
         SHABTI_error(CONFIG_ERROR,"'configuration'->'port' value \"$PORT\" is not a number");

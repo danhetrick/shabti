@@ -226,6 +226,7 @@ perl shabti.pl -Cq -j /home/bob/mybot.js -s Chicago.IL.US.Undernet.org -p 6667 -
 	<nick>Shabti</nick>
 	<username>shabti</username>
 	<ircname>Shabti IRC bot</ircname>
+	<extra>10</extra>
 	<channel>#foo</channel>
 	<channel>#bar</channel>
 	<channel>#shabti</channel>
@@ -249,6 +250,8 @@ Any filename passed to **Shabti** is looked for first in the same directory `sha
 		* Sets the username the bot will use.
 	* `ircname`
 		* Sets the IRCname the bot will use.
+	* `extra`
+		* How many "extra" events the bot will attempt to execute (see ["Extra" Events](#extra-events)).
 	* `channel`
 		* Sets a channel the bot will join.
 		* The `channel` child element can appear multiple times; set multiple `channel` elements to have the bot join more than one channel.
@@ -1050,6 +1053,9 @@ This is the default configuration file for the Shabti IRC bot.
 	<username>shabti</username>
 	<!-- The IRCname the bot will use. -->
 	<ircname>Shabti IRC bot</ircname>
+
+	<!-- How many "extra" events the bot will attempt to execute. -->
+	<extra>10</extra>
 
 	<!--
 		For each channel the bot should join, add a "channel" child

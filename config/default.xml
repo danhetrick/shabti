@@ -32,6 +32,9 @@ This is the default configuration file for the Shabti IRC bot.
 	<!-- The IRCname the bot will use. -->
 	<ircname>Shabti IRC bot</ircname>
 
+	<!-- How many "extra" events the bot will attempt to execute. -->
+	<extra>10</extra>
+
 	<!--
 		For each channel the bot should join, add a "channel" child
 		element with the channel name as its content. With the default
