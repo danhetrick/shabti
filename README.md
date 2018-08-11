@@ -558,12 +558,12 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 #### `sha1`
 * *Arguments*: 1 (data)
 * *Returns*: string
-* Calculates a SHA1 hash and returns it.
+* Calculates a [SHA1](https://en.wikipedia.org/wiki/SHA-1) hash and returns it.
 
 #### `sha256`
 * *Arguments*: 1 (data)
 * *Returns*: string
-* Calculates a SHA256 hash and returns it.
+* Calculates a [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash and returns it.
 
 #### `require`
 * *Arguments*: 1 (filename)
