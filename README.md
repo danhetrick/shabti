@@ -119,6 +119,14 @@
 			* [`SimpleDB.set(ENTRY,VALUE)`](#simpledbsetentryvalue)
 			* [`SimpleDB.exists(ENTRY)`](#simpledbexistsentry)
 
+	* [`nofileio.js`](#nofileiojs)
+		* [`WarnFileIO`](#warnfileio)
+		* [`ExitOnFileIO`](#exitonfileio)
+
+	* [`norequire.js`](#norequirejs)
+		* [`WarnOnRequire`](#warnonrequire)
+		* [`ExitOnRequire`](#exitonrequire)
+
 	</details>
 
 * [Default Script File](#default-script-file)
@@ -770,6 +778,8 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 <pharaoh>   [COLORED TEXT GOES HERE...C'MON, GITHUB! GIVE US MORE FORMATTING OPTIONS!]
 ```
 
+---
+
 ## `simpledb.js`
 
 This module implements a very simple flat-file database.  Entries are stored in an "entry=value" format;  for example, you could assign the value "bob" to the entry "name" ("name=bob").  To start, `require` the module, and create a new `SimpleDB` object, using the file name of where you want to store the database as the only parameter:
@@ -829,6 +839,36 @@ print(SimpleDB.get("name"));
 #### `SimpleDB.exists(ENTRY)`
 
 Returns `true` if an entry exists in the database, and `false` if it doesn't.
+
+---
+
+## `nofileio.js`
+
+This module disables file I/O functions.
+
+### `WarnFileIO`
+
+By defaulst, `WarnFileIO` is set to `false`.  If set to `true`, and a script attempts to use file I/O functions, a warning stating that the file I/O function in question has been disabled is printed to the console.
+
+### `ExitOnFileIO`
+
+By default, `ExitOnFileIO` is set to `false`. If set to `true`, **Shabti** will exit when a script tries to call a file I/O function.
+
+---
+
+## `norequire.js`
+
+This module disables the `require` function.
+
+### `WarnOnRequire`
+
+By defaulst, `WarnOnRequire` is set to `false`.  If set to `true`, and a script attempts to use the `require` function, a warning stating that `require` has been disabled is printed to the console.
+
+### `ExitOnRequire`
+
+By default, `ExitOnRequire` is set to `false`. If set to `true`, **Shabti** will exit when a script tries to execute `require`.
+
+---
 
 # Example Scripts
 
