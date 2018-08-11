@@ -761,6 +761,62 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 <pharaoh>   [COLORED TEXT GOES HERE...C'MON, GITHUB! GIVE US MORE FORMATTING OPTIONS!]
 ```
 
+## `simpledb.js`
+
+This module implements a very simple flat-file database.  Entries are stored in an "entry=value" format;  for example, you could assign the value "bob" to the entry "name" ("name=bob").  To start, `require` the module, and create a new `SimpleDB` object, using the file name of where you want to store the database as the only parameter:
+
+```javascript
+require("simpledb");
+var database = new SimpleDB("/home/dhetrick/mydatabase.txt");
+```
+
+### `SimpleDB`
+
+The `SimpleDB` object has five methods:  `read`, `write`, `get`, `set`, and `exists`.
+
+#### `SimpleDB.read()`
+
+Reloads the database from disk.
+
+#### `SimpleDB.write()`
+
+Writes the contents of the database to disk.  The database is *not* automatically written to disk when changes occur.
+
+#### `SimpleDB.get(ENTRY)`
+
+Looks for an entry in the database; it returns the value if found, and `undefined` if not.
+
+```javascript
+var entry = SimpleDB.get("myentry");
+if(entry==undefined){
+	print("Value not found.");
+} else {
+	print(entry);
+}
+```
+
+#### `SimpleDB.set(ENTRY,VALUE)`
+
+Sets an entry/value pair in the database.  If the entry exists, the value is changed to the value passed as a parameter.  If the entry doesn't exist, it is created.
+
+```javascript
+// Set "name" to value "bob"
+SimpleDB.set("name","bob");
+
+// Prints "bob"
+print(SimpleDB.get("name"));
+
+// Set "name" to value "joe"
+SimpleDB.set("name","joe");
+
+// Prints "joe"
+print(SimpleDB.get("name"));
+```
+
+#### `SimpleDB.exists(ENTRY)`
+
+Returns `true` if an entry exists in the database, and `false` if it doesn't.
+
 # Example Scripts
 
 ## OpBot
