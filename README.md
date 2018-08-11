@@ -675,7 +675,7 @@ This adds a command to the command list.  The parameters to `.add` are:
 
 ### `CommandHandler`
 
-Now, to get the bot to use your command!  We want the bot to look for command input in a channel's public chat; that means we need to write a new PUBLIC_MESSAGE_EVENT function.  We'll use the `CommandHandler` to handle the command you created:
+Now, to get the bot to use your command!  We want the bot to look for command input in a channel's public chat; that means we need to write a new `PUBLIC_MESSAGE_EVENT` function.  We'll use the `CommandHandler` to handle the command you created:
 
 ```javascript
 function PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
@@ -701,6 +701,16 @@ Now, the only thing left to do is run your bot!  Run **Shabti** , join a channel
 <dhetrick>  !hello
 <pharaoh>   Hello!
 ```
+
+If we want to use our commands over private messages to the bot, that's fairly easy to do. Instead of inserting our `CommandHandler` function in `PUBLIC_MESSAGE_EVENT`, we insert it in `PRIVATE_MESSAGE_EVENT`:
+
+```javascript
+function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
+	CommandHandler(Commands,EV_MESSAGE,EV_NICK,EV_NICK);
+}
+```
+
+The only difference is the fourth parameter, which, in our "public chat" example, was set to the channel name; now, it's set to the nick of the user sending the private message.  But nothing's limiting you to only one `CommandList` object! Create one for public chat, and another for private chat, giving users access to different commands depending on how they're chatting with the bot!
 
 ### `!colormsg` command
 
