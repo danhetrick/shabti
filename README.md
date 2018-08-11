@@ -82,7 +82,7 @@
 	</details>
 
 * [Events](#events)
-	* ["Extra" Events](#extra-events)
+* ["Extra" Events](#extra-events)
 
 	<details>
 
