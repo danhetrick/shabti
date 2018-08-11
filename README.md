@@ -698,8 +698,8 @@ Now, the only thing left to do is run your bot!  Run **Shabti** , join a channel
 <pharaoh>   pharaoh 1.0
 <pharaoh>   !hello (no arguments) - Send a greeting
 <dhetrick>  Let's try out the !hello command
-<dhetrick>  !hello #foo
-<pharaoh>   Hello, #foo! Welcome!
+<dhetrick>  !hello
+<pharaoh>   Hello!
 ```
 
 ### `!colormsg` command
