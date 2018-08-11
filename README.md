@@ -287,7 +287,7 @@ function PING_EVENT() {
 }
 ```
 
-`mybot.js` prints a message when the bot connects to a server, as does `otherbot.js`.  If `mybot.js` is loaded before `otherbot.js`, `otherbot.js`'s `CONNECT_EVENT()` function overloads `mybot.js`'s `CONNECT_EVENT()`;  that is, when the bot connects to a server, the `CONNECT_EVENT()` function in `otherbot.js` is executed, not the one in `mybot.js`.
+`mybot.js` prints a message when the bot connects to a server, as does `otherbot.js`.  If `mybot.js` is loaded before `otherbot.js`, `otherbot.js`'s `CONNECT_EVENT()` function overloads `mybot.js`'s `CONNECT_EVENT()`;  that is, when the bot connects to a server, the `CONNECT_EVENT()` function in `otherbot.js` is executed, not the one in `mybot.js`.  To make sure this doesn't occur, consider using "extra" event functions in your scripts, if you're going to load more than one at a time (see ["Extra" Events](#extra-events) for more information).
 
 A **Shabti** script doesn't need to contain all of the events provided, only the ones necessary for whatever you're trying to do with your script.  If a specific event is not present, it will simply never be called.
 
