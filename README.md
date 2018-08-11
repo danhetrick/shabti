@@ -110,6 +110,14 @@
 		* [`CommandHandler`](#commandhandler)
 		* [`!colormsg` command](#colormsg-command)
 
+	* [`simpledb.js`](#simpledbjs)
+		* [`SimpleDB`](#simpledb)
+			* [`SimpleDB.read()`](#simpledbread)
+			* [`SimpleDB.write()`](#simpledbwrite)
+			* [`SimpleDB.get(ENTRY)`](#simpledbgetentry)
+			* [`SimpleDB.set(ENTRY,VALUE)`](#simpledbsetentryvalue)
+			* [`SimpleDB.exists(ENTRY)`](#simpledbexistsentry)
+
 	</details>
 
 * [Default Script File](#default-script-file)
