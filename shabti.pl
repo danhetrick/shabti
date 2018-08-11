@@ -46,6 +46,7 @@ use constant JAVASCRIPT_ERROR       => 1;
 use constant NETWORK_ERROR          => 2;
 use constant FILE_ERROR             => 3;
 use constant CONFIG_ERROR			=> 4;
+use constant REQUIRE_ERROR          => 5;
 
 # ~~~~~~~~~~~~~~~~~
 # | CONSTANTS END |
@@ -68,7 +69,7 @@ my @SCRIPTS							= ();
 
 my $APPLICATION                     = 'Shabti';
 my $APPLICATION_FILE_NAME           = 'shabti.pl';
-my $VERSION                         = '0.033';
+my $VERSION                         = '0.157';
 my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 # ----------------
@@ -85,6 +86,7 @@ $BANNER .= ('-' x $LOGO_WIDTH)."\n\n";
 # --------------
 
 my $CONFIGURATION_DIRECTORY_NAME    = 'config';
+my $JAVASCRIPT_MODULES_DIRECTORY    = "modules";
 my $BOT_SOURCE                  	= 'default.js';
 my $CONFIG							= 'default.xml';
 my $CONFIG_DIRECTORY				= File::Spec->catfile( $RealBin, $CONFIGURATION_DIRECTORY_NAME );
@@ -95,6 +97,7 @@ my $NOBANNER						= undef;
 my $NOJSPRINT						= undef;
 my $QUIET							= undef;
 my $NOCONFIG						= undef;
+my $DISPLAY_VERSION                 = undef;
 
 my $JOIN_EVENT                      = 'JOIN_EVENT';
 my $CONNECT_EVENT                   = 'CONNECT_EVENT';
@@ -182,12 +185,18 @@ GetOptions(
     "b|nobanner"		=> \$NOBANNER,
     "P|noprint"			=> \$NOJSPRINT,
     "q|quiet"			=> \$QUIET,
-    "C|noconfig"		=> \$NOCONFIG
+    "C|noconfig"		=> \$NOCONFIG,
+    "v|version"         => \$DISPLAY_VERSION
 );
 
 if($USAGE){
 	SHABTI_usage();
 	exit 0;
+}
+
+if($DISPLAY_VERSION){
+    print "$VERSION\n";
+    exit 0;
 }
 
 # If quiet mode is on, suppress all console prints
@@ -556,6 +565,7 @@ sub irc_nick_taken {
 # SHABTI_logo()
 # SHABTI_error()
 # SHABTI_find_file()
+# SHABTI_require_file()
 # SHABTI_add_built_in_functions()
 
 # SHABTI_usage()
@@ -581,6 +591,7 @@ sub SHABTI_usage {
 	print "--no(P)rint			Prevent JavaScript from printing to the console\n";
 	print "--(q)uiet			Prevent all console printing\n";
 	print "--no(C)onfig			Don't load settings from 'default.xml'\n";
+    print "--(v)ersion         Display version\n";
 }
 
 # SHABTI_load_configuration_file()
@@ -671,7 +682,11 @@ sub SHABTI_error {
     my $error = shift;
 
     if($type==JAVASCRIPT_ERROR){
-        print "Javascript $error";
+        print "Javascript: $error";
+    }
+
+    if($type==REQUIRE_ERROR){
+        print "Javascript Require: $error";
     }
 
     if($type==NETWORK_ERROR){
@@ -719,12 +734,57 @@ sub SHABTI_find_file {
     return undef;
 }
 
+# SHABTI_require_file()
+# Arguments: 1 (filename)
+# Returns: Scalar (filename)
+# Description: Looks for a given JS module file in the module directory.
+sub SHABTI_require_file {
+    my $filename = shift;
+
+    # If the filename is found, return it
+    if((-e $filename)&&(-f $filename)){ return $filename; }
+
+    # Look for the file in $CONFIGURATION_DIRECTORY_NAME/$JAVASCRIPT_MODULES_DIRECTORY/filename
+    my $f = File::Spec->catfile($CONFIGURATION_DIRECTORY_NAME,$JAVASCRIPT_MODULES_DIRECTORY,$filename);
+    if((-e $f)&&(-f $f)){ return $f; }
+
+    # Look for the file in $Realbin/$CONFIGURATION_DIRECTORY_NAME/$JAVASCRIPT_MODULES_DIRECTORY/filename
+    $f = File::Spec->catfile($RealBin,$CONFIGURATION_DIRECTORY_NAME,$JAVASCRIPT_MODULES_DIRECTORY,$filename);
+    if((-e $f)&&(-f $f)){ return $f; }
+
+    return undef;
+}
+
 # SHABTI_add_built_in_functions()
 # Arguments: 1 (JE object)
 # Returns: JE Object
 # Description: Adds new JavaScript commands to the JE object.
 sub SHABTI_add_built_in_functions {
     my $j = shift;
+
+    # require
+    # Loads a Javascript library
+    $j->new_function(
+        require => sub {
+            if ( scalar @_ == 1 ) {
+                my $rcf = SHABTI_require_file($_[0]);
+                open(FILE,"<$rcf") or SHABTI_error(FILE_ERROR, "Error reading 'require'-ed file '$_[0]'");
+                my $rc = join('',<FILE>);
+                close FILE;
+
+                if ( $j->eval($rc) ) { }
+                else {
+                    if ( $@ ne '' ) {
+                        SHABTI_error(REQUIRE_ERROR,$@);
+                    }
+                }
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'require'\n";
+            }
+        }
+    );
 
     # raw
     # Sends a raw command to the IRC server
