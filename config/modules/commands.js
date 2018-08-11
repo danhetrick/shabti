@@ -57,7 +57,7 @@ function CommandHandler(CMD_LIST,CMD_MESSAGE,CMD_CALLER,CMD_CHANNEL){
 
 	var c = new CommandParse(CMD_MESSAGE);
 
-	if(c.command.toLowerCase()==CMD_LIST.cmdHelp){
+	if(c.command.toLowerCase()==CMD_LIST.cmdHelp.toLowerCase()){
 		var h = CMD_LIST.help();
 		for(var i=0, len=h.length; i < len; i++){
 			message(CMD_CHANNEL,h[i]);
