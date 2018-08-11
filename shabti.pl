@@ -27,6 +27,7 @@ use lib File::Spec->catfile( $RealBin, 'lib' );
 use JE;
 use Parse::IRC;
 use XML::TreePP;
+use Digest::SHA::PurePerl;
 
 # ===============
 # | MODULES END |
@@ -393,6 +394,21 @@ sub irc_part {
         }
     }
 
+    my $i = 1;
+
+    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+        my $cmd = "if (typeof $PART_EVENT"."_".$i."=== \"function\") { $PART_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n";
+
+        if ( $js->eval($cmd) ) { }
+        else {
+            if ( $@ ne '' ) {
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
+            }
+        }
+
+        $i++;
+    }
+
     # refresh user list
     print $sock "NAMES :$where\r\n";
     # get server time/date
@@ -443,6 +459,21 @@ sub irc_join {
         }
     }
 
+    my $i = 1;
+
+    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+        my $cmd = "if (typeof $JOIN_EVENT"."_".$i."=== \"function\") { $JOIN_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\"); }\n";
+
+        if ( $js->eval($cmd) ) { }
+        else {
+            if ( $@ ne '' ) {
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
+            }
+        }
+
+        $i++;
+    }
+
     # refresh user list
     print $sock "NAMES :$where\r\n";
     # get server time/date
@@ -460,6 +491,21 @@ sub irc_001 {
         if ( $@ ne '' ) {
             SHABTI_error(JAVASCRIPT_ERROR,$@);
         }
+    }
+
+    my $i = 1;
+
+    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+        my $cmd = "if (typeof $CONNECT_EVENT"."_".$i."=== \"function\") { $CONNECT_EVENT"."_".$i."(\"$_[0]\"); }\n";
+
+        if ( $js->eval($cmd) ) { }
+        else {
+            if ( $@ ne '' ) {
+                SHABTI_error(JAVASCRIPT_ERROR,$@);
+            }
+        }
+
+        $i++;
     }
 
     print $sock "TIME\r\n";
@@ -809,6 +855,48 @@ sub SHABTI_require_file {
 # Description: Adds new JavaScript commands to the JE object.
 sub SHABTI_add_built_in_functions {
     my $j = shift;
+
+    # sha1
+    # Calculates a sha1 hash
+    $j->new_function(
+        sha1 => sub {
+            if ( scalar @_ == 1 ) {
+                return Digest::SHA::PurePerl::sha1_hex($_[0]);
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'sha1'\n";
+            }
+        }
+    );
+
+    # sha256
+    # Calculates a sha256 hash
+    $j->new_function(
+        sha256 => sub {
+            if ( scalar @_ == 1 ) {
+                return Digest::SHA::PurePerl::sha256_hex($_[0]);
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'sha256'\n";
+            }
+        }
+    );
+
+    # raw
+    # Sends a raw command to the IRC server
+    $j->new_function(
+        raw => sub {
+            if ( scalar @_ == 1 ) {
+                print $sock "$_[0]\r\n";
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'raw'\n";
+            }
+        }
+    );
 
     # require
     # Loads a Javascript library

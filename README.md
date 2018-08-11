@@ -74,6 +74,8 @@
 
 	<summary>Miscellaneous Functions</summary>
 
+	* [`sha1`](#sha1)
+	* [`sha256`](#sha256)
 	* [`require`](#require)
 	* [`exit`](#exit)
 
@@ -162,7 +164,11 @@
 		* *libraries necessary for Shabti to run properly*
 	* config
 		* modules
-			* *Shabti module files*
+			* commands.js
+			* simpledb.js
+			* nofileio.js
+			* norequire.js
+			* plaintext.js
 		* default.js
 		* default.xml
 
@@ -378,6 +384,8 @@ There are 29 built-in functions for use in your **Shabti** script.
 	* [`rmdir`](#rmdir)
 	* [`delete`](#delete)
 * [Miscellaneous Functions](#miscellaneous-functions)
+	* [`sha1`](#sha1)
+	* [`sha256`](#sha256)
 	* [`require`](#require)
 	* [`exit`](#exit)
 
@@ -546,6 +554,16 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 
 ### Miscellaneous Functions
 
+#### `sha1`
+* *Arguments*: 1 (data)
+* *Returns*: string
+* Calculates a SHA1 hash and returns it.
+
+#### `sha256`
+* *Arguments*: 1 (data)
+* *Returns*: string
+* Calculates a SHA256 hash and returns it.
+
 #### `require`
 * *Arguments*: 1 (filename)
 * *Returns*: nothing
@@ -560,10 +578,6 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 
 ## Events
 
-Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.  All event function names are in uppercase.
-
-If you want to execute code as soon as the script is loaded, simply place your code at the top of the file, or outside of event declarations. Any code not in a function or event declaration is executed as soon as the script is loaded.
-
 * [`CONNECT_EVENT`](#connect_eventev_host)
 * [`NICK_TAKEN_EVENT`](#nick_taken_event)
 * [`PING_EVENT`](#ping_event)
@@ -576,61 +590,72 @@ If you want to execute code as soon as the script is loaded, simply place your c
 * [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message)
 * [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message)
 
+Events are functions that are automatically executed when **Shabti** receives certain types of communication from the IRC server.  For example, there's an event that is executed whenever **Shabti** receives a public message, another when receiving a private message, and so on. This is where the bot's desired behavior is implemented.  There are 12 events which cover every type of message an IRC server can send to a client.  Each event is called with a variable number of arguments, passing pertinent information about the event to the function; event arguments in a function declaration should be uppercase, with each argument beginning with `EV_`.  All event function names are in uppercase.
+
+If you want to execute code as soon as the script is loaded, simply place your code at the top of the file, or outside of event declarations. Any code not in a function or event declaration is executed as soon as the script is loaded.
+
+### "Extra" Events
+
+Some events will call "extra" functions; that is, the event triggers multiple function calls.  The names of these "extra" functions follow the format "EVENT_FUNCTION_x", where "x" is a number.  By default, "x" will be a number from 1-10; so, when an event with "extra" functions is triggered, the bot will attempt to execute `EVENT_FUNCTION_1`, `EVENT_FUNCTION_2`, `EVENT_FUNCTION_3`, and so on. To change how many "extra" event functions are called, use the `--extra` command line option. The events that support this feature are [`CONNECT_EVENT`](#connect_eventev_host), [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message), [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message), [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel), and [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message).
+
 ---
 
-### `CONNECT_EVENT(EV_HOST)`
+#### `CONNECT_EVENT(EV_HOST)`
 * *Arguments*: `EV_HOST` (the name of the server connected to)
+* *Note:* **Shabti** will call "extra" connect event functions.  Their names follow the format `CONNECT_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `CONNECT_EVENT_1` to `CONNECT_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `CONNECT_EVENT_1` to `CONNECT_EVENT_50` whenever it receives a connect message.
 
 Called when the bot connects to the IRC server.
 
-### `NICK_TAKEN_EVENT()`
+#### `NICK_TAKEN_EVENT()`
 * *Arguments*: none
 
 Called when the bot is notified by the server that their requested nick is taken. By default, this is *not* handled automatically, and must be handled by the script.  The script that comes with a default **Shabti** installation calls the built-in function `rnick` to handle this problem.
 
-### `PING_EVENT()`
+#### `PING_EVENT()`
 * *Arguments*: none
 
 Called when the bot receives a "PING?" request from the server. The necessary response ("PONG!") is handled automatically.
 
-### `TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
+#### `TIME_EVENT(EV_WEEKDAY,EV_MONTH,EV_DAY,EV_YEAR,EV_HOUR,EV_MINUTE,EV_SECOND,EV_ZONE)`
 * *Arguments*: `EV_WEEKDAY` (day of the week), `EV_MONTH` (month of the year), `EV_DAY` (numeric day of the month), `EV_YEAR` (numeric year), `EV_HOUR` (hour of the day), `EV_MINUTE` (minute of the hour), `EV_SECOND` (second of the minute), `EV_ZONE` (time zone)
 
 Called when the bot receives a `RPL_TIME` message from the server. **Shabti** can ask the server to send a `RPL_TIME` message by using the built-in function `raw` with the argument "TIME" (`raw("TIME");`).
 
-### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+#### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
 * *Note:* **Shabti** will call "extra" public chat event functions.  Their names follow the format `PUBLIC_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_50` whenever it receives a public message.
 
 Called when the bot receives a public message.
 
-### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
+#### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
 * *Note:* **Shabti** will call "extra" private chat event functions.  Their names follow the format `PRIVATE_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_50` whenever it receives a private message.
 
 Called when the bot receives a private message.
 
-### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
+#### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the action), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the action is sent to), `EV_ACTION` (the action sent)
 
 Called when the bot receives a CTCP action message.
 
-### `MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
+#### `MODE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MODE)`
 * *Arguments*: `EV_NICK` (the nick of the user setting the mode), `EV_USERNAME` (the username of the setter), `EV_TARGET` (the mode's target), `EV_MODE` (the mode set)
 
 Called when the bot receives a mode notification. If the server is the one setting the mode, the `EV_USERNAME` argument will be an empty string.
 
-### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
+#### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
 * *Arguments*: `EV_NICK` (the nick joining the channel), `EV_USERNAME` (the username of the joiner), `EV_CHANNEL` (the channel joined)
+* *Note:* **Shabti** will call "extra" join event functions.  Their names follow the format `JOIN_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `JOIN_EVENT_1` to `JOIN_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `JOIN_EVENT_1` to `JOIN_EVENT_50` whenever it receives a join message.
 
 Called when the bot receives a channel join notification.
 
-### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
+#### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick parting the channel). `EV_USERNAME` (the username of parter), `EV_CHANNEL` (the channel parted), `EV_MESSAGE` (optional parting message)
+* *Note:* **Shabti** will call "extra" part event functions.  Their names follow the format `PART_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PART_EVENT_1` to `PART_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PART_EVENT_1` to `PART_EVENT_50` whenever it receives a part message.
 
 Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `EV_MESSAGE` argument, which is set to a blank string otherwise.
 
-### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
+#### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
 * *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
 
 Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.
