@@ -752,6 +752,19 @@ sub SHABTI_require_file {
     $f = File::Spec->catfile($RealBin,$CONFIGURATION_DIRECTORY_NAME,$JAVASCRIPT_MODULES_DIRECTORY,$filename);
     if((-e $f)&&(-f $f)){ return $f; }
 
+    # Add ".js" to the end of the filename, if that's been left off
+    $filename = "$filename.js";
+
+    # Only look for files with the added ".js" in the modules directory
+
+    # Look for the file in $CONFIGURATION_DIRECTORY_NAME/$JAVASCRIPT_MODULES_DIRECTORY/filename
+    $f = File::Spec->catfile($CONFIGURATION_DIRECTORY_NAME,$JAVASCRIPT_MODULES_DIRECTORY,$filename);
+    if((-e $f)&&(-f $f)){ return $f; }
+
+    # Look for the file in $Realbin/$CONFIGURATION_DIRECTORY_NAME/$JAVASCRIPT_MODULES_DIRECTORY/filename
+    $f = File::Spec->catfile($RealBin,$CONFIGURATION_DIRECTORY_NAME,$JAVASCRIPT_MODULES_DIRECTORY,$filename);
+    if((-e $f)&&(-f $f)){ return $f; }
+
     return undef;
 }
 

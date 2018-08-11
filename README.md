@@ -99,6 +99,19 @@
 
 	</details>
 
+* [Modules](#modules)
+
+	<details>
+
+	<summary>All modules</summary>
+
+	* [`commands.js`](#commandsjs)
+		* [`CommandList`](#commandlist)
+		* [`CommandHandler`](#commandhandler)
+		* [`!colormsg` command](#colormsg-command)
+
+	</details>
+
 * [Default Script File](#default-script-file)
 
 </details>
@@ -246,7 +259,7 @@ function PING_EVENT() {
 
 A **Shabti** script doesn't need to contain all of the events provided, only the ones necessary for whatever you're trying to do with your script.  If a specific event is not present, it will simply never be called.
 
-## Built-In Variables.
+## Built-In Variables
 
 Built-in variables are always in uppercase; with the exception of the miscellaneous variables for use with the `color` function, they all start with `SV_`.
 
@@ -604,29 +617,27 @@ Called when the bot receives a notification that is not handled by any other eve
 
 **Shabti** provides a way to write general purpose code that can be used in multiple scripts:  **modules**.  A **Shabti** module is a Javascript file that contains Javascript code, variables, objects, and functions; they must be placed in the `config/modules` folder, and are loaded with the function [`require`](#require).  Modules can contain any kind of code for any purpose, but it's supposed to be used for code libraries that you can use in your **Shabti** scripts.  Several modules are included with the default install.
 
+When loading a module with `require`, you can leave off the ".js" file extension, if you wish.
+
 ## `commands.js`
 
-This module is for automating command functionality for your **Shabti** bot.  It contains two objects (`CommandList` and `CommandParse`) and one function (`CommandHandler`):
-
-```javascript
-function CommandList(BOT_NAME,BOT_VERSION,CMD_HELP);
-
-function CommandParse(SHABTI_TEXT);
-
-function CommandHandler(CMD_LIST,CMD_MESSAGE,CMD_CALLER,CMD_CHANNEL);
-```
-
-`CommandParse` is used internally for the module's functionality, and will not be explained here.  We're going to focus on `CommandList` and `CommandHandler`.
-
-### `CommandList`
-
-This object is where you define commands, set usage text, and set the "help" command (which will be used to send users usage information).  `CommandList` is initialized with your bot's name, version, and the help command you want the bot to respond to.  To use `CommandList`, first use the `require` function to load it into memory:
+This module is for automating command functionality for your **Shabti** bot.  It contains two objects (`CommandList` and `CommandParse`) and one function (`CommandHandler`). `CommandParse` is used internally for the module's functionality, and will not be explained here.  We're going to focus on `CommandList` and `CommandHandler`.  To use `commands.js`, you have to use the `require` function to load it into memory:
 
 ```javascript
 require("commands.js");
 ```
 
-Now, create a new variable of the type `CommandList`.  In this example, the bot's name is "pharaoh", the bot's version is "1.0", and we want our help command to be "!help".  We're going to put this declaration at the beginning of the **Shabti** script, outside of any events, so any and all events can use it:
+You can leave off the ".js" file extension, if you want:
+
+```javascript
+require("commands");
+```
+
+### `CommandList`
+
+This object is where you define commands, set usage text, and set the "help" command (which will be used to send users usage information).  `CommandList` is initialized with your bot's name, version, and the help command you want the bot to respond to.
+
+First, create a new variable of the type `CommandList`.  In this example, the bot's name is "pharaoh", the bot's version is "1.0", and we want our help command to be "!help".  We're going to put this declaration at the beginning of the **Shabti** script, outside of any events, so any and all events can use it:
 
 ```javascript
 var Commands = new CommandList("pharaoh","1.0","!help");
@@ -641,10 +652,10 @@ function cmd_hello(args,caller,channel){
 }
 ```
 
-Now that we've got our command functionality, let's add it to the command list:
+Our new command doesn't take *any* arguments; simply calling "!hello" tells the bot to execute the command. Now that we've got our command functionality, let's add it to the command list:
 
 ```javascript
-Commands.add("!hello","Sends a greeting","Usage: !hello",1,cmd_hello);
+Commands.add("!hello","Sends a greeting","Usage: !hello",0,cmd_hello);
                   ^            ^           ^             ^     ^
                   |            |           |             |     |
                 ---            |       Usage             |     -------
@@ -682,10 +693,10 @@ This function scans incoming chat for any commands your bot is programmed to res
 Now, the only thing left to do is run your bot!  Run **Shabti** , join a channel that your **Shabti** bot joined (in this example, the bot is in `#foo`), and try out some commands!
 
 ```
-<dhetrick>  Ok, bot, let's say "hi" the channel!
+<dhetrick>  Ok, bot, let's see what commands are available!
 <dhetrick>  !help
 <pharaoh>   pharaoh 1.0
-<pharaoh>   !hello (1 argument) - Send a greeting
+<pharaoh>   !hello (no arguments) - Send a greeting
 <dhetrick>  Let's try out the !hello command
 <dhetrick>  !hello #foo
 <pharaoh>   Hello, #foo! Welcome!
@@ -696,11 +707,6 @@ Now, the only thing left to do is run your bot!  Run **Shabti** , join a channel
 Our "!hello" is pretty cool, but we're going to add another command that makes the bot message a more colorful greeting.  Let's scroll back up to the beginning of the file, where we created our `CommandList` object.  Place this code right under the `CommandList.add` statement for our "!hello" command:
 
 ```javascript
-var cmd_color_greeting = '';\
-var front_color = Math.floor((Math.random() * 15) + 1);\
-var back_color = Math.floor((Math.random() * 15) + 1);\
-cmd_color = 'message(ARGUMENT[0],color(ARGUMENT[1],ARGUMENT[2],"Hello, "+ARGUMENT[0]+"! Welcome!")';
-
 function cmd_color(args,caller,channel){
 	// First argument is who to send the message to
 	var target = args.shift();
@@ -737,7 +743,7 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 ```
 <dhetrick>  !help
 <pharaoh>   pharaoh 1.0
-<pharaoh>   !hello (1 argument) - Send a greeting
+<pharaoh>   !hello (no arguments) - Send a greeting
 <pharaoh>   !colormsg (2 arguments) - Sends a colorful greeting
 <dhetrick>  !colormsg
 <pharaoh>   Usage: !colormsg NICK MESSAGE
