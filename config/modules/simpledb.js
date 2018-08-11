@@ -35,6 +35,7 @@ function SimpleDB(DB_FILENAME);
 		Returns true if the entry exists, false if not.
 
 */
+
 function SimpleDB(DB_FILENAME){
 	this.filename = DB_FILENAME;
 	this.contents = new Array();
@@ -57,6 +58,11 @@ function SimpleDB(DB_FILENAME){
 	this.write = function(){
 		var f = this.contents.join("\n");
 		write(this.filename,f);
+	}
+
+	this.copy = function(DB_FILENAME){
+		var f = this.contents.join("\n");
+		write(DB_FILENAME,f);
 	}
 
 	this.exists = function(db_entry){

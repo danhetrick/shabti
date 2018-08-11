@@ -114,6 +114,7 @@
 		* [`SimpleDB`](#simpledb)
 			* [`SimpleDB.read()`](#simpledbread)
 			* [`SimpleDB.write()`](#simpledbwrite)
+			* [`SimpleDB.copy(FILENAME)`](#simpledbcopyfilename)
 			* [`SimpleDB.get(ENTRY)`](#simpledbgetentry)
 			* [`SimpleDB.set(ENTRY,VALUE)`](#simpledbsetentryvalue)
 			* [`SimpleDB.exists(ENTRY)`](#simpledbexistsentry)
@@ -780,7 +781,7 @@ var database = new SimpleDB("/home/dhetrick/mydatabase.txt");
 
 ### `SimpleDB`
 
-The `SimpleDB` object has five methods:  `read`, `write`, `get`, `set`, and `exists`.
+The `SimpleDB` object has six methods:  `read`, `write`, `copy`, `get`, `set`, and `exists`.
 
 #### `SimpleDB.read()`
 
@@ -789,6 +790,10 @@ Reloads the database from disk.
 #### `SimpleDB.write()`
 
 Writes the contents of the database to disk.  The database is *not* automatically written to disk when changes occur.
+
+#### `SimpleDB.copy(FILENAME)`
+
+Writes the contents of the database to a new file. This filename is not stored; when you execute a `SimpleDB.write()`, it will write to the filename used when the object was created.
 
 #### `SimpleDB.get(ENTRY)`
 
