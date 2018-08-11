@@ -150,7 +150,7 @@
 	--no(P)rint			Prevent JavaScript from printing to the console
 	--(q)uiet			Prevent all console printing
 	--no(C)onfig			Don't load settings from 'default.xml'
-	--(v)ersion				Display version		
+	--(v)ersion			Display version		
 
 # Configuration
 
