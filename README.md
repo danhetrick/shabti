@@ -360,6 +360,8 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 There are 32 built-in functions for use in your **Shabti** scripts.
 
 * [IRC Functions](#irc-functions)
+	<details>
+	<summary>Click for list of IRC functions</summary>
 	* [`raw`](#raw)
 	* [`set`](#set)
 	* [`login`](#login)
@@ -372,6 +374,7 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	* [`message`](#message)
 	* [`notice`](#notice)
 	* [`action`](#action)
+	</details>
 * [Text Functions](#text-functions)
 	* [`print`](#print)
 	* [`sprint`](#sprint)
