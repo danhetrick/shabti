@@ -5,13 +5,13 @@
 * [Miscellaneous Functions](#miscellaneousfunctions)
     
 ## IRC Functions
-| raw         |                  |
+| `raw`         |                  |
 |-------------|------------------|
 | *Arguments*   | 1 (text to send) |
 | *Returns*     | Nothing          |
 | *Description* |Sends "raw" text to the IRC server; that is, the bot will send the server this text without any modification.  This can be used to send IRC commands that don't have **Shabti** built-in functions to perform.  For example, to send a private message to Bob, you could use `raw("PRIVMSG Bob :Hello world!")`.  |
 
-| set         |                  |
+| `set`         |                  |
 |-------------|------------------|
 | Arguments   | 2+ (targets, flags, optional arguments) |
 | Returns     | Nothing          |
