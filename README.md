@@ -360,7 +360,6 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 There are 32 built-in functions for use in your **Shabti** scripts.
 
 * [IRC Functions](#irc-functions)
-
 	<details>
 
 	<summary>Click for a list of IRC functions</summary>
@@ -381,8 +380,7 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	</details>
 
 * [Text Functions](#text-functions)
-
-	<detail>
+	<details>
 
 	<summary>Click for a list of Text functions</summary>
 
@@ -393,10 +391,9 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	* [`italic`](#italic)
 	* [`underline`](#underline)
 
-	</detail>
+	</details>
 
 * [File I/O Functions](#file-io-functions)
-	
 	<details>
 
 	<summary>Click for a list of File I/O functions</summary>
@@ -415,7 +412,6 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	</details>
 
 * [Miscellaneous Functions](#miscellaneous-functions)
-	
 	<details>
 
 	<summary>Click for a list of Miscellaneous functions</summary>
