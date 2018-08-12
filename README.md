@@ -903,7 +903,7 @@ By default, `ExitOnRequire` is set to `false`. If set to `true`, **Shabti** will
 
 ## `plaintext.js`
 
-This module disables the `color`, `bold`, `italic`, and `underline` functions.
+This module disables the `color`, `bold`, `italic`, and `underline` functions; this functions will simply return their input, unchanged.
 
 ### `WarnOnColor`
 
