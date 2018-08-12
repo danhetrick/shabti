@@ -158,19 +158,21 @@
 
 # Installation
 
-* README.md
-* shabti.pl
-	* lib
+* :page_facing_up: LICENSE
+* :page_facing_up: README.md
+* :page_facing_up: shabti.pl
+* :page_facing_up: shabti_logo.png
+	* :file_folder: lib
 		* *libraries necessary for Shabti to run properly*
-	* config
-		* modules
-			* commands.js
-			* simpledb.js
-			* nofileio.js
-			* norequire.js
-			* plaintext.js
-		* default.js
-		* default.xml
+	* :file_folder: config
+		* :file_folder: modules
+			* :page_facing_up: commands.js
+			* :page_facing_up: simpledb.js
+			* :page_facing_up: nofileio.js
+			* :page_facing_up: norequire.js
+			* :page_facing_up: plaintext.js
+		* :page_facing_up: default.js
+		* :page_facing_up: default.xml
 
 # Usage
 
