@@ -84,6 +84,8 @@
 | Returns     | Nothing          |
 | Description | Prints text to the console, followed by a carriage return.   |
 
+
+
 | `sprint`         |                  |
 |-------------|------------------|
 | Arguments   | 1+ (text to print) |
