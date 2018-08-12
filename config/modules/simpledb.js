@@ -14,19 +14,19 @@ Shabti Simple Database Module
 Example usage:
 
 require("simpledb.js");
-var mydb = new SimpleDB("/home/user/mydb.txt");
+var mydb = new SimpleDB();
 
 mydb.set("name","bob");
 print(mydb.get("name"));
-mydb.write();
+mydb.write("/home/user/mydb.txt");
 
 Objects:
 
-function SimpleDB(DB_FILENAME);
-	SimpleDB.read()
-		Reloads the database from disk.
-	SimpleDB.write()
-		Writes the databse to disk.
+function SimpleDB();
+	SimpleDB.read(FILENAME)
+		Loads a database from disk.
+	SimpleDB.write(FILENAME)
+		Writes the database to disk.
 	SimpleDB.set(ENTRY,VALUE)
 		Sets an entry/value pair.
 	SimpleDB.get(ENTRY)
@@ -36,31 +36,22 @@ function SimpleDB(DB_FILENAME);
 
 */
 
-function SimpleDB(DB_FILENAME){
-	this.filename = DB_FILENAME;
+function SimpleDB(){
 	this.contents = new Array();
 
-	if(fileexists(this.filename)){
-		var f = read(this.filename);
-		this.contents = f.split("\n");
-	}
-
-	this.read = function(){
-		if(fileexists(this.filename)){
-			var f = read(this.filename);
+	this.read = function(DB_FILENAME){
+		if(fileexists(DB_FILENAME)){
+			var f = read(DB_FILENAME);
 			this.contents = new Array();
 			this.contents = f.split("\n");
+			return true;
 		} else {
 			this.contents = new Array();
+			return false;
 		}
 	}
 
-	this.write = function(){
-		var f = this.contents.join("\n");
-		write(this.filename,f);
-	}
-
-	this.copy = function(DB_FILENAME){
+	this.write = function(DB_FILENAME){
 		var f = this.contents.join("\n");
 		write(DB_FILENAME,f);
 	}

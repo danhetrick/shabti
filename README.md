@@ -115,9 +115,8 @@
 
 	* [`simpledb.js`](#simpledbjs)
 		* [`SimpleDB`](#simpledb)
-			* [`SimpleDB.read()`](#simpledbread)
-			* [`SimpleDB.write()`](#simpledbwrite)
-			* [`SimpleDB.copy(FILENAME)`](#simpledbcopyfilename)
+			* [`SimpleDB.read(FILENAME)`](#simpledbreadfilename)
+			* [`SimpleDB.write(FILENAME)`](#simpledbwritefilename)
 			* [`SimpleDB.get(ENTRY)`](#simpledbgetentry)
 			* [`SimpleDB.set(ENTRY,VALUE)`](#simpledbsetentryvalue)
 			* [`SimpleDB.exists(ENTRY)`](#simpledbexistsentry)
@@ -818,28 +817,24 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 
 ## `simpledb.js`
 
-This module implements a very simple flat-file database.  Entries are stored in an "entry=value" format;  for example, you could assign the value "bob" to the entry "name" ("name=bob").  To start, `require` the module, and create a new `SimpleDB` object, using the file name of where you want to store the database as the only parameter:
+This module implements a very simple flat-file database.  Entries are stored in an "entry=value" format;  for example, you could assign the value "bob" to the entry "name" ("name=bob").  To start, `require` the module, and create a new `SimpleDB` object:
 
 ```javascript
 require("simpledb");
-var database = new SimpleDB("/home/dhetrick/mydatabase.txt");
+var database = new SimpleDB();
 ```
 
 ### `SimpleDB`
 
-The `SimpleDB` object has six methods:  `read`, `write`, `copy`, `get`, `set`, and `exists`.
+The `SimpleDB` object has five methods:  `read`, `write`, `get`, `set`, and `exists`.
 
-#### `SimpleDB.read()`
+#### `SimpleDB.read(FILENAME)`
 
-Reloads the database from disk.
+Loads a database from disk.  Returns `true` if the read operation was successful, and `false` if the read operation failed.
 
-#### `SimpleDB.write()`
+#### `SimpleDB.write(FILENAME)`
 
-Writes the contents of the database to disk.  The database is *not* automatically written to disk when changes occur.
-
-#### `SimpleDB.copy(FILENAME)`
-
-Writes the contents of the database to a new file. This filename is not stored; when you execute a `SimpleDB.write()`, it will write to the filename used when the object was created.
+Writes the contents of the database to disk.
 
 #### `SimpleDB.get(ENTRY)`
 
