@@ -362,7 +362,7 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 * [IRC Functions](#irc-functions)
 	<details>
 
-	<summary>Click for list of IRC functions</summary>
+	<summary>Click for a list of IRC functions</summary>
 
 	* [`raw`](#raw)
 	* [`set`](#set)
@@ -378,15 +378,27 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	* [`action`](#action)
 
 	</details>
-	
+
 * [Text Functions](#text-functions)
+	<detail>
+
+	<summary>Click for a list of Text functions</summary>
+
 	* [`print`](#print)
 	* [`sprint`](#sprint)
 	* [`color`](#color)
 	* [`bold`](#bold)
 	* [`italic`](#italic)
 	* [`underline`](#underline)
+
+	</detail>
+
 * [File I/O Functions](#file-io-functions)
+	
+	<details>
+
+	<summary>Click for a list of File I/O functions</summary>
+
 	* [`read`](#read)
 	* [`write`](#write)
 	* [`swrite`](#swrite)
@@ -397,11 +409,21 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	* [`mkdir`](#mkdir)
 	* [`rmdir`](#rmdir)
 	* [`delete`](#delete)
+
+	</details>
+
 * [Miscellaneous Functions](#miscellaneous-functions)
+	
+	<details>
+
+	<summary>Click for a list of Miscellaneous functions</summary>
+
 	* [`sha1`](#sha1)
 	* [`sha256`](#sha256)
 	* [`require`](#require)
 	* [`exit`](#exit)
+
+	</details>
 
 ---
 
