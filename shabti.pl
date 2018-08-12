@@ -89,6 +89,7 @@ $BANNER .= ('-' x $LOGO_WIDTH)."\n\n";
 my $CONFIGURATION_DIRECTORY_NAME    = 'config';
 my $JAVASCRIPT_MODULES_DIRECTORY    = "modules";
 my $BOT_SOURCE                  	= 'default.js';
+my $DEFAULT_BOT_SOURCE              = $BOT_SOURCE;
 my $CONFIG							= 'default.xml';
 my $CONFIG_DIRECTORY				= File::Spec->catfile( $RealBin, $CONFIGURATION_DIRECTORY_NAME );
 
@@ -193,11 +194,13 @@ GetOptions(
     "x|extra"           => \$MAX_EXTRA_EVENT_FUNCTIONS
 );
 
+# Display usage information
 if($USAGE){
 	SHABTI_usage();
 	exit 0;
 }
 
+# Display version information
 if($DISPLAY_VERSION){
     print "$VERSION\n";
     exit 0;
@@ -237,30 +240,16 @@ if($NOCONFIG){
 		SHABTI_load_configuration_file($CONFIG);
 }
 
-# Create IRC message parser object
-my $parser = Parse::IRC->new();
-
-# Connect to the IRC server.
-my $sock = new IO::Socket::INET(
-    PeerAddr => $SERVER,
-    PeerPort => $PORT,
-    Proto    => 'tcp'
-) or SHABTI_error(NETWORK_ERROR,"Can't connect to IRC server");
-
 # Print the banner
 if($NOBANNER){} else {
 	print $BANNER;
 }
 
-# Log on to the server.
-print $sock "NICK $NICK\r\n";
-print $sock "USER $USERNAME 8 * :$IRCNAME\r\n";
-
 # Create JavaScript object and add new functions
 my $js = new JE;
 $js = SHABTI_add_built_in_functions($js);
 
-# Create API and load it into the JavaScript object
+# Load built-in variables to the Javascript object
 if ( $js->eval($BUILT_IN_VARIABLES) ) { }
     else {
         if ( $@ ne '' ) {
@@ -274,6 +263,12 @@ $js->eval("SV_PORT=\"$PORT\";");
 $js->eval("SV_NICK=\"$NICK\";");
 $js->eval("SV_USER=\"$USERNAME\";");
 $js->eval("SV_IRCNAME=\"$IRCNAME\";");
+
+# If we've been passed a script from the
+# command line, make sure it's added.
+if($BOT_SOURCE ne $DEFAULT_BOT_SOURCE){
+    push(@SCRIPTS,$BOT_SOURCE);
+}
 
 # See if any scripts are configured; if not, make sure
 # the default script is added
@@ -300,6 +295,20 @@ foreach my $s (@SCRIPTS){
 	    }
 	}
 }
+
+# Create IRC message parser object
+my $parser = Parse::IRC->new();
+
+# Connect to the IRC server.
+my $sock = new IO::Socket::INET(
+    PeerAddr => $SERVER,
+    PeerPort => $PORT,
+    Proto    => 'tcp'
+) or SHABTI_error(NETWORK_ERROR,"Can't connect to IRC server");
+
+# Log on to the server.
+print $sock "NICK $NICK\r\n";
+print $sock "USER $USERNAME 8 * :$IRCNAME\r\n";
 
 # Handle TCP client functionality
 while ( my $input = <$sock> ) {
@@ -681,10 +690,18 @@ sub SHABTI_usage {
 # Description: Loads settings from an XML configuration file into memory.
 sub SHABTI_load_configuration_file {
 	my $filename = shift;
+    my $content = shift;
 
 	# Load and parse XML
 	my $tpp = XML::TreePP->new();
-	my $tree = $tpp->parsefile( $filename );
+
+    my $tree;
+    if($content){
+        $tree = $tpp->parse( $content );
+    } else {
+        $tree = $tpp->parsefile( $filename );
+    }
+	#my $tree = $tpp->parsefile( $filename );
 
 	# If the parsed tree is empty, there's nothing to parse; exit
 	if($tree eq '') { SHABTI_error(CONFIG_ERROR,"Configuration file is empty"); }
