@@ -57,14 +57,6 @@ function CommandHandler(CMD_LIST,CMD_MESSAGE,CMD_CALLER,CMD_CHANNEL){
 
 	var c = new CommandParse(CMD_MESSAGE);
 
-	if(c.command.toLowerCase()==CMD_LIST.cmdHelp.toLowerCase()){
-		var h = CMD_LIST.help();
-		for(var i=0, len=h.length; i < len; i++){
-			message(CMD_CHANNEL,h[i]);
-		}
-		return;
-	}
-
 	if(CMD_LIST.exists(c.command)){
 		if(CMD_LIST.numargs(c.command)<=c.numargs){
 			CMD_LIST.execute(c.command,c.args,CMD_CALLER,CMD_CHANNEL);
@@ -75,37 +67,19 @@ function CommandHandler(CMD_LIST,CMD_MESSAGE,CMD_CALLER,CMD_CHANNEL){
 
 }
 
-function CommandList(BOT_NAME,BOT_VERSION,CMD_HELP){
+function CommandList(){
 	this.commands = new Array();
-	this.descriptions = new Array();
 	this.argCount = new Array();
 	this.functionality = new Array();
 	this.usage = new Array();
-	this.cmdHelp = CMD_HELP;
 
-	this.help = function(){
-		var helptext = new Array;
-		helptext.push(BOT_NAME+" "+BOT_VERSION);
-		for(var i=0, len=this.commands.length; i < len; i++){
-			if(this.argCount[i]==0){
-				helptext.push(underline(bold(this.commands[i]))+"\t(no arguments) -\t"+italic(this.descriptions[i]));
-			} else if(this.argCount[i]==1){
-				helptext.push(underline(bold(this.commands[i]))+"\t(1 argument) -\t"+italic(this.descriptions[i]));
-			} else {
-				helptext.push(underline(bold(this.commands[i]))+"\t("+this.argCount[i]+" arguments) -\t"+italic(this.descriptions[i]));
-			}
-		}
-		return helptext;
-	}
-
-	this.add = function(cmd,desc,cusage,argc,func){
+	this.add = function(cmd,cusage,argc,func){
 		for(var i=0, len=this.commands.length; i < len; i++){
 			if(this.commands[i]==cmd){
 				return false;
 			}
 		}
 		this.commands.push(cmd);
-		this.descriptions.push(desc);
 		this.argCount.push(argc);
 		this.functionality.push(func);
 		this.usage.push(cusage);
@@ -134,15 +108,6 @@ function CommandList(BOT_NAME,BOT_VERSION,CMD_HELP){
 		for(var i=0, len=this.commands.length; i < len; i++){
 			if(this.commands[i]==cmd){
 				return this.usage[i];
-			}
-		}
-		return "none";
-	}
-
-	this.description = function(cmd){
-		for(var i=0, len=this.commands.length; i < len; i++){
-			if(this.commands[i]==cmd){
-				return this.descriptions[i];
 			}
 		}
 		return "none";

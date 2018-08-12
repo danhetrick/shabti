@@ -693,13 +693,13 @@ require("commands");
 
 This object is where you define commands, set usage text, and set the "help" command (which will be used to send users usage information).  `CommandList` is initialized with your bot's name, version, and the help command you want the bot to respond to.
 
-First, create a new variable of the type `CommandList`.  In this example, the bot's name is "pharaoh", the bot's version is "1.0", and we want our help command to be "!help".  We're going to put this declaration at the beginning of the **Shabti** script, outside of any events, so any and all events can use it:
+First, create a new variable of the type `CommandList`:
 
 ```javascript
-var Commands = new CommandList("pharaoh","1.0","!help");
+var Commands = new CommandList();
 ```
 
-The "!help" command auto-generates usage information and sends it to user.  With that out of the way, lets create a simple command!  Our bot will send a greeting to any channel or user.  We'll call this command "!hello".  First, we need to program the command's functionality. We're going to create a new Javascript function that takes three parameters: an array, followed by two strings. The array will be populated with any arguments given to the command by the user;  the first string will be the nick of the user that issued the command, and the second string will be the channel that the user issued the command from:
+With that out of the way, lets create a simple command!  Our bot will send a greeting to any channel or user.  We'll call this command "!hello".  First, we need to program the command's functionality. We're going to create a new Javascript function that takes three parameters: an array, followed by two strings. The array will be populated with any arguments given to the command by the user;  the first string will be the nick of the user that issued the command, and the second string will be the channel that the user issued the command from:
 
 ```javascript
 function cmd_hello(args,caller,channel){
@@ -711,20 +711,19 @@ function cmd_hello(args,caller,channel){
 Our new command doesn't take *any* arguments; simply calling "!hello" tells the bot to execute the command. Now that we've got our command functionality, let's add it to the command list:
 
 ```javascript
-Commands.add("!hello","Sends a greeting","Usage: !hello",0,cmd_hello);
-                  ^            ^           ^             ^     ^
-                  |            |           |             |     |
-                ---            |       Usage             |     -------
-Command trigger-|        ------|       information       |           |
-                         |                          Minimum number   Command function
-             Command description                    of required
-                                                    arguments
+Commands.add("!hello","Usage: !hello",0,cmd_hello);
+                  ^     ^             ^     ^
+                  |     |             |     |
+                ---  Usage            |     -------
+Command trigger-|    information      |           |
+                                 Minimum number   Command function
+                                 of required
+                                 arguments
 ```
 
 This adds a command to the command list.  The parameters to `.add` are:
 
 * **Command trigger**. The text that will tell the bot you want to execute a command. This will be the first word in any message sent to the bot.
-* **Command description**. This text will be displayed when the "help" command is issued.
 * **Usage information**. If a user triggers a command, but doesn't provide enough arguments to actually execute it, this text will be sent to the user.
 * **Minimum number of required arguments**. Commands don't have to require arguments (set this value to "0"), but can require any number of them. Set this to the minimum number of arguments that your command requires; you can ignore any extra arguments (if you want to).
 * **Command function**. This is the name of the Javascript function that powers your command.  Three parameters will be passed to it: an array followed by two strings. The array will contain any arguments passed to your command, the first string will contain the nick of the user that triggered the command, and the second will contain the channel the command was triggered in.
@@ -749,10 +748,6 @@ This function scans incoming chat for any commands your bot is programmed to res
 Now, the only thing left to do is run your bot!  Run **Shabti** , join a channel that your **Shabti** bot joined (in this example, the bot is in `#foo`), and try out some commands!
 
 ```
-<dhetrick>  Ok, bot, let's see what commands are available!
-<dhetrick>  !help
-<pharaoh>   pharaoh 1.0
-<pharaoh>   !hello (no arguments) - Send a greeting
 <dhetrick>  Let's try out the !hello command
 <dhetrick>  !hello
 <pharaoh>   Hello!
@@ -801,18 +796,14 @@ function cmd_color(args,caller,channel){
 	message(target,colored);
 }
 
-Commands.add("!colormsg","Sends a colorful greeting","Usage: !colormsg NICK MESSAGE",2,cmd_color);
+Commands.add("!colormsg","Usage: !colormsg TARGET MESSAGE",2,cmd_color);
 ```
 
 This creates a new command "!colormsg" which sends a randomly colored message to a user or channel. Let's try out our new command:
 
 ```
-<dhetrick>  !help
-<pharaoh>   pharaoh 1.0
-<pharaoh>   !hello (no arguments) - Send a greeting
-<pharaoh>   !colormsg (2 arguments) - Sends a colorful greeting
 <dhetrick>  !colormsg
-<pharaoh>   Usage: !colormsg NICK MESSAGE
+<pharaoh>   Usage: !colormsg TARGET MESSAGE
 <dhetrick>  !colormsg dhetrick Hello, world!
 <pharaoh>   [COLORED TEXT GOES HERE...C'MON, GITHUB! GIVE US MORE FORMATTING OPTIONS!]
 ```
@@ -908,14 +899,6 @@ By default, `ExitOnRequire` is set to `false`. If set to `true`, **Shabti** will
 ## `plaintext.js`
 
 This module disables the `color`, `bold`, `italic`, and `underline` functions; these functions will simply return their input, unchanged.
-
-### `WarnOnColor`
-
-By defaulst, `WarnOnColor` is set to `false`.  If set to `true`, and a script attempts to use the `color`, `bold`, `italic`, and `underline` functions, a warning stating that the function requested has been disabled is printed to the console.
-
-### `ExitOnColor`
-
-By default, `ExitOnColor` is set to `false`. If set to `true`, **Shabti** will exit when a script tries to execute `color`, `bold`, `italic`, or `underline`.
 
 ---
 
