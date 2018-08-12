@@ -162,8 +162,6 @@
 * :page_facing_up: README.md
 * :page_facing_up: shabti.pl
 * :page_facing_up: shabti_logo.png
-	* :file_folder: lib
-		* *libraries necessary for Shabti to run properly*
 	* :file_folder: config
 		* :file_folder: modules
 			* :page_facing_up: commands.js
@@ -173,6 +171,12 @@
 			* :page_facing_up: plaintext.js
 		* :page_facing_up: default.js
 		* :page_facing_up: default.xml
+	* :file_folder: docs
+		* :file_folder: markdown
+			* :page_facing_up: FUNCTIONS.md
+		* :file_folder: pdf
+	* :file_folder: lib
+		* *libraries necessary for Shabti to run properly*
 
 # Usage
 

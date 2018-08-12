@@ -17,184 +17,184 @@
 | Returns     | Nothing          |
 | Description | * Sets a mode on the server.  For example, to give channel operator status to Bob in channel "#foo", you could use `set("#foo", "+o", "Bob")`.   |
 
-| login         |                  |
+| `login`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (username, password) |
 | Returns     | Nothing          |
 | Description | Logs into an IRCop account.   |
 
-| nick         |                  |
+| `nick`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (new nick) |
 | Returns     | Nothing          |
 | Description | Changes the bot's nick.   |
 
-| rnick         |                  |
+| `rnick`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (new nick) |
 | Returns     | Nothing          |
 | Description | Changes the bot's nick, adding two numbers to the end of the nick.   |
 
-| join         |                  |
+| `join`         |                  |
 |-------------|------------------|
 | Arguments   | 1+ (channel to join, optional password) |
 | Returns     | Nothing          |
 | Description | Joins a channel.   |
 
-| part         |                  |
+| `part`         |                  |
 |-------------|------------------|
 | Arguments   | 1+ (channel to part, optional parting message) |
 | Returns     | Nothing          |
 | Description | Parts a channel.   |
 
-| topic         |                  |
+| `topic`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (channel, new topic) |
 | Returns     | Nothing          |
 | Description | Sets a channel's topic.   |
 
-| quit         |                  |
+| `quit`         |                  |
 |-------------|------------------|
 | Arguments   | 0+ (optional quit message) |
 | Returns     | Nothing          |
 | Description | Quits the IRC server.   |
 
-| message         |                  |
+| `message`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (target user or channel, message) |
 | Returns     | Nothing          |
 | Description | Sends a message to the target user or channel. An identical version of this command named `msg` can alternately used.   |
 
-| notice         |                  |
+| `notice`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (target user or channel, message) |
 | Returns     | Nothing          |
 | Description | Sends a notice to the target user or channel.   |
 
-| action         |                  |
+| `action`         |                  |
 |-------------|------------------|
 | Arguments   | 12 (channel, action) |
 | Returns     | Nothing          |
 | Description | * Sends an action message to a channel.   |
 
 ## Text Functions
-| print         |                  |
+| `print`         |                  |
 |-------------|------------------|
 | Arguments   | 1+ (text to print) |
 | Returns     | Nothing          |
 | Description | Prints text to the console, followed by a carriage return.   |
 
-| sprint         |                  |
+| `sprint`         |                  |
 |-------------|------------------|
 | Arguments   | 1+ (text to print) |
 | Returns     | Nothing          |
 | Description | Prints text to the console; a trailing carriage return is *not* printed.   |
 
-| color         |                  |
+| `color`         |                  |
 |-------------|------------------|
 | Arguments   | 3 (foreground color, background color, text) |
 | Returns     | string          |
 | Description | Formats text using IRC color codes, and returns it.   |
 
-| bold         |                  |
+| `bold`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (text) |
 | Returns     | string          |
 | Description | Formats text using IRC bold code, and returns it.   |
 
-| italic         |                  |
+| `italic`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (text) |
 | Returns     | string          |
 | Description | Formats text using IRC italic code, and returns it.   |
 
-| underline         |                  |
+| `underline`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (text) |
 | Returns     | string          |
 | Description | Formats text using IRC underline code, and returns it.   |
 
 ## File I/O Functions
-| read         |                  |
+| `read`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (file to read) |
 | Returns     | string          |
 | Description | Reads data from a file and returns it.   |
 
-| write         |                  |
+| `write`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (filename, contents) |
 | Returns     | Nothing          |
 | Description | Writes data to a file, followed by a carriage return.   |
 
-| swrite         |                  |
+| `swrite`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (filename, contents) |
 | Returns     | Nothing          |
 | Description | Writes data to a file; a trailing carriage return is *not* written.   |
 
-| append         |                  |
+| `append`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (filename, contents) |
 | Returns     | Nothing          |
 | Description | Appends data to a file, followed by a carriage return.   |
 
-| sappend         |                  |
+| `sappend`         |                  |
 |-------------|------------------|
 | Arguments   | 2 (filename, contents) |
 | Returns     | Nothing          |
 | Description | Appends data to a file; a trailing carriage return is *not* written.   |
 
-| fileexists         |                  |
+| `fileexists`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (filename) |
 | Returns     | boolean          |
 | Description | Tests if a file exists or not.   |
 
-| direxists         |                  |
+| `direxists`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (directory) |
 | Returns     | boolean          |
 | Description | Tests if a directory exists or not.   |
 
-| mkdir         |                  |
+| `mkdir`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (directory name) |
 | Returns     | Nothing          |
 | Description | Creates a directory.   |
 
-| rmdir         |                  |
+| `rmdir`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (directory name) |
 | Returns     | Nothing          |
 | Description | Deletes a directory.   |
 
-| delete         |                  |
+| `delete`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (filename) |
 | Returns     | Nothing          |
 | Description | Deletes a file.   |
 
 ## Miscellaneous Functions
-| sha1         |                  |
+| `sha1`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (data) |
 | Returns     | string          |
 | Description | Calculates a [SHA1](https://en.wikipedia.org/wiki/SHA-1) hash and returns it.   |
 
-| sha256         |                  |
+| `sha256`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (data) |
 | Returns     | string          |
 | Description | Calculates a [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash and returns it.   |
 
-| require         |                  |
+| `require`         |                  |
 |-------------|------------------|
 | Arguments   | 1 (module name) |
 | Returns     | Nothing          |
 | Description | Loads a **Shabti** module into memory.   |
 
-| exit         |                  |
+| `exit`         |                  |
 |-------------|------------------|
 | Arguments   | 0, 1 (message), or 2 (message, exit code) |
 | Returns     | Nothing          |
