@@ -1,5 +1,7 @@
 ![Shabti IRC Bot](https://github.com/danhetrick/shabti/blob/master/shabti_logo.png?raw=true)
 
+[Shabti 0.212 Javascript Reference Guide (PDF)](https://github.com/danhetrick/shabti/blob/master/docs/shabti_js_reference_guide_0212.pdf)
+
 <details>
 
 <summary>Usage and Configuration</summary>
