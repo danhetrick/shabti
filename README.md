@@ -240,7 +240,7 @@ Command line options can be bundled.
 </configuration>
 ```
 
-Any filename passed to **Shabti** is looked for first in the same directory `shabti.pl` resides; second, in the `config` directory.  If the file isn't found, **Shabti** exits with an error.  To make *sure* that **Shabti** loads the right file, you can pass it a complete file path. The default configuration files and script files are `defalt.xml` and `default.js`, located in the `config` directory.
+Any filename passed to **Shabti** is looked for first in the same directory `shabti.pl` resides; second, in the `config` directory.  If the file isn't found, **Shabti** exits with an error.  To make *sure* that **Shabti** loads the right file, you can pass it a complete file path. The default configuration files and script files are `default.xml` and `default.js`, located in the `config` directory.
 
 ### Configuration File Elements
 
