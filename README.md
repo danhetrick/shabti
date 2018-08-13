@@ -150,7 +150,7 @@
 
 # Summary
 
-**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.157.
+**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.212.
 
 # Name
 
@@ -172,9 +172,7 @@
 		* :page_facing_up: default.js
 		* :page_facing_up: default.xml
 	* :file_folder: docs
-		* :file_folder: markdown
-			* :page_facing_up: FUNCTIONS.md
-		* :file_folder: pdf
+		* :page_facing_up: shabti_js_reference_guide_0212.pdf
 	* :file_folder: lib
 		* *libraries necessary for Shabti to run properly*
 
