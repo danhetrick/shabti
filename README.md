@@ -195,7 +195,7 @@
 	--(q)uiet			Prevent all console printing
 	--no(C)onfig			Don't load settings from 'default.xml'
 	--(v)ersion			Display version
-	--e(x)tra            How many extra chat event functions (default: 10)		
+	--e(x)tra            	How many extra chat event functions (default: 10)		
 
 # Configuration
 
