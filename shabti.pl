@@ -70,7 +70,7 @@ my @SCRIPTS							= ();
 
 my $APPLICATION                     = 'Shabti';
 my $APPLICATION_FILE_NAME           = 'shabti.pl';
-my $VERSION                         = '0.157';
+my $VERSION                         = '0.212';
 my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 # ----------------
