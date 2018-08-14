@@ -817,7 +817,7 @@ function cmd_color(args,caller,channel){
 
 		// Make sure that the forebround and background colors are different
 		while (foreground==background) {
-		    foreground = Math.floor((Math.random() * 15) + 1);
+			foreground = Math.floor((Math.random() * 15) + 1);
 			background = Math.floor((Math.random() * 15) + 1);
 		}
 		colored = colored+color(foreground,background,tokens[i]);
