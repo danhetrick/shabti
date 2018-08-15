@@ -115,6 +115,11 @@
 		* [`CommandHandler`](#commandhandler)
 		* [`!colormsg` command](#colormsg-command)
 
+	* [`greeting.js`](#greetingjs)
+		* [`Greet(MESSAGE)`](#greetmessage)
+		* [`ChannelGreet(MESSAGE)`](#channelgreetmessage)
+		* [Interpolating Symbols](#interpolatingsymbols)
+
 	* [`simpledb.js`](#simpledbjs)
 		* [`SimpleDB`](#simpledb)
 			* [`SimpleDB.read(FILENAME)`](#simpledbreadfilename)
@@ -909,6 +914,37 @@ print(SimpleDB.get("name"));
 #### `SimpleDB.exists(ENTRY)`
 
 Returns `true` if an entry exists in the database, and `false` if it doesn't.
+
+---
+
+## `greeting.js`
+
+This module makes it quick and easy to send a greeting every time someone joins a channel the bot is in.  It imports two functions, `Greet` and `ChannelGreet`:
+
+```javascript
+require("greeting.js");
+
+Greet("Hello, %NICK%!");
+ChannelGreet("Hello, %NICK%! Welcome to %CHANNEL%!");
+```
+
+`Greet` sets a message that will be sent as a private message to any user that joins the channel.  `ChannelGreet` sets a message that will be send to the entire channel whenever someone joins.  The message you set can either be a string, or an array of strings.
+
+### `Greet(MESSAGE)`
+
+Sets a greeting message to be sent via private message to the channel joiner.  `MESSAGE` can be either a string or an array.
+
+### `ChannelGreet(MESSAGE)`
+
+Sets a greeting message to be sent to the channel.  `MESSAGE` can be either a string or an array.
+
+### Interpolating Symbols
+
+Any message set to be a greeting can have symbols that allow you to customise the message on the fly.  There are three symbols:
+
+* `%NICK%` - Replaced by the nick of the joining user.
+* `%USERNAME%` - Replaced by the username of the joining user.
+* `%CHANNEL%` - Replaced by the name of the channel joined.
 
 ---
 

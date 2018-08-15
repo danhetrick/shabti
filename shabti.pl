@@ -331,7 +331,7 @@ while ( my $input = <$sock> ) {
         # Catch all other IRC events and execute JS function
         my $raw = "$type ".join(' ',@args);
         my $server = shift @args;
-        my $nick = shift @args;
+        my $nick = shift @args || "";
         my $msg = join(' ',@args);
 
 		if ( $js->eval("if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n") ) { }
@@ -460,6 +460,9 @@ sub irc_join {
     my ( $who, $where ) = @_;
 
     my($nick,$username) = split('!',$who);
+
+    # If the bot is the one joining, don't do join event
+    if($nick eq $NICK){ return; }
 
     if ( $js->eval("if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n") ) { }
     else {
