@@ -118,7 +118,7 @@
 	* [`greeting.js`](#greetingjs)
 		* [`Greet(MESSAGE)`](#greetmessage)
 		* [`ChannelGreet(MESSAGE)`](#channelgreetmessage)
-		* [Interpolating Symbols](#interpolatingsymbols)
+		* [Interpolating Symbols](#interpolating-symbols)
 
 	* [`simpledb.js`](#simpledbjs)
 		* [`SimpleDB`](#simpledb)
