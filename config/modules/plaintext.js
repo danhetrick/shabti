@@ -9,11 +9,13 @@
 
 plaintext.js
 
-Shabti No File IO Module
+Shabti Plaintext Module
 
 Example usage:
 
 require("plaintext.js");
+
+Disables all text formatting commands.
 
 */
 

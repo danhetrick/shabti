@@ -759,6 +759,19 @@ This adds a command to the command list.  The parameters to `.add` are:
 * **Minimum number of required arguments**. Commands don't have to require arguments (set this value to "0"), but can require any number of them. Set this to the minimum number of arguments that your command requires; you can ignore any extra arguments (if you want to).
 * **Command function**. This is the name of the Javascript function that powers your command.  Three parameters will be passed to it: an array followed by two strings. The array will contain any arguments passed to your command, the first string will contain the nick of the user that triggered the command, and the second will contain the channel the command was triggered in.
 
+`CommandList`'s other methods are:
+
+* `CommandList.help(OPTIONAL_TEXT_TO_REPLACE)`
+	* Returns help text for all commands. If a string as passed as a parameter, that string is removed from any usage text.
+* `CommandList.exists(COMMAND)`
+	* Returns true if a given command exists, and false if it doesn't.
+* `CommandList.usage(COMMAND)`
+	* Returns usage text for a given command.
+* `CommandList.numargs(COMMAND)`
+	* Returns the minimum number of arguments required for a given command.
+* `CommandList.execute(COMMAND,ARGUMENT_ARRAY,CALLER_NICK,CALLER_CHANNEL)`
+	* Executes a command in the command list.
+
 ### `CommandHandler`
 
 Now, to get the bot to use your command!  We want the bot to look for command input in a channel's public chat; that means we need to write a new `PUBLIC_MESSAGE_EVENT` function.  We'll use the `CommandHandler` to handle the command you created:
@@ -1013,7 +1026,7 @@ function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 
 			// Make sure that the forebround and background colors are different
 			while (foreground==background) {
-			    foreground = Math.floor((Math.random() * 15) + 1);
+				foreground = Math.floor((Math.random() * 15) + 1);
 				background = Math.floor((Math.random() * 15) + 1);
 			}
 			rainbow = rainbow+color(foreground,background,tokens[i]);
