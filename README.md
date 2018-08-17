@@ -146,6 +146,11 @@
 		* [`emojify(TEXT)`](#emojifytext)
 		* [`asciimoji(TEXT,OPTIONS,USERDICTIONARY)`](#asciimojitextoptionsuserdictionary)
 
+	* [`base64.js`](#base64js)
+		* [`Base64.encode(TEXT)`](#base64encodetext)
+		* [`Base64.decode(TEXT)`](#base64decodetext)
+
+
 	</details>
 
 * [Default Script File](#default-script-file)
@@ -726,6 +731,7 @@ Called when the bot receives a notification that is not handled by any other eve
 * [`norequire.js`](#norequirejs)
 * [`plaintext.js`](#plaintextjs)
 * [`emoji.js`](#emojijs)
+* [`base64.js`](#base64js)
 
 **Shabti** provides a way to write general purpose code that can be used in multiple scripts:  **modules**.  A **Shabti** module is a Javascript file that contains Javascript code, variables, objects, and functions; they must be placed in the `config/modules` folder, and are loaded with the function [`require`](#require).  Modules can contain any kind of code for any purpose, but it's supposed to be used for code libraries that you can use in your **Shabti** scripts.  Several modules are included with the default install.
 
@@ -1044,6 +1050,26 @@ Inserts ASCIImojis into the input text and returns it.
 ### `asciimoji(TEXT,OPTIONS,USERDICTIONARY)`
 
 The original `asciimoji()` function, as written by Volker Wieban.
+
+---
+
+## `base64.js`
+
+This module allows for [Base64](https://en.wikipedia.org/wiki/Base64) encoding and decoding.
+
+```javascript
+var x = Base64.encode("Hello world!");
+x = Base64decode(x);
+print(x);
+```
+
+### `Base64.encode(TEXT)`
+
+Encodes input text to Base64, and returns the encoded text.
+
+### `Base64.decode(TEXT)`
+
+Decoded input text from Base64, and returns the decoded text.
 
 ---
 
