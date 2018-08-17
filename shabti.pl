@@ -933,20 +933,6 @@ sub SHABTI_add_built_in_functions {
         }
     );
 
-    # raw
-    # Sends a raw command to the IRC server
-    $j->new_function(
-        raw => sub {
-            if ( scalar @_ == 1 ) {
-                print $sock "$_[0]\r\n";
-            }
-            else {
-                die new JE::Object::Error::SyntaxError $j,
-                  "Wrong number of arguments to 'raw'\n";
-            }
-        }
-    );
-
     # require
     # Loads a Javascript library
     $j->new_function(
