@@ -1004,7 +1004,7 @@ This module disables file I/O functions.
 
 ### `WarnFileIO`
 
-By defaulst, `WarnFileIO` is set to `false`.  If set to `true`, and a script attempts to use file I/O functions, a warning stating that the file I/O function in question has been disabled is printed to the console.
+By default, `WarnFileIO` is set to `false`.  If set to `true`, and a script attempts to use file I/O functions, a warning stating that the file I/O function in question has been disabled is printed to the console.
 
 ### `ExitOnFileIO`
 
@@ -1018,7 +1018,7 @@ This module disables the `require` function.
 
 ### `WarnOnRequire`
 
-By defaulst, `WarnOnRequire` is set to `false`.  If set to `true`, and a script attempts to use the `require` function, a warning stating that `require` has been disabled is printed to the console.
+By default, `WarnOnRequire` is set to `false`.  If set to `true`, and a script attempts to use the `require` function, a warning stating that `require` has been disabled is printed to the console.
 
 ### `ExitOnRequire`
 
@@ -1061,7 +1061,7 @@ This module allows for [Base64](https://en.wikipedia.org/wiki/Base64) encoding a
 ```javascript
 require("base64.js");
 var x = Base64.encode("Hello world!");
-x = Base64decode(x);
+x = Base64.decode(x);
 print(x);
 ```
 
