@@ -80,6 +80,7 @@
 	* [`sha256`](#sha256)
 	* [`require`](#require)
 	* [`exit`](#exit)
+	* [`tokens`](#tokens)
 
 	</details>
 
@@ -113,6 +114,7 @@
 	* [`commands.js`](#commandsjs)
 		* [`CommandList`](#commandlist)
 		* [`CommandHandler`](#commandhandler)
+		* [`Command Arguments`](#command-arguments)
 		* [`!colormsg` command](#colormsg-command)
 
 	* [`greeting.js`](#greetingjs)
@@ -366,7 +368,7 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 
 ## Built-In Functions
 
-There are 32 built-in functions for use in your **Shabti** scripts.
+There are 33 built-in functions for use in your **Shabti** scripts.
 
 * [IRC Functions](#irc-functions)
 	<details>
@@ -429,6 +431,7 @@ There are 32 built-in functions for use in your **Shabti** scripts.
 	* [`sha256`](#sha256)
 	* [`require`](#require)
 	* [`exit`](#exit)
+	* [`tokens`](#tokens)
 
 	</details>
 
@@ -617,6 +620,11 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 * *Returns*: nothing
 * Exits out of **Shabti**. Optionally, can display a message on exit, or an exit code (which *must* be 0 or 1).
 
+#### `tokens`
+* *Arguments*: 1 (string)
+* *Returns*: array
+* Tokenizes a string into an array, using space(s) as a delimiter.  Quotes can be used to set a token containing whitespace.
+
 ---
 
 ## Events
@@ -752,16 +760,16 @@ Commands.add("!hello","Usage: !hello",0,cmd_hello);
                   |     |             |     |
                 ---  Usage            |     -------
 Command trigger-|    information      |           |
-                                 Minimum number   Command function
-                                 of required
-                                 arguments
+                                   Number        Command function
+                                   of required
+                                   arguments
 ```
 
 This adds a command to the command list.  The parameters to `.add` are:
 
 * **Command trigger**. The text that will tell the bot you want to execute a command. This will be the first word in any message sent to the bot.
 * **Usage information**. If a user triggers a command, but doesn't provide enough arguments to actually execute it, this text will be sent to the user.
-* **Minimum number of required arguments**. Commands don't have to require arguments (set this value to "0"), but can require any number of them. Set this to the minimum number of arguments that your command requires; you can ignore any extra arguments (if you want to).
+* **Number of required arguments**. Commands don't have to require arguments (set this value to "0"), but can require any number of them. Set this to the number of arguments that your command requires; usage text will be sent to the caller if they call the command with the wrong number of arguments.
 * **Command function**. This is the name of the Javascript function that powers your command.  Three parameters will be passed to it: an array followed by two strings. The array will contain any arguments passed to your command, the first string will contain the nick of the user that triggered the command, and the second will contain the channel the command was triggered in.
 
 `CommandList`'s other methods are:
@@ -812,6 +820,28 @@ function PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE) {
 
 The only difference is the fourth parameter, which, in our "public chat" example, was set to the channel name; now, it's set to the nick of the user sending the private message.  But nothing's limiting you to only one `CommandList` object! Create one for public chat, and another for private chat, giving users access to different commands depending on how they're chatting with the bot!
 
+### Command Arguments
+
+Text input to `CommandHandler` is tokenized, using whitespace as a delimiter.  For example, the phrase "this is a text" breaks down into four tokens:
+
+```
+1: this
+2: is
+3: a
+4: test
+```
+
+Quotes can be used to create tokens that contain whitespace.  So, the phrase `"this is" "another, more" complicated test` also breaks down into four tokens:
+
+```
+1: this is
+2: another, more
+3: complicated
+4: test
+```
+
+Each token is considered an argument to the command being called.
+
 ### `!colormsg` command
 
 Our "!hello" is pretty cool, but we're going to add another command that makes the bot message a more colorful greeting.  Let's scroll back up to the beginning of the file, where we created our `CommandList` object.  Place this code right under the `CommandList.add` statement for our "!hello" command:
@@ -853,7 +883,7 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 ```
 <dhetrick>  !colormsg
 <pharaoh>   Usage: !colormsg TARGET MESSAGE
-<dhetrick>  !colormsg dhetrick Hello, world!
+<dhetrick>  !colormsg dhetrick "Hello, world!"
 <pharaoh>   [COLORED TEXT GOES HERE...C'MON, GITHUB! GIVE US MORE FORMATTING OPTIONS!]
 ```
 
@@ -924,27 +954,29 @@ This module makes it quick and easy to send a greeting every time someone joins 
 ```javascript
 require("greeting.js");
 
-Greet("Hello, %NICK%!");
-ChannelGreet("Hello, %NICK%! Welcome to %CHANNEL%!");
+Greet("Hello, $NICK!");
+ChannelGreet("Hello, $NICK! Welcome to $CHANNEL!");
 ```
 
 `Greet` sets a message that will be sent as a private message to any user that joins the channel.  `ChannelGreet` sets a message that will be send to the entire channel whenever someone joins.  The message you set can either be a string, or an array of strings.
 
+`greeting.js` uses a [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel) "extra" event (see ["Extra" Events](#extra-events)) for its functionality; it uses `JOIN_EVENT_1`.
+
 ### `Greet(MESSAGE)`
 
-Sets a greeting message to be sent via private message to the channel joiner.  `MESSAGE` can be either a string or an array.
+Sets a greeting message to be sent via private message to the channel joiner.  `MESSAGE` can be either a string or an array, and can be customized (see [Interpolating Symbols](#interpolating-symbols)).
 
 ### `ChannelGreet(MESSAGE)`
 
-Sets a greeting message to be sent to the channel.  `MESSAGE` can be either a string or an array.
+Sets a greeting message to be sent to the channel.  `MESSAGE` can be either a string or an array, and can be customized (see [Interpolating Symbols](#interpolating-symbols)).
 
 ### Interpolating Symbols
 
 Any message set to be a greeting can have symbols that allow you to customise the message on the fly.  There are three symbols:
 
-* `%NICK%` - Replaced by the nick of the joining user.
-* `%USERNAME%` - Replaced by the username of the joining user.
-* `%CHANNEL%` - Replaced by the name of the channel joined.
+* `$NICK` - Replaced by the nick of the joining user.
+* `$USERNAME` - Replaced by the username of the joining user.
+* `$CHANNEL` - Replaced by the name of the channel joined.
 
 ---
 

@@ -37,7 +37,7 @@ function CommandList();
 	CommandList.usage(COMMAND)
 		Returns command usage text
 	CommandList.numargs(COMMAND)
-		Returns the minimum number of arguments a command requires
+		Returns the number of arguments a command requires
 	CommandList.help(TEXT_REPLACE)
 		Returns an array of all usage text. If TEXT_REPLACE is passed
 		as a parameter, any instance of TEXT_REPLACE will be removed
@@ -58,7 +58,7 @@ function CommandHandler(CMD_LIST,CMD_MESSAGE,CMD_CALLER,CMD_CHANNEL){
 	var c = new CommandParse(CMD_MESSAGE);
 
 	if(CMD_LIST.exists(c.command)){
-		if(CMD_LIST.numargs(c.command)<=c.numargs){
+		if(CMD_LIST.numargs(c.command)==c.numargs){
 			CMD_LIST.execute(c.command,c.args,CMD_CALLER,CMD_CHANNEL);
 		} else {
 			message(CMD_CALLER,bold(CMD_LIST.usage(c.command)));
@@ -139,9 +139,9 @@ function CommandList(){
 function CommandParse(SHABTI_TEXT){
 	this.raw = SHABTI_TEXT;
 
-	var tokens = SHABTI_TEXT.split(" ");
-	this.command = tokens.shift();
-	this.numargs = tokens.length;
-	this.args = tokens;
+	var t = tokens(SHABTI_TEXT);
+	this.command = t.shift();
+	this.numargs = t.length;
+	this.args = t;
 
 }

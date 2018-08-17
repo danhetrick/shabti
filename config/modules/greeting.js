@@ -56,7 +56,7 @@ function ChannelGreet(GREETING_MESSAGE){
 	MODULE_CHANNEL_GREET = true;
 }
 
-function JOIN_EVENT_10(EV_NICK,EV_USERNAME,EV_CHANNEL) {
+function JOIN_EVENT_1(EV_NICK,EV_USERNAME,EV_CHANNEL) {
 	if(MODULE_GREET){
 		for(var i=0, len=MODULE_GREETING_MESSAGE.length; i < len; i++){
 			var p = InjectIntoGreeting(MODULE_GREETING_MESSAGE[i],EV_NICK,EV_USERNAME,EV_CHANNEL);
@@ -72,8 +72,8 @@ function JOIN_EVENT_10(EV_NICK,EV_USERNAME,EV_CHANNEL) {
 }
 
 function InjectIntoGreeting(GREETING,G_NICK,G_USERNAME,G_CHANNEL){
-	var p = GREETING.replace(new RegExp("%NICK%","g"), G_NICK);
-	p = p.replace(new RegExp("%CHANNEL%","g"), G_CHANNEL);
-	p = p.replace(new RegExp("%USERNAME%","g"), G_USERNAME);
+	var p = GREETING.replace(new RegExp("$NICK","g"), G_NICK);
+	p = p.replace(new RegExp("$CHANNEL","g"), G_CHANNEL);
+	p = p.replace(new RegExp("$USERNAME","g"), G_USERNAME);
 	return p;
 }

@@ -28,6 +28,9 @@ use JE;
 use Parse::IRC;
 use XML::TreePP;
 use Digest::SHA::PurePerl;
+use Text::ParseWords;
+
+use Data::Dumper;
 
 # ===============
 # | MODULES END |
@@ -329,10 +332,10 @@ while ( my $input = <$sock> ) {
             print STDOUT join( ' ', "irc_$type:", @args ), "\n";
         }
         # Catch all other IRC events and execute JS function
-        my $raw = "$type ".join(' ',@args);
+        my $raw = "$type ".join(' ',@args); $raw = quotemeta($raw);
         my $server = shift @args;
         my $nick = shift @args || "";
-        my $msg = join(' ',@args);
+        my $msg = join(' ',@args); $msg = quotemeta($msg);
 
 		if ( $js->eval("if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n") ) { }
 		else {
@@ -395,6 +398,8 @@ sub irc_part {
     my ( $who, $where, $message ) = @_;
 
     my($nick,$username) = split('!',$who);
+
+    $message = quotemeta($message);
 
     if ( $js->eval("if (typeof $PART_EVENT === \"function\") { $PART_EVENT(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n") ) { }
     else {
@@ -556,6 +561,8 @@ sub irc_public {
     #print "$who -> $where -> $what\n";
     my($nick,$username) = split('!',$who);
 
+    $what = quotemeta($what);
+
     my $act = chr(1)."ACTION";
     if($what=~/^$act/){
         # it's an action message
@@ -605,6 +612,8 @@ sub irc_private {
     my ( $who, $where, $what ) = @_;
     #print "$who -> $where -> $what\n";
     my($nick,$username) = split('!',$who);
+
+    $what = quotemeta($what);
 
     if ( $js->eval("if (typeof $PRIVATE_MESSAGE_EVENT === \"function\") { $PRIVATE_MESSAGE_EVENT(\"$nick\",\"$username\",\"$what\"); }\n") ) { }
     else {
@@ -879,6 +888,22 @@ sub SHABTI_require_file {
 # Description: Adds new JavaScript commands to the JE object.
 sub SHABTI_add_built_in_functions {
     my $j = shift;
+
+    # tokens
+    # Tokenize a string (spaces as delimiter, with quotes)
+    $j->new_function(
+        tokens => sub {
+            if ( scalar @_ == 1 ) {
+                my @q = shellwords($_[0]);
+                my $qa = JE::Object::Array->new($j,@q);
+                return $qa;
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'tokens'\n";
+            }
+        }
+    );
 
     # sha1
     # Calculates a sha1 hash
