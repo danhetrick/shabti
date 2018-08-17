@@ -1028,12 +1028,14 @@ This module disables the `color`, `bold`, `italic`, and `underline` functions; t
 
 ## `emoji.js`
 
-This module adds a function that can add [ASCIImojis](http://asciimoji.com) to text. Originally written by [Volker Wieban](mailto:thesquidpeople@gmail.com), this gives over 350 different ASCII-based emojis that can be added to text.  To add an emoji, put the emoji's keyword in parenthesis in the input text.
+This module adds a function that can add [ASCIImojis](http://asciimoji.com) to text. Originally written by [Volker Wieban](mailto:thesquidpeople@gmail.com), this gives over 350 different ASCII-based emojis that can be added to text.  To add an emoji, put the emoji's keyword in parenthesis in the input text:
 
 ```javascript
 var example = emojify("Where is bear? (bear)");
 message(TARGET,example);
 ```
+
+Not all ASCIImojis will render correctly in IRC clients, and many will not render correctly in the console; use at your own risk.  For a complete list of ASCIImojis, see the [ASCIImoji website](http://asciimoji.com).
 
 ### `emojify(TEXT)`
 
