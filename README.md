@@ -1069,7 +1069,7 @@ Encodes input text to Base64, and returns the encoded text.
 
 ### `Base64.decode(TEXT)`
 
-Decoded input text from Base64, and returns the decoded text.
+Decodes input text from Base64, and returns the decoded text.
 
 ---
 
