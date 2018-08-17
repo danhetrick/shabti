@@ -656,7 +656,7 @@ If you want to execute code as soon as the script is loaded, simply place your c
 
 ### "Extra" Events
 
-Some events will call "extra" functions; that is, the event triggers multiple function calls.  The names of these "extra" functions follow the format "EVENT_FUNCTION_x", where "x" is a number.  By default, "x" will be a number from 1-10; so, when an event with "extra" functions is triggered, the bot will attempt to execute `EVENT_FUNCTION_1`, `EVENT_FUNCTION_2`, `EVENT_FUNCTION_3`, and so on. To change how many "extra" event functions are called, use the `--extra` command line option, or set the `extra` child element in the configuration file. The events that support this feature are [`CONNECT_EVENT`](#connect_eventev_host), [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message), [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message), [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel), and [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message).
+Some events will call "extra" functions; that is, the event triggers multiple function calls.  The names of these "extra" functions follow the format "EVENT_FUNCTION_x", where "x" is a number.  By default, "x" will be a number from 1-10; so, when an event with "extra" functions is triggered, the bot will attempt to execute `EVENT_FUNCTION_1`, `EVENT_FUNCTION_2`, `EVENT_FUNCTION_3`, and so on. To change how many "extra" event functions are called, use the `--extra` command line option, or set the `extra` child element in the configuration file. The events that support this feature are [`CONNECT_EVENT`](#connect_eventev_host), [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message), [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message), [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel), [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message), and [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message).
 
 ---
 
@@ -717,6 +717,7 @@ Called when the bot receives a channel part notification. If the parting user ha
 
 #### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
 * *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
+* *Note:* **Shabti** will call "extra" IRC event functions.  Their names follow the format `IRC_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `IRC_EVENT_1` to `IRC_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `IRC_EVENT_1` to `IRC_EVENT_50` whenever it receives an IRC message.
 
 Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.
 

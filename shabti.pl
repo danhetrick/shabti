@@ -344,6 +344,24 @@ while ( my $input = <$sock> ) {
 		    }
 		}
         # Done
+        # Extra events
+        my $i = 1;
+
+        while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
+            my $cmd = "if (typeof $IRC_EVENT"."_".$i."=== \"function\") { $IRC_EVENT"."_".$i."(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n";
+
+            if ( $js->eval($cmd) ) { }
+            else {
+                if ( $@ ne '' ) {
+                    SHABTI_error(JAVASCRIPT_ERROR,$@);
+                }
+            }
+
+            $i++;
+        }
+
+
+        
     }
 }
 
