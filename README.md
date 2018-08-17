@@ -840,7 +840,7 @@ The only difference is the fourth parameter, which, in our "public chat" example
 
 ### Command Arguments
 
-Text input to `CommandHandler` is tokenized, using whitespace as a delimiter.  For example, the phrase "this is a text" breaks down into four tokens:
+Text input to `CommandHandler` is tokenized, using whitespace as a delimiter.  For example, the phrase "this is a test" breaks down into four tokens:
 
 ```
 1: this
