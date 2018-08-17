@@ -147,8 +147,8 @@
 		* [`asciimoji(TEXT,OPTIONS,USERDICTIONARY)`](#asciimojitextoptionsuserdictionary)
 
 	* [`base64.js`](#base64js)
-		* [`Base64.encode(TEXT)`](#base64encodetext)
-		* [`Base64.decode(TEXT)`](#base64decodetext)
+		* [`encode(TEXT)`](#encodetext)
+		* [`decode(TEXT)`](#decodetext)
 
 
 	</details>
@@ -1060,16 +1060,16 @@ This module allows for [Base64](https://en.wikipedia.org/wiki/Base64) encoding a
 
 ```javascript
 require("base64.js");
-var x = Base64.encode("Hello world!");
-x = Base64.decode(x);
+var x = encode("Hello world!");
+x = decode(x);
 print(x);
 ```
 
-### `Base64.encode(TEXT)`
+### `encode(TEXT)`
 
 Encodes input text to Base64, and returns the encoded text.
 
-### `Base64.decode(TEXT)`
+### `decode(TEXT)`
 
 Decodes input text from Base64, and returns the decoded text.
 

@@ -15,21 +15,28 @@ Example usage:
 
 require("base64");
 
-var x = Base64.encode("Hello world!");
-x = Base64.decode(x);
+var x = encode("Hello world!");
+x = decode(x);
 print(x);
 
 
 Functions:
 
-Base64.encode(TEXT)
+encode(TEXT)
 	Encodes input to Base64 and returns encoded text.
 
-Base64.decode(TEXT)
+decode(TEXT)
 	Decodes Base64 text and returns decoded text.
 
 */
 
+function encode(TEXT){
+	return Base64.encode(TEXT);
+}
+
+function decode(TEXT){
+	return Base64.decode(TEXT);
+}
 
 var Base64 = {
     _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
