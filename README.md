@@ -142,6 +142,10 @@
 		* [`WarnOnFancy`](#warnonfancy)
 		* [`ExitOnFancy`](#exitonfancy)
 
+	* [`emoji.js`](#emojijs)
+		* [`emojify(TEXT)`](#emojifytext)
+		* [`asciimoji(TEXT,OPTIONS,USERDICTIONARY)`](#asciimojitextoptionsuserdictionary)
+
 	</details>
 
 * [Default Script File](#default-script-file)
@@ -715,6 +719,14 @@ Called when the bot receives a notification that is not handled by any other eve
 
 # Modules
 
+* [`commands.js`](#commandsjs)
+* [`greeting.js`](#greetingjs)
+* [`simpledb.js`](#simpledbjs)
+* [`nofileio.js`](#nofileiojs)
+* [`norequire.js`](#norequirejs)
+* [`plaintext.js`](#plaintextjs)
+* [`emoji.js`](#emojijs)
+
 **Shabti** provides a way to write general purpose code that can be used in multiple scripts:  **modules**.  A **Shabti** module is a Javascript file that contains Javascript code, variables, objects, and functions; they must be placed in the `config/modules` folder, and are loaded with the function [`require`](#require).  Modules can contain any kind of code for any purpose, but it's supposed to be used for code libraries that you can use in your **Shabti** scripts.  Several modules are included with the default install.
 
 When loading a module with `require`, you can leave off the ".js" file extension, if you wish.
@@ -1011,6 +1023,25 @@ By default, `ExitOnRequire` is set to `false`. If set to `true`, **Shabti** will
 ## `plaintext.js`
 
 This module disables the `color`, `bold`, `italic`, and `underline` functions; these functions will simply return their input, unchanged.
+
+---
+
+## `emoji.js`
+
+This module adds a function that can add [ASCIImojis](http://asciimoji.com) to text. Originally written by [Volker Wieban](mailto:thesquidpeople@gmail.com), this gives over 350 different ASCII-based emojis that can be added to text.  To add an emoji, put the emoji's keyword in parenthesis in the input text.
+
+```javascript
+var example = emojify("Where is bear? (bear)");
+message(TARGET,example);
+```
+
+### `emojify(TEXT)`
+
+Inserts ASCIImojis into the input text and returns it.
+
+### `asciimoji(TEXT,OPTIONS,USERDICTIONARY)`
+
+The original `asciimoji()` function, as written by Volker Wieban.
 
 ---
 

@@ -21,9 +21,9 @@ ChannelGreeting("Everybody say hello to %NICK%!");
 Functions:
 
 In all greeting messages:
-	%NICK% will be replaced with the nick of the joiner.
-	%USERNAME% will be replaced with the username of the joiner.
-	%CHANNEL% will be replaced with the name of the channel joined.
+	$NICK will be replaced with the nick of the joiner.
+	$USERNAME will be replaced with the username of the joiner.
+	$CHANNEL will be replaced with the name of the channel joined.
 
 Greet(GREETING_MESSAGE)
 	Sends a private message greeting to anyone joining a channel the bot is in.
