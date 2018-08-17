@@ -632,7 +632,7 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 #### `tokens`
 * *Arguments*: 1 (string)
 * *Returns*: array
-* Tokenizes a string into an array, using space(s) as a delimiter.  Quotes can be used to set a token containing whitespace.
+* Tokenizes a string into an array, using space(s) as a delimiter.  Quotes can be used to set a token containing whitespace.  See [Command Arguments](#command-arguments) for more information on how this function works.
 
 ---
 
@@ -1037,6 +1037,7 @@ This module disables the `color`, `bold`, `italic`, and `underline` functions; t
 This module adds a function that can add [ASCIImojis](http://asciimoji.com) to text. Originally written by [Volker Wieban](mailto:thesquidpeople@gmail.com), this gives over 350 different ASCII-based emojis that can be added to text.  To add an emoji, put the emoji's keyword in parenthesis in the input text:
 
 ```javascript
+require("emoji.js");
 var example = emojify("Where is bear? (bear)");
 message(TARGET,example);
 ```
@@ -1058,6 +1059,7 @@ The original `asciimoji()` function, as written by Volker Wieban.
 This module allows for [Base64](https://en.wikipedia.org/wiki/Base64) encoding and decoding.
 
 ```javascript
+require("base64.js");
 var x = Base64.encode("Hello world!");
 x = Base64decode(x);
 print(x);
