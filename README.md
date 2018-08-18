@@ -186,11 +186,15 @@
 		* :page_facing_up: default.js
 		* :page_facing_up: default.xml
 		* :file_folder: modules
+			* :page_facing_up: base64.js
 			* :page_facing_up: commands.js
-			* :page_facing_up: simpledb.js
+			* :page_facing_up: emoji.js
+			* :page_facing_up: greeting.js
 			* :page_facing_up: nofileio.js
 			* :page_facing_up: norequire.js
 			* :page_facing_up: plaintext.js
+			* :page_facing_up: simpledb.js
+			* :page_facing_up: unicode.js
 	* :file_folder: docs
 		* :page_facing_up: shabti_js_reference_guide_0212.pdf
 	* :file_folder: lib
