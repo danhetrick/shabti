@@ -196,7 +196,7 @@
 			* :page_facing_up: simpledb.js
 			* :page_facing_up: unicode.js
 	* :file_folder: docs
-		* :page_facing_up: shabti_js_reference_guide_0212.pdf
+		* :page_facing_up: [shabti_js_reference_guide.pdf](https://github.com/danhetrick/shabti/blob/master/docs/shabti_js_reference_guide.pdf)
 	* :file_folder: lib
 		* *libraries necessary for Shabti to run properly*
 
