@@ -150,6 +150,8 @@
 		* [`encode(TEXT)`](#encodetext)
 		* [`decode(TEXT)`](#decodetext)
 
+	* [`unicode.js`](#unicodejs)
+
 
 	</details>
 
@@ -733,6 +735,7 @@ Called when the bot receives a notification that is not handled by any other eve
 * [`plaintext.js`](#plaintextjs)
 * [`emoji.js`](#emojijs)
 * [`base64.js`](#base64js)
+* [`unicode.js`](#unicodejs)
 
 **Shabti** provides a way to write general purpose code that can be used in multiple scripts:  **modules**.  A **Shabti** module is a Javascript file that contains Javascript code, variables, objects, and functions; they must be placed in the `config/modules` folder, and are loaded with the function [`require`](#require).  Modules can contain any kind of code for any purpose, but it's supposed to be used for code libraries that you can use in your **Shabti** scripts.  Several modules are included with the default install.
 
@@ -1073,6 +1076,17 @@ Encodes input text to Base64, and returns the encoded text.
 ### `decode(TEXT)`
 
 Decodes input text from Base64, and returns the decoded text.
+
+---
+
+## `unicode.js`
+
+This module creates a number of variables containing Unicode escape codes for many images.  Many of these will work with IRC clients, many will not. Using these variables will cause an error to print to the console, but **Shabti** will continue working.
+
+```javascript
+require("unicode.js");
+message(TARGET,HEART+" Shabti loves you! "+HEART);
+```
 
 ---
 
