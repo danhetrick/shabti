@@ -14,12 +14,12 @@ Shabti No File IO Module
 Example usage:
 
 require("nofileio.js");
-WarnFileIO = true;
+WarnOnFileIO = true;
 ExitOnFileIO = true;
 
 */
 
-var WarnFileIO = false;
+var WarnOnFileIO = false;
 var ExitOnFileIO = false;
 
 var read = function(ARG) {
@@ -27,7 +27,7 @@ var read = function(ARG) {
 	if(ExitOnFileIO){
 		exit("'read' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'read' function disabled");
 	}
 }
@@ -37,7 +37,7 @@ var write = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'write' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'write' function disabled");
 	}
 }
@@ -47,7 +47,7 @@ var swrite = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'swrite' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'swrite' function disabled");
 	}
 }
@@ -57,7 +57,7 @@ var append = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'append' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'append' function disabled");
 	}
 }
@@ -67,7 +67,7 @@ var sappend = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'sappend' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'sappend' function disabled");
 	}
 }
@@ -77,7 +77,7 @@ var fileexists = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'fileexists' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'fileexists' function disabled");
 	}
 }
@@ -87,7 +87,7 @@ var direxists = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'direxists' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'direxists' function disabled");
 	}
 }
@@ -97,7 +97,7 @@ var mkdir = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'mkdir' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'mkdir' function disabled");
 	}
 }
@@ -107,7 +107,7 @@ var rmdir = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'rmdir' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'rmdir' function disabled");
 	}
 }
@@ -117,7 +117,7 @@ var delete = function(ARG,ARG1){
 	if(ExitOnFileIO){
 		exit("'delete' function disabled",1);
 	}
-	if(WarnFileIO){
+	if(WarnOnFileIO){
 		print("'delete' function disabled");
 	}
 }

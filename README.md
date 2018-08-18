@@ -131,7 +131,7 @@
 			* [`SimpleDB.exists(ENTRY)`](#simpledbexistsentry)
 
 	* [`nofileio.js`](#nofileiojs)
-		* [`WarnFileIO`](#warnfileio)
+		* [`WarnOnFileIO`](#warnonfileio)
 		* [`ExitOnFileIO`](#exitonfileio)
 
 	* [`norequire.js`](#norequirejs)
@@ -1010,9 +1010,9 @@ Any message set to be a greeting can have symbols that allow you to customise th
 
 This module disables file I/O functions.
 
-### `WarnFileIO`
+### `WarnOnFileIO`
 
-By default, `WarnFileIO` is set to `false`.  If set to `true`, and a script attempts to use file I/O functions, a warning stating that the file I/O function in question has been disabled is printed to the console.
+By default, `WarnOnFileIO` is set to `false`.  If set to `true`, and a script attempts to use file I/O functions, a warning stating that the file I/O function in question has been disabled is printed to the console.
 
 ### `ExitOnFileIO`
 
