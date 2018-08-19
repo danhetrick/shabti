@@ -33,6 +33,8 @@ Functions:
 
 */
 
+require("common");
+
 var ChannelList = new Array();
 
 function GetTopic(CH_NAME){
@@ -51,7 +53,7 @@ function AllUsersList(){
 			ret.push(u[i]);
 		}
 	}
-	return uniq_fast(ret);
+	return removeDuplicatesFromArray(ret);
 }
 
 function AllChannelsList(){
@@ -59,7 +61,7 @@ function AllChannelsList(){
 	for(var i=0, len=ChannelList.length; i < len; i++){
 		ret.push(ChannelList[i].name);
 	}
-	return uniq_fast(ret);
+	return removeDuplicatesFromArray(ret);
 }
 
 function JOIN_EVENT_2(EV_NICK,EV_USERNAME,EV_CHANNEL) {
@@ -98,19 +100,3 @@ function Channel(CH_NAME){
 	}
 	this.topic = "";
 }
-
-function uniq_fast(a) {
-    var seen = {};
-    var out = [];
-    var len = a.length;
-    var j = 0;
-    for(var i = 0; i < len; i++) {
-         var item = a[i];
-         if(seen[item] !== 1) {
-               seen[item] = 1;
-               out[j++] = item;
-         }
-    }
-    return out;
-}
-

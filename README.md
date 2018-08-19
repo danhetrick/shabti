@@ -123,6 +123,14 @@
 		* [`GetChannelsList()`](#getchannelslist)
 		* [`GetUsersList()`](#getuserslist)
 
+	* [`common.js`](#common.js)
+		* [`removeDuplicatesFromArray(ARRAY)`](#removeduplicatesfromarrayarray)
+		* [`randomArrayValue(ARRAY)`](#randomarrayvaluearray)
+		* [`shuffleArray(ARRAY)`](#shufflearrayarray)
+		* [`dumpArray(ARRAY)`](#dumparrayarray)
+		* [`randomNumberFromRange(MINIMUM,MAXIMUM)`](randomnumberfromrangeminimummaximum)
+		* [`trim(STRING)`](#trimstring)
+
 	* [`greeting.js`](#greetingjs)
 		* [`Greet(MESSAGE)`](#greetmessage)
 		* [`ChannelGreet(MESSAGE)`](#channelgreetmessage)
@@ -745,6 +753,7 @@ Called when the bot receives a notification that is not handled by any other eve
 
 * [`commands.js`](#commandsjs)
 * [`channels.js`](#channelsjs)
+* [`common.js`](#common.js)
 * [`greeting.js`](#greetingjs)
 * [`simpledb.js`](#simpledbjs)
 * [`nofileio.js`](#nofileiojs)
@@ -930,7 +939,7 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 
 ## `channels.js`
 
-This module adds three functions that can make channel and user management a bit easier.
+This module adds three functions that can make channel and user management a bit easier.  Requires the `common.js` module.
 
 ```javascript
 require("channels.js");
@@ -952,6 +961,47 @@ This returns an array containing all the channels the bot is present in.
 ### `GetUsersList()`
 
 This returns an array containing all the user nicks in all the channels the bot is located in.
+
+---
+
+## `common.js`
+
+This module contains useful Javascript functions.  Other modules may load this module for their own functionality (like `channels.js`).
+
+```javascript
+require("common.js");
+
+array = removeDuplicatesFromArray(array);
+dumpArray(array);
+var entry = randomArrayValue(array);
+var num = randomNumberFromRange(1,100);
+array = shuffleArray(array);
+mystring = trim(mystring);
+```
+
+### `removeDuplicatesFromArray(ARRAY)`
+
+Removes duplicates from an array, and returns the cleaned array.
+
+### `randomArrayValue(ARRAY)`
+
+Returns a randomly selected array value.
+
+### `shuffleArray(ARRAY)`
+
+Returns a "shuffled" array (that is, the array with its value locations scrambled).
+
+### `dumpArray(ARRAY)`
+
+Prints all values in an array. This will only work correctly with an array of strings or numbers.
+
+### `randomNumberFromRange(MINIMUM,MAXIMUM)`
+
+Returns a randomly selected number from a range.
+
+### `trim(STRING)`
+
+Returns STRING with all leading and trailing whitespace removed.
 
 ---
 
