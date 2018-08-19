@@ -118,6 +118,11 @@
 		* [`Command Arguments`](#command-arguments)
 		* [`!colormsg` command](#colormsg-command)
 
+	* [`channels.js`](#channelsjs)
+		* [`GetTopic(CHANNEL)`](#gettopicchannel)
+		* [`GetChannelsList()`](#getchannelslist)
+		* [`GetUsersList()`](#getuserslist)
+
 	* [`greeting.js`](#greetingjs)
 		* [`Greet(MESSAGE)`](#greetmessage)
 		* [`ChannelGreet(MESSAGE)`](#channelgreetmessage)
@@ -739,6 +744,7 @@ Called when the bot receives a notification that is not handled by any other eve
 # Modules
 
 * [`commands.js`](#commandsjs)
+* [`channels.js`](#channelsjs)
 * [`greeting.js`](#greetingjs)
 * [`simpledb.js`](#simpledbjs)
 * [`nofileio.js`](#nofileiojs)
@@ -919,6 +925,33 @@ This creates a new command "!colormsg" which sends a randomly colored message to
 <dhetrick>  !colormsg dhetrick "Hello, world!"
 <pharaoh>   [COLORED TEXT GOES HERE...C'MON, GITHUB! GIVE US MORE FORMATTING OPTIONS!]
 ```
+
+---
+
+## `channels.js`
+
+This module adds three functions that can make channel and user management a bit easier.
+
+```javascript
+require("channels.js");
+var channel_topic = GetTopic("#foo");
+var all_channels = GetChannelsList();
+var all_users = GetUsersList();
+```
+
+`channels.js` uses three "extra" events (see ["Extra" Events](#extra-events)) for its functionality; it uses [`JOIN_EVENT_2`](#join_eventev_nickev_usernameev_channel), [`PART_EVENT_2`](#part_eventev_nickev_usernameev_channelev_message), and [`IRC_EVENT_2`](#irc_eventev_rawev_typeev_hostev_nickev_message).
+
+### `GetTopic(CHANNEL)`
+
+This returns a string containing the channel's topic, or an empty string if the topic is not known.
+
+### `GetChannelList()`
+
+This returns an array containing all the channels the bot is present in.
+
+### `GetUsersList()`
+
+This returns an array containing all the user nicks in all the channels the bot is located in.
 
 ---
 
