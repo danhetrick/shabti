@@ -143,7 +143,9 @@ function PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
 // EV_USERNAME = the username of the user who joined
 // EV_CHANNEL = the channel joined
 function JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL) {
-	print("*** "+EV_NICK+" ("+EV_USERNAME+") joined "+EV_CHANNEL);
+	if(EV_NICK != SV_NICK){
+		print("*** "+EV_NICK+" ("+EV_USERNAME+") joined "+EV_CHANNEL);
+	}
 }
 
 // IRC_EVENT()

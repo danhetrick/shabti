@@ -39,6 +39,7 @@
 	* [`message`](#message)
 	* [`notice`](#notice)
 	* [`action`](#action)
+	* [`users`](#users)
 
 	</details>
 
@@ -170,7 +171,7 @@
 
 # Summary
 
-**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.212.
+**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.313.
 
 # Name
 
@@ -383,7 +384,7 @@ All variable are static, except for `SV_TIME`  and `SV_DATE`.  These two variabl
 
 ## Built-In Functions
 
-There are 33 built-in functions for use in your **Shabti** scripts.
+There are 34 built-in functions for use in your **Shabti** scripts.
 
 * [IRC Functions](#irc-functions)
 	<details>
@@ -402,6 +403,7 @@ There are 33 built-in functions for use in your **Shabti** scripts.
 	* [`message`](#message)
 	* [`notice`](#notice)
 	* [`action`](#action)
+	* [`users`](#users)
 
 	</details>
 
@@ -513,6 +515,11 @@ There are 33 built-in functions for use in your **Shabti** scripts.
 * *Arguments*: 2 (channel, message)
 * *Returns*: nothing
 * Sends an action message to a channel.
+
+#### `users`
+* *Arguments*: 1 (channel)
+* *Returns*: array
+* Returns an array of users in a channel. The bot must be in the channel to return a list; otherwise, an empty array is returned.
 
 ---
 

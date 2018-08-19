@@ -62,6 +62,7 @@ use constant REQUIRE_ERROR          => 5;
 
 my @CHANNELS						= ();
 my @SCRIPTS							= ();
+my @CHANNEL_USERS                   = ();
 
 # ~~~~~~~~~~~~~~
 # | ARRAYS END |
@@ -73,7 +74,7 @@ my @SCRIPTS							= ();
 
 my $APPLICATION                     = 'Shabti';
 my $APPLICATION_FILE_NAME           = 'shabti.pl';
-my $VERSION                         = '0.212';
+my $VERSION                         = '0.313';
 my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 # ----------------
@@ -225,7 +226,8 @@ my %dispatch = (
     'join'    => \&irc_join,
     '391'     => \&irc_time,
     'part'    => \&irc_part,
-    'mode'    => \&irc_mode
+    'mode'    => \&irc_mode,
+    '353'     => \&irc_users,
 );
 
 # Load in configuration file
@@ -384,7 +386,21 @@ while ( my $input = <$sock> ) {
 # irc_public()
 # irc_private()
 # irc_nick_taken()
-# irc_channel_users()
+# irc_users()
+
+# irc_users()
+# Triggered when the bot gets a channel user list from the server
+sub irc_users {
+    my $server = shift;
+    my $nick = shift;
+    shift; # =
+    my $channel = shift;
+    my $users = shift;
+
+    $users=~s/\@//g;
+    $users=~s/\+//g;
+    SHABTI_add_users($channel,$users);
+}
 
 # irc_mode()
 # Triggered when the bot receives a mode message.
@@ -416,6 +432,12 @@ sub irc_part {
     my ( $who, $where, $message ) = @_;
 
     my($nick,$username) = split('!',$who);
+
+    if($nick eq $NICK) {
+        SHABTI_remove_channel($where);
+    } else {
+        SHABTI_remove_user($where,$nick);
+    }
 
     $message = quotemeta($message);
 
@@ -484,8 +506,10 @@ sub irc_join {
 
     my($nick,$username) = split('!',$who);
 
+    SHABTI_add_users($where,$nick);
+
     # If the bot is the one joining, don't do join event
-    if($nick eq $NICK){ return; }
+    #if($nick eq $NICK){ return; }
 
     if ( $js->eval("if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n") ) { }
     else {
@@ -679,6 +703,10 @@ sub irc_nick_taken {
 # | MISCELLANEOUS SUBROUTINES BEGIN |
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# SHABTI_add_users()
+# SHABTI_get_users()
+# SHABTI_remove_user()
+# SHABTI_remove_channel()
 # SHABTI_usage()
 # SHABTI_load_configuration_file()
 # SHABTI_logo()
@@ -686,6 +714,95 @@ sub irc_nick_taken {
 # SHABTI_find_file()
 # SHABTI_require_file()
 # SHABTI_add_built_in_functions()
+
+# SHABTI_remove_channel()
+# Arguments: 1 (channel name)
+# Returns: nothing
+# Description: Removes a channel from the channel user list
+sub SHABTI_remove_channel {
+    my $channel = shift;
+
+    my @copy = shift;
+    foreach my $e (@CHANNEL_USERS){
+        my @entry = @{$e};
+        if($entry[CHANNEL] eq $channel){}else{
+            push(@copy,\@entry);
+        }
+    }
+    @CHANNEL_USERS = @copy;
+}
+
+# SHABTI_remove_user()
+# Arguments: 2 (channel name, user nick)
+# Returns: nothing
+# Description: Removes a user from the channel user list
+sub SHABTI_remove_user {
+    my $channel = shift;
+    my $user = shift;
+
+    my @copy = shift;
+    foreach my $e (@CHANNEL_USERS){
+        my @entry = @{$e};
+        my @ul = @{$entry[CHANNEL_USERS]};
+        if($entry[CHANNEL] eq $channel){
+            @ul = grep { $_ ne $user } @ul;
+        }
+        my @n = ($entry[CHANNEL],\@ul);
+        push(@copy,\@n);
+    }
+    @CHANNEL_USERS = @copy;
+}
+
+# SHABTI_get_users()
+# Arguments: 1 (channel name)
+# Returns: array
+# Description: Gets a list of users in a channel
+sub SHABTI_get_users {
+    my $channel = shift;
+
+    foreach my $e (@CHANNEL_USERS){
+        my @entry = @{$e};
+        if($entry[CHANNEL] eq $channel){
+            return @{$entry[CHANNEL_USERS]};
+        }
+    }
+    return ();
+}
+
+# SHABTI_add_users()
+# Arguments: 2 (channel name,user name)
+# Returns: nothing
+# Description: Adds a user to the channel/user list
+sub SHABTI_add_users {
+    my $channel = shift;
+    my $users = shift;
+
+    my @c = split(' ',$users);
+    my @copy = ();
+    my $found = 0;
+    foreach my $e (@CHANNEL_USERS){
+        my @entry = @{$e};
+        my @cu = @{$entry[CHANNEL_USERS]};
+        if($entry[CHANNEL] eq $channel){
+            $found = 1;
+            foreach my $us (@c){
+                if ( grep( /^$us$/, @cu ) ) {}else{
+                    push(@cu,$us);
+                }
+            }
+        }
+        my @n = ($entry[CHANNEL],\@cu);
+        push(@copy,\@n);
+    }
+    @CHANNEL_USERS = @copy;
+
+    if($found==0){
+        my @entry;
+        push(@entry,$channel);
+        push(@entry,\@c);
+        push(@CHANNEL_USERS,\@entry);
+    }
+}
 
 # SHABTI_usage()
 # Arguments: none
@@ -906,6 +1023,22 @@ sub SHABTI_require_file {
 # Description: Adds new JavaScript commands to the JE object.
 sub SHABTI_add_built_in_functions {
     my $j = shift;
+
+    # users
+    # Returns an array of users in a channel
+    $j->new_function(
+        users => sub {
+            if ( scalar @_ == 1 ) {
+                my @q = SHABTI_get_users($_[0]);
+                my $qa = JE::Object::Array->new($j,@q);
+                return $qa;
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'users'\n";
+            }
+        }
+    );
 
     # tokens
     # Tokenize a string (spaces as delimiter, with quotes)
