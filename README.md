@@ -203,6 +203,8 @@
 		* :page_facing_up: default.xml
 		* :file_folder: modules
 			* :page_facing_up: base64.js
+			* :page_facing_up: channels.js
+			* :page_facing_up: common.js
 			* :page_facing_up: commands.js
 			* :page_facing_up: emoji.js
 			* :page_facing_up: greeting.js
