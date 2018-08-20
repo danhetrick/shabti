@@ -31,6 +31,12 @@ Functions:
 	AllChannelsList()
 		Returns an array containing all channels the bot is in.
 
+	UserCount()
+		Returns the number of all users in all channels the bot is in.
+
+	ChannelCount()
+		Returns the number of all channels the bot is in.
+
 */
 
 require("common");
