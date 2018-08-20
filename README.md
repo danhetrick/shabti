@@ -119,6 +119,8 @@
 		* [`!colormsg` command](#colormsg-command)
 
 	* [`channels.js`](#channelsjs)
+		* [`UserCount()`](#usercount)
+		* [`ChannelCount()`](#channelcount)
 		* [`GetTopic(CHANNEL)`](#gettopicchannel)
 		* [`GetChannelsList()`](#getchannelslist)
 		* [`GetUsersList()`](#getuserslist)
@@ -949,6 +951,14 @@ var all_users = GetUsersList();
 ```
 
 `channels.js` uses three "extra" events (see ["Extra" Events](#extra-events)) for its functionality; it uses [`JOIN_EVENT_2`](#join_eventev_nickev_usernameev_channel), [`PART_EVENT_2`](#part_eventev_nickev_usernameev_channelev_message), and [`IRC_EVENT_2`](#irc_eventev_rawev_typeev_hostev_nickev_message).
+
+### `UserCount()`
+
+Returns the number of users in all channels the bot is in.
+
+### `ChannelCount()`
+
+Returns the number of channels the bot is in.
 
 ### `GetTopic(CHANNEL)`
 

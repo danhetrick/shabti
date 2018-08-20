@@ -37,6 +37,18 @@ require("common");
 
 var ChannelList = new Array();
 
+function UserCount(){
+	var c = 0;
+	for(var i=0, len=ChannelList.length; i < len; i++){
+		c = c + ChannelList[i].users().length;
+	}
+	return c;
+}
+
+function ChannelCount(){
+	return ChannelList.length;
+}
+
 function GetTopic(CH_NAME){
 	for(var i=0, len=ChannelList.length; i < len; i++){
 		if(ChannelList[i].name==CH_NAME){
