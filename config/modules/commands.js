@@ -14,7 +14,7 @@ Shabti Command Module
 Example usage:
 
 require("commands.js");
-var Commands = new CommandList("shabti","1.0","!help");
+var Commands = new CommandList();
 
 function cmd_hello(args,caller,channel){
 	message(caller,"Hello!");

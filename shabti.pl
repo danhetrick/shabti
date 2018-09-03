@@ -51,6 +51,8 @@ use constant NETWORK_ERROR          => 2;
 use constant FILE_ERROR             => 3;
 use constant CONFIG_ERROR			=> 4;
 use constant REQUIRE_ERROR          => 5;
+use constant HOOK_TYPE              => 0;
+use constant HOOK_FUNCTION          => 1;
 
 # ~~~~~~~~~~~~~~~~~
 # | CONSTANTS END |
@@ -63,6 +65,7 @@ use constant REQUIRE_ERROR          => 5;
 my @CHANNELS						= ();
 my @SCRIPTS							= ();
 my @CHANNEL_USERS                   = ();
+my @HOOKS                           = ();
 
 # ~~~~~~~~~~~~~~
 # | ARRAYS END |
@@ -74,7 +77,7 @@ my @CHANNEL_USERS                   = ();
 
 my $APPLICATION                     = 'Shabti';
 my $APPLICATION_FILE_NAME           = 'shabti.pl';
-my $VERSION                         = '0.313';
+my $VERSION                         = '0.550';
 my $DESCRIPTION                     = 'A Perl/Javascript IRC Bot';
 
 # ----------------
@@ -91,7 +94,7 @@ $BANNER .= ('-' x $LOGO_WIDTH)."\n\n";
 # --------------
 
 my $CONFIGURATION_DIRECTORY_NAME    = 'config';
-my $JAVASCRIPT_MODULES_DIRECTORY    = "modules";
+my $JAVASCRIPT_MODULES_DIRECTORY    = 'modules';
 my $BOT_SOURCE                  	= 'default.js';
 my $DEFAULT_BOT_SOURCE              = $BOT_SOURCE;
 my $CONFIG							= 'default.xml';
@@ -104,6 +107,7 @@ my $NOJSPRINT						= undef;
 my $QUIET							= undef;
 my $NOCONFIG						= undef;
 my $DISPLAY_VERSION                 = undef;
+my $THREADS                         = undef;
 
 my $JOIN_EVENT                      = 'JOIN_EVENT';
 my $CONNECT_EVENT                   = 'CONNECT_EVENT';
@@ -116,6 +120,19 @@ my $PART_EVENT                      = 'PART_EVENT';
 my $IRC_EVENT						= 'IRC_EVENT';
 my $MODE_EVENT						= 'MODE_EVENT';
 my $ACTION_EVENT                    = 'ACTION_EVENT';
+my $NOTICE_EVENT                    = 'NOTICE_EVENT';
+
+my $NICK_TAKEN_HOOK                 = 'nick-taken';
+my $PRIVATE_MESSAGE_HOOK            = 'private';
+my $PUBLIC_MESSAGE_HOOK             = 'public';
+my $CTCP_ACTION_HOOK                = 'action';
+my $PING_HOOK                       = 'ping';
+my $CONNECT_HOOK                    = 'connect';
+my $JOIN_HOOK                       = 'join';
+my $TIME_HOOK                       = 'time';
+my $PART_HOOK                       = 'part';
+my $MODE_HOOK                       = 'mode';
+my $NOTICE_HOOK                     = 'notice';
 
 my $DEFAULT_NICK                    = "shabti";
 my $DEFAULT_USERNAME                = "shabti";
@@ -134,8 +151,6 @@ my $COLOR_TEXT						= chr(3);
 my $BOLD_TEXT						= chr(2);
 my $ITALIC_TEXT						= chr(hex("1D"));
 my $UNDERLINE_TEXT					= chr(hex("1F"));
-
-my $MAX_EXTRA_EVENT_FUNCTIONS       = 10;
 
 my $BUILT_IN_VARIABLES = <<"EOA";
 var SV_SERVER = \"$SERVER\";
@@ -167,6 +182,8 @@ var GREY = \"14\";
 var LIGHT_GREY = \"15\";
 EOA
 
+our $UPTIME = 0;
+
 # ~~~~~~~~~~~~~~~
 # | SCALARS END |
 # ~~~~~~~~~~~~~~~
@@ -178,6 +195,13 @@ EOA
 # =====================
 # | MAIN PROGAM BEGIN |
 # =====================
+
+my $can_use_threads = eval 'use threads; 1';
+if ($can_use_threads) {
+    $THREADS = 1;
+    use threads;
+    use threads::shared;
+}
 
 # Handle commandline options
 Getopt::Long::Configure ("bundling");
@@ -195,7 +219,6 @@ GetOptions(
     "q|quiet"			=> \$QUIET,
     "C|noconfig"		=> \$NOCONFIG,
     "v|version"         => \$DISPLAY_VERSION,
-    "x|extra"           => \$MAX_EXTRA_EVENT_FUNCTIONS
 );
 
 # Display usage information
@@ -228,10 +251,10 @@ my %dispatch = (
     'part'    => \&irc_part,
     'mode'    => \&irc_mode,
     '353'     => \&irc_users,
+    'notice'  => \&irc_notice,
 );
 
 # Load in configuration file
-
 if($NOCONFIG){
 		# Don't load configuration files
 	}else {
@@ -249,6 +272,11 @@ if($NOCONFIG){
 if($NOBANNER){} else {
 	print $BANNER;
 }
+
+# Startup the heartbeat, if threads are enabled
+if($THREADS){
+    share($UPTIME);
+} 
 
 # Create JavaScript object and add new functions
 my $js = new JE;
@@ -339,30 +367,16 @@ while ( my $input = <$sock> ) {
         my $nick = shift @args || "";
         my $msg = join(' ',@args); $msg = quotemeta($msg);
 
-		if ( $js->eval("if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n") ) { }
-		else {
-		    if ( $@ ne '' ) {
-		        SHABTI_error(JAVASCRIPT_ERROR,$@);
-		    }
-		}
-        # Done
-        # Extra events
-        my $i = 1;
+        my $ev = "if (typeof $IRC_EVENT === \"function\") { $IRC_EVENT(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n";
+        SHABTI_execute_javascript($ev);
 
-        while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-            my $cmd = "if (typeof $IRC_EVENT"."_".$i."=== \"function\") { $IRC_EVENT"."_".$i."(\"$raw\",\"$type\",\"$server\",\"$nick\",\"$msg\"); }\n";
-
-            if ( $js->eval($cmd) ) { }
-            else {
-                if ( $@ ne '' ) {
-                    SHABTI_error(JAVASCRIPT_ERROR,$@);
-                }
-            }
-
-            $i++;
+        # event hooks
+        my $b = SHABTI_get_hooks($type);
+        foreach my $f (@{$b}){
+            my $raw = "$type ".join(' ',@args); $raw = quotemeta($raw);
+            my $ev = "if (typeof $f === \"function\") { $f(\"$raw\"); }";
+            SHABTI_execute_javascript($ev);
         }
-
-
 
     }
 }
@@ -387,6 +401,29 @@ while ( my $input = <$sock> ) {
 # irc_private()
 # irc_nick_taken()
 # irc_users()
+# irc_notice()
+
+
+
+sub irc_notice {
+    # Skip server connecting notices
+    if($_[0] eq 'AUTH') { return; }
+
+    my ( $actor,$target,$msg ) = @_;
+    my($nick,$username)=split('!',$actor);
+    $msg = quotemeta($msg);
+
+    my $ev = "if (typeof $NOTICE_EVENT === \"function\") { $NOTICE_EVENT(\"$nick\",\"$username\",\"$target\",\"$msg\"); }\n";
+    SHABTI_execute_javascript($ev);
+
+    # event hooks
+    my $b = SHABTI_get_hooks($NOTICE_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Target:\"$target\",Message:\"$msg\"}); }";
+        SHABTI_execute_javascript($ev);
+    }
+
+}
 
 # irc_users()
 # Triggered when the bot gets a channel user list from the server
@@ -415,14 +452,15 @@ sub irc_mode {
 		$code = "if (typeof $MODE_EVENT === \"function\") { $MODE_EVENT(\"$nick\",\"\",\"$target\",\"$mode\"); }\n";
 	}
 
-    if ( $js->eval($code) ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
-    }
+    my $ev = $code;
+    SHABTI_execute_javascript($ev);
 
-    return 1;
+    # event hooks
+    my $b = SHABTI_get_hooks($MODE_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Target:\"$target\",Mode:\"$mode\"}); }";
+        SHABTI_execute_javascript($ev);
+    }
 }
 
 
@@ -441,26 +479,14 @@ sub irc_part {
 
     $message = quotemeta($message);
 
-    if ( $js->eval("if (typeof $PART_EVENT === \"function\") { $PART_EVENT(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
-    }
+    my $ev = "if (typeof $PART_EVENT === \"function\") { $PART_EVENT(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n";
+    SHABTI_execute_javascript($ev);
 
-    my $i = 1;
-
-    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-        my $cmd = "if (typeof $PART_EVENT"."_".$i."=== \"function\") { $PART_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\",\"$message\"); }\n";
-
-        if ( $js->eval($cmd) ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
-
-        $i++;
+    # event hooks
+    my $b = SHABTI_get_hooks($PART_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username\"$username\",Channel:\"$where\",Message:\"$message\"}); }";
+        SHABTI_execute_javascript($ev);
     }
 
     # refresh user list
@@ -468,7 +494,7 @@ sub irc_part {
     # get server time/date
     print $sock "TIME\r\n";
 
-    return 1;
+    #return 1;
 }
 
 # irc_time()
@@ -486,11 +512,14 @@ sub irc_time {
     my ($hour,$minute,$second) = split(':',$rtime);
     my $zone = shift @response;
 
-    if ( $js->eval("if (typeof $TIME_EVENT === \"function\") { $TIME_EVENT(\"$weekday\",\"$month\",\"$day\",\"$year\",\"$hour\",\"$minute\",\"$second\",\"$zone\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
+    my $ev = "if (typeof $TIME_EVENT === \"function\") { $TIME_EVENT(\"$weekday\",\"$month\",\"$day\",\"$year\",\"$hour\",\"$minute\",\"$second\",\"$zone\"); }\n";
+    SHABTI_execute_javascript($ev);
+
+    # event hooks
+    my $b = SHABTI_get_hooks($TIME_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Weekday:\"$weekday\",Month:\"$month\",Day:\"$day\",Year:\"$year\",Hour:\"$hour\",Minute:\"$minute\",Second:\"$second\",Zone:\"$zone\"}); }";
+        SHABTI_execute_javascript($ev);
     }
 
     # Inject built-in variables
@@ -508,29 +537,14 @@ sub irc_join {
 
     SHABTI_add_users($where,$nick);
 
-    # If the bot is the one joining, don't do join event
-    #if($nick eq $NICK){ return; }
+    my $ev = "if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n";
+    SHABTI_execute_javascript($ev);
 
-    if ( $js->eval("if (typeof $JOIN_EVENT === \"function\") { $JOIN_EVENT(\"$nick\",\"$username\",\"$where\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
-    }
-
-    my $i = 1;
-
-    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-        my $cmd = "if (typeof $JOIN_EVENT"."_".$i."=== \"function\") { $JOIN_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\"); }\n";
-
-        if ( $js->eval($cmd) ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
-
-        $i++;
+    # event hooks
+    my $b = SHABTI_get_hooks($JOIN_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Channel:\"$where\"}); }";
+        SHABTI_execute_javascript($ev);
     }
 
     # refresh user list
@@ -538,33 +552,26 @@ sub irc_join {
     # get server time/date
     print $sock "TIME\r\n";
 
-    return 1;
+    #return 1;
 }
 
 # irc_001()
 # Triggerec when the bot connects to an IRC server.
 sub irc_001 {
 
-    if ( $js->eval("if (typeof $CONNECT_EVENT === \"function\") { $CONNECT_EVENT(\"$_[0]\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
+    # Start uptime counter
+    if($THREADS){
+        my $thr = threads->new(\&SHABTI_update_uptime)->detach();
     }
 
-    my $i = 1;
+    my $ev = "if (typeof $CONNECT_EVENT === \"function\") { $CONNECT_EVENT(\"$_[0]\"); }\n";
+    SHABTI_execute_javascript($ev);
 
-    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-        my $cmd = "if (typeof $CONNECT_EVENT"."_".$i."=== \"function\") { $CONNECT_EVENT"."_".$i."(\"$_[0]\"); }\n";
-
-        if ( $js->eval($cmd) ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
-
-        $i++;
+    # event hooks
+    my $b = SHABTI_get_hooks($CONNECT_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Host:\"$_[0]\"}); }";
+        SHABTI_execute_javascript($ev);
     }
 
     print $sock "TIME\r\n";
@@ -574,7 +581,7 @@ sub irc_001 {
     	print $sock "JOIN $c\r\n";
     }
 
-    return 1;
+    #return 1;
 }
 
 # irc_ping()
@@ -583,11 +590,14 @@ sub irc_ping {
     my $server = shift;
     print $sock "PONG :$server\r\n";
 
-    if ( $js->eval("if (typeof $PING_EVENT === \"function\") { $PING_EVENT(); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
+    my $ev = "if (typeof $PING_EVENT === \"function\") { $PING_EVENT(); }\n";
+    SHABTI_execute_javascript($ev);
+
+    # event hooks
+    my $b = SHABTI_get_hooks($PING_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f(); }";
+        SHABTI_execute_javascript($ev);
     }
 
     # get server time
@@ -612,40 +622,26 @@ sub irc_public {
         $act=chr(1);
         $what=~s/$act//;
 
-        if ( $js->eval("if (typeof $ACTION_EVENT === \"function\") { $ACTION_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
+        my $ev = "if (typeof $ACTION_EVENT === \"function\") { $ACTION_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n";
+        SHABTI_execute_javascript($ev);
 
-        return 1;
-    }
-
-    if ( $js->eval("if (typeof $PUBLIC_MESSAGE_EVENT === \"function\") { $PUBLIC_MESSAGE_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
+        # event hooks
+        my $b = SHABTI_get_hooks($CTCP_ACTION_HOOK);
+        foreach my $f (@{$b}){
+            my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Channel:\"$where\",Message:\"$what\"}); }";
+            SHABTI_execute_javascript($ev);
         }
     }
 
-    # Extra PUBLIC_MESSAGE_EVENT functions
-    my $i = 1;
+    my $ev = "if (typeof $PUBLIC_MESSAGE_EVENT === \"function\") { $PUBLIC_MESSAGE_EVENT(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n";
+    SHABTI_execute_javascript($ev);
 
-    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-        my $cmd = "if (typeof $PUBLIC_MESSAGE_EVENT"."_".$i."=== \"function\") { $PUBLIC_MESSAGE_EVENT"."_".$i."(\"$nick\",\"$username\",\"$where\",\"$what\"); }\n";
-
-        if ( $js->eval($cmd) ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
-
-        $i++;
+    # event hooks
+    my $b = SHABTI_get_hooks($PUBLIC_MESSAGE_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Channel:\"$where\",Message:\"$what\"}); }";
+        SHABTI_execute_javascript($ev);
     }
-
-    return 1;
 }
 
 # irc_private()
@@ -657,29 +653,15 @@ sub irc_private {
 
     $what = quotemeta($what);
 
-    if ( $js->eval("if (typeof $PRIVATE_MESSAGE_EVENT === \"function\") { $PRIVATE_MESSAGE_EVENT(\"$nick\",\"$username\",\"$what\"); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
+    my $ev = "if (typeof $PRIVATE_MESSAGE_EVENT === \"function\") { $PRIVATE_MESSAGE_EVENT(\"$nick\",\"$username\",\"$what\"); }\n";
+    SHABTI_execute_javascript($ev);
+
+    # event hooks
+    my $b = SHABTI_get_hooks($PRIVATE_MESSAGE_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f({Nick:\"$nick\",Username:\"$username\",Message:\"$what\"}); }";
+        SHABTI_execute_javascript($ev);
     }
-
-    my $i = 1;
-
-    while($i<=$MAX_EXTRA_EVENT_FUNCTIONS){
-        my $cmd = "if (typeof $PRIVATE_MESSAGE_EVENT"."_".$i."=== \"function\") { $PRIVATE_MESSAGE_EVENT"."_".$i."(\"$nick\",\"$username\",\"$what\"); }\n";
-
-        if ( $js->eval($cmd) ) { }
-        else {
-            if ( $@ ne '' ) {
-                SHABTI_error(JAVASCRIPT_ERROR,$@);
-            }
-        }
-
-        $i++;
-    }
-
-    return 1;
 }
 
 # irc_nick_taken()
@@ -687,11 +669,14 @@ sub irc_private {
 sub irc_nick_taken {
     my ( $who, $what ) = @_;
 
-    if ( $js->eval("if (typeof $NICK_TAKEN_EVENT === \"function\") { $NICK_TAKEN_EVENT(); }\n") ) { }
-    else {
-        if ( $@ ne '' ) {
-            SHABTI_error(JAVASCRIPT_ERROR,$@);
-        }
+    my $ev = "if (typeof $NICK_TAKEN_EVENT === \"function\") { $NICK_TAKEN_EVENT(); }\n";
+    SHABTI_execute_javascript($ev);
+
+    # event hooks
+    my $b = SHABTI_get_hooks($NICK_TAKEN_HOOK);
+    foreach my $f (@{$b}){
+        my $ev = "if (typeof $f === \"function\") { $f(); }";
+        SHABTI_execute_javascript($ev);
     }
 }
 
@@ -714,6 +699,89 @@ sub irc_nick_taken {
 # SHABTI_find_file()
 # SHABTI_require_file()
 # SHABTI_add_built_in_functions()
+# SHABTI_execute_javascript()
+# SHABTI_pretty_time()
+# SHABTI_update_uptime()
+# SHABTI_add_hook()
+# SHABTI_get_hooks()
+
+# SHABTI_pretty_time()
+# Arguments: 0
+# Returns: string
+# Description: Returns approximate uptime in a human readable format
+sub SHABTI_pretty_time {
+    my $days = int($UPTIME/(24*60*60));
+    my $hours = ($UPTIME/(60*60))%24;
+    my $min = ($UPTIME/60)%60;
+    if($days>=1){ 
+        if($days==1){ return "$days day"; }
+        return "$days days"; 
+    }
+    if($hours>=1){
+        if($hours==1){ return "$hours hour"; }
+        return "$hours hours";
+    }
+    if($min>=1){
+        if($min==1){ return "$min minute"; }
+        return "$min minutes";
+    }
+    return "$UPTIME seconds";
+}
+
+# SHABTI_update_uptime()
+# Arguments: 0
+# Returns: 0
+# Description: If threads are enabled, this sub runs in a seperate thread and
+#              tracks the bot's online uptime
+sub SHABTI_update_uptime {
+    while(){
+        $UPTIME++;
+        sleep 1;
+    }
+}
+
+# SHABTI_add_hook()
+# Arguments: 2 (string,string)
+# Returns: Nothing
+# Description: Adds an event hook. Type can be a specific event name (see documentation), or an
+#              IRC response number
+sub SHABTI_add_hook {
+    my $type = shift;
+    my $func = shift;
+    my @b = ($type,$func);
+    push(@HOOKS,\@b);
+}
+
+# SHABTI_get_hooks()
+# Arguments: 1 (scalar)
+# Returns: array reference
+# Description: Gets all hook functions for a given hook type
+sub SHABTI_get_hooks {
+    my $type = shift;
+    my @r = ();
+    foreach my $e (@HOOKS){
+        my @b = @{$e};
+        if($b[HOOK_TYPE] eq $type){
+            push(@r,$b[HOOK_FUNCTION]);
+        }
+    }
+    return \@r;
+}
+
+# SHABTI_execute_javascript()
+# Arguments: 1 (scalar)
+# Returns: nothing
+# Description: Executes Javascript, or exits on error.
+sub SHABTI_execute_javascript {
+    my $code = shift;
+
+    if ( $js->eval($code) ) { }
+    else {
+        if ( $@ ne '' ) {
+            SHABTI_error(JAVASCRIPT_ERROR,$@);
+        }
+    }
+}
 
 # SHABTI_remove_channel()
 # Arguments: 1 (channel name)
@@ -872,9 +940,6 @@ sub SHABTI_load_configuration_file {
 	if(ref($tree->{configuration}->{ircname}) eq 'ARRAY'){
 		SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'ircname' child element");
 	}
-    if(ref($tree->{configuration}->{extra}) eq 'ARRAY'){
-        SHABTI_error(CONFIG_ERROR,"Configuration file contains more than one 'configuration'->'extra' child element");
-    }
 
 	# Load in single element settings
 	if($tree->{configuration}->{server}){ $SERVER = $tree->{configuration}->{server}; }
@@ -882,7 +947,6 @@ sub SHABTI_load_configuration_file {
 	if($tree->{configuration}->{nick}){ $NICK = $tree->{configuration}->{nick}; }
 	if($tree->{configuration}->{username}){ $USERNAME = $tree->{configuration}->{username}; }
 	if($tree->{configuration}->{ircname}){ $IRCNAME = $tree->{configuration}->{ircname}; }
-    if($tree->{configuration}->{extra}){ $MAX_EXTRA_EVENT_FUNCTIONS = $tree->{configuration}->{extra}; }
 
     if ($PORT =~ /^\d+?$/) {}else{
         SHABTI_error(CONFIG_ERROR,"'configuration'->'port' value \"$PORT\" is not a number");
@@ -1017,12 +1081,55 @@ sub SHABTI_require_file {
     return undef;
 }
 
+
 # SHABTI_add_built_in_functions()
 # Arguments: 1 (JE object)
 # Returns: JE Object
 # Description: Adds new JavaScript commands to the JE object.
 sub SHABTI_add_built_in_functions {
     my $j = shift;
+
+    # approximate_uptime
+    # Returns uptime, if threads are enabled, in an easier to read format
+    $j->new_function(
+        approximate_uptime => sub {
+            if ( scalar @_ == 0 ) {
+                if($THREADS){ return SHABTI_pretty_time(); } else { return "0 seconds"; }
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'approximate_uptime'\n";
+            }
+        }
+    );
+
+    # uptime
+    # Returns uptime, in seconds, if threads are enabled
+    $j->new_function(
+        uptime => sub {
+            if ( scalar @_ == 0 ) {
+                if($THREADS){ return $UPTIME; } else { return 0; }
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'uptime'\n";
+            }
+        }
+    );
+
+    # hook
+    # Adds an event hook
+    $j->new_function(
+        hook => sub {
+            if ( scalar @_ == 2 ) {
+                SHABTI_add_hook($_[0],$_[1])
+            }
+            else {
+                die new JE::Object::Error::SyntaxError $j,
+                  "Wrong number of arguments to 'hook'\n";
+            }
+        }
+    );
 
     # users
     # Returns an array of users in a channel

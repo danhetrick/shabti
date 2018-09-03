@@ -24,6 +24,9 @@ mystring = trim(mystring);
 
 Functions:
 
+    removeFromArray(ARRAY,ELEMENT)
+        Removes a value from an array.
+
 	removeDuplicatesFromArray(ARRAY)
 		Removes duplicates from an array, and returns the cleaned array.
 
@@ -43,6 +46,14 @@ Functions:
 		Returns string with leading and ending whitespace removed.
 
 */
+
+function removeFromArray(array, element) {
+    var index = array.indexOf(element);
+    
+    if (index !== -1) {
+        array.splice(index, 1);
+    }
+}
 
 function removeDuplicatesFromArray(a) {
     var seen = {};

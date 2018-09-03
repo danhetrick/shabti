@@ -82,11 +82,13 @@
 	* [`require`](#require)
 	* [`exit`](#exit)
 	* [`tokens`](#tokens)
+	* [`hook`](#hook)
+	* [`uptime`](#uptime)
+	* [`approximate_uptime`](#approximate_uptime)
 
 	</details>
 
 * [Events](#events)
-* ["Extra" Events](#extra-events)
 
 	<details>
 
@@ -98,11 +100,31 @@
 	* [`TIME_EVENT`](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
 	* [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message)
 	* [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message)
+	* [`NOTICE_EVENT`](#notice_eventev_nickev_usernameev_targetev_message)
 	* [`ACTION_EVENT`](#action_eventev_nickev_usernameev_channelev_action)
 	* [`MODE_EVENT`](#mode_eventev_nickev_usernameev_targetev_mode)
 	* [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel)
 	* [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message)
 	* [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message)
+
+	</details>
+
+* ["Hook" Events](#hook-events)
+
+	<details>
+
+	<summary>Named Hook Events</summary>
+
+	* [`public`](#public)
+	* [`private`](#private)
+	* [`notice`](#notice)
+	* [`mode`](#mode)
+	* [`part`](#part)
+	* [`time`](#time)
+	* [`join`](#join)
+	* [`connect`](#connect)
+	* [`ping`](#ping)
+	* [`nick-taken`](#nick-taken)
 
 	</details>
 
@@ -186,7 +208,7 @@
 
 # Summary
 
-**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.313.
+**Shabti** is an IRC bot, powered by Perl and Javascript.  More specifically, it's an IRC bot written in pure Perl, which can have all its behavior programmed with Javascript.  **Shabti** uses [**JE**](https://metacpan.org/pod/JE), a pure Perl Javascript engine by [Father Chrysostomos](https://metacpan.org/author/SPROUT).  Without any modification, **Shabti** doesn't really do anything.  It can connect to an IRC server, join channels, and...well, that's about it.  What **Shabti** does is up to *you*.  The latest version of **Shabti** is 0.550.
 
 # Name
 
@@ -236,8 +258,7 @@
 	--no(P)rint			Prevent JavaScript from printing to the console
 	--(q)uiet			Prevent all console printing
 	--no(C)onfig			Don't load settings from 'default.xml'
-	--(v)ersion			Display version
-	--e(x)tra            		How many extra chat event functions (default: 10)		
+	--(v)ersion			Display version		
 
 # Configuration
 
@@ -273,7 +294,6 @@ Command line options can be bundled.
 	<nick>Shabti</nick>
 	<username>shabti</username>
 	<ircname>Shabti IRC bot</ircname>
-	<extra>10</extra>
 	<channel>#foo</channel>
 	<channel>#bar</channel>
 	<channel>#shabti</channel>
@@ -297,8 +317,6 @@ Any filename passed to **Shabti** is looked for first in the same directory `sha
 		* Sets the username the bot will use.
 	* `ircname`
 		* Sets the IRCname the bot will use.
-	* `extra`
-		* How many "extra" events the bot will attempt to execute (see ["Extra" Events](#extra-events)).
 	* `channel`
 		* Sets a channel the bot will join.
 		* The `channel` child element can appear multiple times; set multiple `channel` elements to have the bot join more than one channel.
@@ -334,7 +352,7 @@ function PING_EVENT() {
 }
 ```
 
-`mybot.js` prints a message when the bot connects to a server, as does `otherbot.js`.  If `mybot.js` is loaded before `otherbot.js`, `otherbot.js`'s `CONNECT_EVENT()` function overloads `mybot.js`'s `CONNECT_EVENT()`;  that is, when the bot connects to a server, the `CONNECT_EVENT()` function in `otherbot.js` is executed, not the one in `mybot.js`.  To make sure this doesn't occur, consider using "extra" event functions in your scripts, if you're going to load more than one at a time (see ["Extra" Events](#extra-events) for more information).
+`mybot.js` prints a message when the bot connects to a server, as does `otherbot.js`.  If `mybot.js` is loaded before `otherbot.js`, `otherbot.js`'s `CONNECT_EVENT()` function overloads `mybot.js`'s `CONNECT_EVENT()`;  that is, when the bot connects to a server, the `CONNECT_EVENT()` function in `otherbot.js` is executed, not the one in `mybot.js`.  To make sure this doesn't occur, consider using "hook" event functions in your scripts, if you're going to load more than one at a time (see ["Hook" Events](#hook-events) for more information).
 
 A **Shabti** script doesn't need to contain all of the events provided, only the ones necessary for whatever you're trying to do with your script.  If a specific event is not present, it will simply never be called.
 
@@ -466,6 +484,9 @@ There are 34 built-in functions for use in your **Shabti** scripts.
 	* [`require`](#require)
 	* [`exit`](#exit)
 	* [`tokens`](#tokens)
+	* [`hook`](#hook)
+	* [`uptime`](#uptime)
+	* [`approximate_uptime`](#approximate_uptime)
 
 	</details>
 
@@ -664,6 +685,21 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 * *Returns*: array
 * Tokenizes a string into an array, using space(s) as a delimiter.  Quotes can be used to set a token containing whitespace.  See [Command Arguments](#command-arguments) for more information on how this function works.
 
+#### `hook`
+* *Arguments*: 2 (event,function name)
+* *Returns*: nothing
+* Creates an event hook.  Every time the given event occurs, the function name passed in the argument will be called.
+
+#### `uptime`
+* *Arguments*: 0
+* *Returns*: bot's uptime in seconds
+* If threads are enabled on the version of Perl **Shabti** is using, this will return how many seconds the bot has been online.
+
+#### `approximate_uptime`
+* *Arguments*: 0
+* *Returns*: bot's uptime in a more readible format
+* If threads are enabled on the version of Perl **Shabti** is using, this will return how the bot's approximate uptime in a more readable format (like "3 minutes" or "2 hours").
+
 ---
 
 ## Events
@@ -674,6 +710,7 @@ These colors and text enhancements will *only* be seen in IRC clients; they will
 * [`TIME_EVENT`](#time_eventev_weekdayev_monthev_dayev_yearev_hourev_minuteev_secondev_zone)
 * [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message)
 * [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message)
+* [`NOTICE_EVENT`](#notice_eventev_nickev_usernameev_targetev_message)
 * [`ACTION_EVENT`](#action_eventev_nickev_usernameev_channelev_action)
 * [`MODE_EVENT`](#mode_eventev_nickev_usernameev_targetev_mode)
 * [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel)
@@ -684,15 +721,10 @@ Events are functions that are automatically executed when **Shabti** receives ce
 
 If you want to execute code as soon as the script is loaded, simply place your code at the top of the file, or outside of event declarations. Any code not in a function or event declaration is executed as soon as the script is loaded.
 
-### "Extra" Events
-
-Some events will call "extra" functions; that is, the event triggers multiple function calls.  The names of these "extra" functions follow the format "EVENT_FUNCTION_x", where "x" is a number.  By default, "x" will be a number from 1-10; so, when an event with "extra" functions is triggered, the bot will attempt to execute `EVENT_FUNCTION_1`, `EVENT_FUNCTION_2`, `EVENT_FUNCTION_3`, and so on. To change how many "extra" event functions are called, use the `--extra` command line option, or set the `extra` child element in the configuration file. The events that support this feature are [`CONNECT_EVENT`](#connect_eventev_host), [`PUBLIC_MESSAGE_EVENT`](#public_message_eventev_nickev_usernameev_channelev_message), [`PRIVATE_MESSAGE_EVENT`](#private_message_eventev_nickev_usernameev_message), [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel), [`PART_EVENT`](#part_eventev_nickev_usernameev_channelev_message), and [`IRC_EVENT`](#irc_eventev_rawev_typeev_hostev_nickev_message).
-
 ---
 
 #### `CONNECT_EVENT(EV_HOST)`
 * *Arguments*: `EV_HOST` (the name of the server connected to)
-* *Note:* **Shabti** will call "extra" connect event functions.  Their names follow the format `CONNECT_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `CONNECT_EVENT_1` to `CONNECT_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `CONNECT_EVENT_1` to `CONNECT_EVENT_50` whenever it receives a connect message.
 
 Called when the bot connects to the IRC server.
 
@@ -713,15 +745,18 @@ Called when the bot receives a `RPL_TIME` message from the server. **Shabti** ca
 
 #### `PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the message is sent to), and `EV_MESSAGE` (the message sent)
-* *Note:* **Shabti** will call "extra" public chat event functions.  Their names follow the format `PUBLIC_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PUBLIC_MESSAGE_EVENT_1` to `PUBLIC_MESSAGE_EVENT_50` whenever it receives a public message.
 
 Called when the bot receives a public message.
 
 #### `PRIVATE_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the message), `EV_USERNAME` (the username of the sender), `EV_MESSAGE` (the message sent)
-* *Note:* **Shabti** will call "extra" private chat event functions.  Their names follow the format `PRIVATE_MESSAGE_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PRIVATE_MESSAGE_EVENT_1` to `PRIVATE_MESSAGE_EVENT_50` whenever it receives a private message.
 
 Called when the bot receives a private message.
+
+#### `NOTICE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MESSAGE)`
+* *Arguments*: `EV_NICK` (the nick of the user sending the notice), `EV_USERNAME` (the username of the sender), `EV_TARGET` (the target of the notice), `EV_MESSAGE` (the message sent)
+
+Called when the bot receives a notice.
 
 #### `ACTION_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_ACTION)`
 * *Arguments*: `EV_NICK` (the nick of the user sending the action), `EV_USERNAME` (the username of the sender), `EV_CHANNEL` (the channel the action is sent to), `EV_ACTION` (the action sent)
@@ -735,21 +770,201 @@ Called when the bot receives a mode notification. If the server is the one setti
 
 #### `JOIN_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL)`
 * *Arguments*: `EV_NICK` (the nick joining the channel), `EV_USERNAME` (the username of the joiner), `EV_CHANNEL` (the channel joined)
-* *Note:* **Shabti** will call "extra" join event functions.  Their names follow the format `JOIN_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `JOIN_EVENT_1` to `JOIN_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `JOIN_EVENT_1` to `JOIN_EVENT_50` whenever it receives a join message.
 
 Called when the bot receives a channel join notification.
 
 #### `PART_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE)`
 * *Arguments*: `EV_NICK` (the nick parting the channel). `EV_USERNAME` (the username of parter), `EV_CHANNEL` (the channel parted), `EV_MESSAGE` (optional parting message)
-* *Note:* **Shabti** will call "extra" part event functions.  Their names follow the format `PART_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `PART_EVENT_1` to `PART_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `PART_EVENT_1` to `PART_EVENT_50` whenever it receives a part message.
 
 Called when the bot receives a channel part notification. If the parting user has set a parting message, it will be reflected in the `EV_MESSAGE` argument, which is set to a blank string otherwise.
 
 #### `IRC_EVENT(EV_RAW,EV_TYPE,EV_HOST,EV_NICK,EV_MESSAGE)`
 * *Arguments*: `EV_RAW` (the unchanged text of the server message sent), `EV_TYPE` (the numeric message type, from RFCs), `EV_HOST` (the name of the sending server), `EV_NICK` (the nick of the client the message is sent to), `EV_MESSAGE` (the message content)
-* *Note:* **Shabti** will call "extra" IRC event functions.  Their names follow the format `IRC_EVENT_x`, with "x" equal to a number; with default settings, **Shabti** will call `IRC_EVENT_1` to `IRC_EVENT_10`.  How many "extra" functions are called can be set with the command line option `--extra`; for example, if you started **Shabti** with `perl shabti.pl --extra 50`, it would then call event functions `IRC_EVENT_1` to `IRC_EVENT_50` whenever it receives an IRC message.
 
 Called when the bot receives a notification that is not handled by any other event.  `EV_RAW` contains the "raw", unchanged notification.
+
+---
+
+### "Hook" Events
+
+Events can trigger multiple subroutines by using the `hook()` built-in function:
+
+```javascript
+hook("event to respond to","name of subroutine to execute");
+```
+
+The first argument can be one of 10 different named events, or a specific IRC response code.  The second argument is the name of the subroutine you want to execute when the event occurs; this *must* be a string, and not a Javascript function reference. For example, let's say you have a function named `mypublic()` that you want to run every time the bot recieves a public message:
+
+```javascript
+function mypublic(ARGS){
+	print("Got a public message!");
+}
+
+// This is the wrong way to use the hook function, and will result in an error
+hook("public",mypublic);
+
+// This is the right way to use the hook function
+hook("public","mypublic");
+```
+
+Once a function is `hook()`'d to an event, when it's executed it is passed an object as its only argument; for named events, the passed object will be customized for that event. For all other events, the complete message from the server that triggered the hook is passed as a single argument.
+
+#### Named `hook` events
+
+* [`public`](#public)
+* [`private`](#private)
+* [`notice`](#notice)
+* [`mode`](#mode)
+* [`part`](#part)
+* [`time`](#time)
+* [`join`](#join)
+* [`connect`](#connect)
+* [`ping`](#ping)
+* [`nick-taken`](#nick-taken)
+
+##### `public`
+
+Triggered when the bot receives a public message.
+
+```javascript
+function public_message_hook(ARGS){
+	var sender_nick = ARGS.Nick;
+	var sender_username = ARGS.Username;
+	var channel = ARGS.Channel;
+	var chat = ARGS.Message;
+}
+
+hook("public","public_message_hook");
+```
+
+##### `private`
+
+Triggered when the bot receives a private message.
+
+```javascript
+function private_message_hook(ARGS){
+	var sender_nick = ARGS.Nick;
+	var sender_username = ARGS.Username;
+	var chat = ARGS.Message;
+}
+
+hook("private","private_message_hook");
+```
+
+##### `notice`
+
+Triggered when the bot receives a notice.  "Pseudo" notices sent by the server during connection are ignored, and the hook will not be executed.
+
+```javascript
+function notice_message_hook(ARGS){
+	var sender_nick = ARGS.Nick;
+	var sender_username = ARGS.Username;
+	var chat = ARGS.Message;
+	var notice_target = ARGS.Target;
+}
+
+hook("notice","notice_message_hook");
+```
+
+##### `mode`
+
+Triggered when the bot receives a mode message.
+
+```javascript
+function mode_message_hook(ARGS){
+	var sender_nick = ARGS.Nick;
+	var sender_username = ARGS.Username;
+	var chat = ARGS.Message;
+	var mode_target = ARGS.Target;
+	var new_mode = ARGS.Mode;
+}
+
+hook("mode","mode_message_hook");
+```
+
+##### `part`
+
+Triggered when the bot receives a part message.
+
+```javascript
+function part_message_hook(ARGS){
+	var parting_nick = ARGS.Nick;
+	var parting_username = ARGS.Username;
+	var channel = ARGS.Channel;
+	var part_message = ARGS.Message;
+}
+
+hook("part","part_message_hook");
+```
+
+##### `time`
+
+Triggered when the bot receives a server time message
+
+```javascript
+function time_message_hook(ARGS){
+	var weekday = ARGS.Weekday;
+	var month = ARGS.Month;
+	var day = ARGS.Day;
+	var year = ARGS.Year;
+	var hour = ARGS.Hour;
+	var minute = ARGS.Minute;
+	var second = ARGS.Seco;
+	var timezone = ARGS.Zone;
+}
+
+hook("time","time_message_hook");
+```
+
+##### `join`
+
+Triggered when the bot receives a channel join message.
+
+```javascript
+function join_message_hook(ARGS){
+	var joining_nick = ARGS.Nick;
+	var joining_username = ARGS.Username;
+	var channel = ARGS.Channel;
+}
+
+hook("join","join_message_hook");
+```
+
+##### `connect`
+
+Triggered when the bot connects to an IRC server.
+
+```javascript
+function connect_message_hook(ARGS){
+	var host = ARGS.Host;
+}
+
+hook("connect","connect_message_hook");
+```
+
+##### `ping`
+
+Triggered when the bot receives a ping from the server.
+
+```javascript
+function ping_message_hook(){
+	// Ping hooks are not passed any arguments
+}
+
+hook("ping","ping_message_hook");
+```
+
+##### `nick-taken`
+
+Triggered when the nick the bot wants to use is already taken.
+
+```javascript
+function nick_taken_hook(){
+	// Nick-taken hooks are not passede any arguments
+}
+
+hook("nick-taken","nick_taken_hook");
+```
 
 ---
 
@@ -850,6 +1065,15 @@ function PUBLIC_MESSAGE_EVENT(EV_NICK,EV_USERNAME,EV_CHANNEL,EV_MESSAGE) {
   CommandList object---|          |     chatting
                                   |
                              Chat message   
+
+//  You could also use a hook to implement this
+
+function cmdhandler(ARGS){
+	CommandHandler(Commands,ARGS.Message,ARGS.Nick,ARGS.Channel);
+}
+
+hook("public", "cmdhandler");
+
 ```
 
 This function scans incoming chat for any commands your bot is programmed to respond to, and executes them (or displays help or usage text).
@@ -951,8 +1175,6 @@ var channel_topic = GetTopic("#foo");
 var all_channels = GetChannelsList();
 var all_users = GetUsersList();
 ```
-
-`channels.js` uses three "extra" events (see ["Extra" Events](#extra-events)) for its functionality; it uses [`JOIN_EVENT_2`](#join_eventev_nickev_usernameev_channel), [`PART_EVENT_2`](#part_eventev_nickev_usernameev_channelev_message), and [`IRC_EVENT_2`](#irc_eventev_rawev_typeev_hostev_nickev_message).
 
 ### `UserCount()`
 
@@ -1087,8 +1309,6 @@ ChannelGreet("Hello, $NICK! Welcome to $CHANNEL!");
 ```
 
 `Greet` sets a message that will be sent as a private message to any user that joins the channel.  `ChannelGreet` sets a message that will be send to the entire channel whenever someone joins.  The message you set can either be a string, or an array of strings.
-
-`greeting.js` uses a [`JOIN_EVENT`](#join_eventev_nickev_usernameev_channel) "extra" event (see ["Extra" Events](#extra-events)) for its functionality; it uses `JOIN_EVENT_1`.
 
 ### `Greet(MESSAGE)`
 
@@ -1329,9 +1549,6 @@ This is the default configuration file for the Shabti IRC bot.
 	<username>shabti</username>
 	<!-- The IRCname the bot will use. -->
 	<ircname>Shabti IRC bot</ircname>
-
-	<!-- How many "extra" events the bot will attempt to execute. -->
-	<extra>10</extra>
 
 	<!--
 		For each channel the bot should join, add a "channel" child

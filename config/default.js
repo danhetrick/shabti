@@ -42,6 +42,16 @@ LIGHT_GREY = Color light grey, for use with the color() function
 
 */
 
+// NOTICE_EVENT()
+// Executed when the bot receives a notice.
+// EV_NICK = Nick of the sender
+// EV_USERNAME = Username of the sender
+// EV_TARGET = Target of the notice
+// EV_MESSAGE = Contents of the notice
+function NOTICE_EVENT(EV_NICK,EV_USERNAME,EV_TARGET,EV_MESSAGE){
+	print("NOTICE "+EV_NICK+": "+EV_MESSAGE);
+}
+
 // CONNECT_EVENT()
 // Executed when the bot first connects to the IRC server.
 // EV_HOST = name of the server connected to
